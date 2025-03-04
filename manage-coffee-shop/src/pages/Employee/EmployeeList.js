@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./EmployeeList.css";
+import "./EmployeeList.module.css";
 import Sidebar from "../../components/SideBar";
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -40,11 +40,9 @@ const EmployeeList = () => {
     <div className="container">
       <Sidebar />
 
-      {/* Main Content */}
       <div className="content">
         <h2 className="title">Danh sách nhân viên</h2>
 
-        {/* Thống kê nhân viên */}
         <div className="stats-container">
           <div className="stats-box">
             <p className="stats-title">Tổng số nhân viên</p>
@@ -58,7 +56,6 @@ const EmployeeList = () => {
           </div>
         </div>
 
-        {/* Ô tìm kiếm và nút thêm nhân viên */}
         <div className="search-container">
           <input
             type="text"
@@ -70,7 +67,6 @@ const EmployeeList = () => {
           <button className="add-button">Thêm Nhân Viên</button>
         </div>
 
-        {/* Danh sách nhân viên */}
         <table className="employee-table">
           <thead>
             <tr>

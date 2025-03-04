@@ -1,7 +1,8 @@
 // import { Login, Order } from "./pages";
-import EmployeeList from "./pages/Employee";
+import EmployeeList from "./pages/Employee/EmployeeList";
 import "./GlobalStyles.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import EmployeeForm from "./pages/Employee/EmployeeForm";
 
 // test
 // const Home = () => <h1>🏠 Home Page</h1>;
@@ -15,7 +16,8 @@ function App() {
     <Router>
       <div style={{ padding: "10px" }}>
         <Routes>
-          <Route path="/" element={<EmployeeList />} />
+          <Route path="/" element={<EmployeeForm />} />
+          {/* <Route path="/" element={<EmployeeList />} /> */}
           {/* <Route path="/" element={<Login />} /> */}
           {/* <Route path="/home" element={<Home />} />
           <Route path="/tao-hoa-don" element={<Order />} />
