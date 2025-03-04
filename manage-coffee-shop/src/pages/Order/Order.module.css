@@ -3,8 +3,9 @@
     height: 35px;
     position: absolute;
     left: 15px;
+    top: 15px;
     border-radius: 55px;
-    background-color: #bebebe;
+    background-color: #ecebeb;
     cursor: pointer;
     border: none;
 }
@@ -12,19 +13,6 @@
 .toggleButton:hover {
     background-color: rgb(130, 128, 128);
 }
-
-.header {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
-
-.title {
-    color: var(--primary);
-}
-
 .content {
     display: flex;
     flex-direction: row;
@@ -44,22 +32,23 @@
 }
 
 .mainMenu {
-    width: 100%;
-    height: 400px;
-    background-color: #d8d7d7;
+    width: 95%;
+    height: 460px;
+    background-color: #ecebeb;
     border-radius: 15px;
     padding: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
 }
 
 .describe {
-    background-color: #d8d7d7;
+    background-color: #ecebeb;
     width: 125px;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 35px;
+    margin-left: 40px;
 }
 
 .contentOrder {
@@ -69,36 +58,37 @@
 
 .searchInput {
     display: flex;
-    align-items: center; 
-    background: #fff; 
-    border: 1px solid #ccc;  
-    border-radius: 25px;  
-    padding: 5px 9px;  
-    width: 250px; 
-    transition: 0.3s ease-in-out;  
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 5px 9px;
+    width: 250px;
+    transition: 0.3s ease-in-out;
     margin: 0 15px 5px 15px;
 }
 
 .searchInput img {
-    width: 21px; 
-    height: 21px; 
-    margin-right: 8px; 
+    width: 21px;
+    height: 21px;
+    margin-right: 8px;
 }
 
 .searchInput input {
-    border: none; 
+    border: none;
     outline: none;
     font-size: 14px;
-    width: 100%; 
+    width: 100%;
 }
 
 /* Hiệu ứng khi focus */
 .searchInput:focus-within {
-    border-color: #007bff;  /* Đổi màu viền khi nhập */
+    border-color: #007bff;
+    /* Đổi màu viền khi nhập */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.buttonAddOrder {
+.buttonIcon {
     width: 24px;
     height: 24px;
     border-radius: 24px;
@@ -120,4 +110,95 @@
 .activeType {
     background-color: rgb(55, 55, 206);
     color: #fff;
+}
+
+.itemWrapper {
+    width: 200px;
+    height: 200px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
+}
+
+.itemInfo {
+    width: 200px;
+    height: 70px;
+    background: rgb(205, 204, 204);
+    border-end-start-radius: 25px;
+    border-end-end-radius: 25px;
+    position: absolute;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.orderItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid gray;
+}
+
+.payment {
+    height: 145px;
+    padding: 15px;
+    background-color: #aac9ea;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.linePayment {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.change {
+    width: 95px;
+    padding-left: 3px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+.btnThanhToan {
+    display: flex;
+    width: 165px;
+    background-color: #5CC467;
+    padding: 5px;
+    font-weight: 700;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 1px;
+    cursor: pointer; /* Con trỏ chuột thành bàn tay khi hover */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover: đổi màu nền, thêm hiệu ứng scale */
+.btnThanhToan:hover {
+    background-color: #4CAF50; /* Màu tối hơn khi hover */
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 2px; /* Đổ bóng lớn hơn */
+}
+
+/* Khi click giữ nút */
+.btnThanhToan:active {
+    transform: scale(0.95); /* Thu nhỏ lại khi nhấn */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px; /* Giảm bóng */
 }
