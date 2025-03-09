@@ -45,6 +45,7 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
     }));
   };
 
+
   return (
     <div className={styles.sidebar}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>

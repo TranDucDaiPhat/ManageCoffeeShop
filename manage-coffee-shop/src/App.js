@@ -2,6 +2,7 @@ import "./GlobalStyles.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
+import PersonalInfo from "./pages/Personal/PersonalInfo";
 function App() {
   return (
     <Router>
@@ -14,7 +15,7 @@ function App() {
           {/* <Route path="/danh-sach-san-pham" element={<DanhSachSanPham />} /> */}
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />
-          {/* <Route path="/tai-khoan" element={<TaiKhoan />} /> */}
+          <Route path="/tai-khoan" element={<PersonalInfo />} />
         </Routes>
       </div>
     </Router>
