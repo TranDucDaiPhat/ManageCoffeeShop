@@ -1,35 +1,22 @@
 import React, { useState, useEffect } from "react";
-import "./EmployeeList.module.css";
-import Sidebar from "../../components/SideBar";
+import axios from "axios";
+import styles from "./EmployeeList.module.css";
+import { Sidebar } from "../../components";
+
 const EmployeeList = () => {
+  const [openSidebar, setOpenSidebar] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const data = [
-      {
-        name: "Trần Thị Trang",
-        gender: "nữ",
-        phone: "0348576985",
-        dob: "01/12/2001",
-        role: "Nhân Viên",
-      },
-      {
-        name: "Chu Nguyên Chương",
-        gender: "nam",
-        phone: "0708952364",
-        dob: "15/01/1999",
-        role: "Quản Lý",
-      },
-      {
-        name: "Lưu Bá Ôn",
-        gender: "nam",
-        phone: "0854875236",
-        dob: "07/01/2002",
-        role: "Nhân Viên",
-      },
-    ];
-    setEmployees(data);
+    axios
+      .get("http://localhost:5000/employees")
+      .then((response) => {
+        setEmployees(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the employees!", error);
+      });
   }, []);
 
   const filteredEmployees = employees.filter((emp) =>
@@ -37,37 +24,45 @@ const EmployeeList = () => {
   );
 
   return (
-    <div className="container">
-      <Sidebar />
+    <div className={styles.container}>
+      <button
+        className={styles.toggleButton}
+        onClick={() => setOpenSidebar(!openSidebar)}
+      >
+        ☰
+      </button>
+      {openSidebar ? (
+        <Sidebar openSidebar onOpenSidebar={setOpenSidebar} />
+      ) : null}
 
-      <div className="content">
-        <h2 className="title">Danh sách nhân viên</h2>
+      <div className={styles.content}>
+        <h2 className={styles.title}>Danh sách nhân viên</h2>
 
-        <div className="stats-container">
-          <div className="stats-box">
-            <p className="stats-title">Tổng số nhân viên</p>
-            <p className="stats-value">{employees.length}</p>
+        <div className={styles.statsContainer}>
+          <div className={styles.statsBox}>
+            <p className={styles.statsTitle}>Tổng số nhân viên</p>
+            <p className={styles.statsValue}>{employees.length}</p>
           </div>
-          <div className="stats-box">
-            <p className="stats-title">Tổng số quản lý</p>
-            <p className="stats-value">
+          <div className={styles.statsBox}>
+            <p className={styles.statsTitle}>Tổng số quản lý</p>
+            <p className={styles.statsValue}>
               {employees.filter((emp) => emp.role === "Quản Lý").length}
             </p>
           </div>
         </div>
 
-        <div className="search-container">
+        <div className={styles.searchContainer}>
           <input
             type="text"
             placeholder="🔍 Tìm kiếm"
-            className="search-input"
+            className={styles.searchInput}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="add-button">Thêm Nhân Viên</button>
+          <button className={styles.addButton}>Thêm Nhân Viên</button>
         </div>
 
-        <table className="employee-table">
+        <table className={styles.employeeTable}>
           <thead>
             <tr>
               <th>Tên Nhân Viên</th>
@@ -78,8 +73,8 @@ const EmployeeList = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp, index) => (
-              <tr key={index}>
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.id}>
                 <td>{emp.name}</td>
                 <td>{emp.gender}</td>
                 <td>{emp.phone}</td>

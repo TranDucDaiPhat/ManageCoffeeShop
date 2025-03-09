@@ -12,12 +12,19 @@ const menuItems = [
 
     { title: "Sản Phẩm",
         submenu: [
+            
             { title: "Danh Sách Sản Phẩm", path: "/danh-sach-san-pham" },
         ],
     },
 
     { title: "Khách Hàng", path: "/khach-hang" },
 
+    { title: "Nhân Viên",
+        submenu: [
+            { title: "Lịch làm việc", path: "/lich-lam-viec" },
+            { title: "Danh sách nhân viên", path:"danh-sach-nhan-vien" },
+        ],
+    },
     { title: "Tài Khoản",
         submenu: [
             { title: "Thông Tin", path: "/tai-khoan" },

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "./EmployeeForm.module.css";
 import { Sidebar } from "../../components";
 
 const EmployeeForm = () => {
+  const [openSidebar, setOpenSidebar] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -13,6 +15,18 @@ const EmployeeForm = () => {
     gender: "male",
     role: "employee",
   });
+  const [employees, setEmployees] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/employees")
+      .then((response) => {
+        setEmployees(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching the employees!", error);
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,26 +35,31 @@ const EmployeeForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted Data:", formData);
+    axios
+      .post("http://localhost:5000/employees", formData)
+      .then((response) => {
+        setEmployees([...employees, response.data]);
+        console.log("Employee added:", response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error adding the employee!", error);
+      });
   };
 
   return (
-    <div className="flex">
-      <div className={styles.sidebar}>
-        <Sidebar />
-      </div>
+    <div className={styles.flex}>
+      <button
+        className={styles.toggleButton}
+        onClick={() => setOpenSidebar(!openSidebar)}
+      >
+        ☰
+      </button>
+      {openSidebar ? (
+        <Sidebar openSidebar onOpenSidebar={setOpenSidebar} />
+      ) : null}
 
       <div className={styles.container}>
-        <h1
-          style={{
-            color: "red",
-            fontSize: "30px",
-            fontWeight: "bold",
-            marginLeft: "650px",
-          }}
-        >
-          Thêm Nhân Viên Mới
-        </h1>
+        <h1 className={styles.header}>Thêm Nhân Viên Mới</h1>
 
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           <h2 className={styles.formTitle}>Thông Tin Chung</h2>
