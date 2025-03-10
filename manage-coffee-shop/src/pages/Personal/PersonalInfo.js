@@ -5,16 +5,16 @@ import { Sidebar } from "../../components";
 
 const PersonalInfo = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/users")
+      .get("http://localhost:5000/user")
       .then((response) => {
-        setUsers(response.data);
+        setUser(response.data);
       })
       .catch((error) => {
-        console.error("There was an error fetching the users!", error);
+        console.error("There was an error fetching the user!", error);
       });
   }, []);
 
@@ -30,25 +30,30 @@ const PersonalInfo = () => {
         <Sidebar openSidebar onOpenSidebar={setOpenSidebar} />
       ) : null}
       <h1 className={styles.header}>Thông Tin Cá Nhân</h1>
-      {users.map((user) => (
-        <div key={user.id} className={styles.userCard}>
-          <p>
-            <strong>Họ và Tên:</strong> {user.fullName}
-          </p>
-          <p>
-            <strong>Tuổi:</strong> {user.age}
-          </p>
-          <p>
-            <strong>Chức Vụ:</strong> {user.role}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>Mật Khẩu:</strong> {user.password}
-          </p>
-        </div>
-      ))}
+      <div className={styles.userCard}>
+        <img src={user.avatar} alt="Avatar" className={styles.avatar} />
+        <p>
+          <strong>Họ và Tên:</strong> {user.fullName}
+        </p>
+        <p>
+          <strong>Ngày tháng năm sinh:</strong> {user.birthDate}
+        </p>
+        <p>
+          <strong>Số điện thoại:</strong> {user.phoneNumber}
+        </p>
+        <p>
+          <strong>Giới tính:</strong> {user.sex}
+        </p>
+        <p>
+          <strong>Chức Vụ:</strong> {user.role}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Mật Khẩu:</strong> {user.password}
+        </p>
+      </div>
     </div>
   );
 };

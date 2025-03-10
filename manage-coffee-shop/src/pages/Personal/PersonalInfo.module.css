@@ -14,6 +14,15 @@
     color: #333;
     margin-bottom: 20px;
   }
+  
+  .userCard {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
   .toggleButton {
     width: 35px;
     height: 35px;
@@ -30,12 +39,11 @@
     background-color: rgb(130, 128, 128);
 }
   
-  .userCard {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
+  .avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
     margin-bottom: 20px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
   }
   
   .userCard p {
