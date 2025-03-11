@@ -51,7 +51,7 @@ const UpdateEmployeeForm = () => {
     axios
       .put("http://localhost:5000/user", user)
       .then(() => {
-        navigate("/thong-tin-ca-nhan");
+        navigate("/tai-khoan");
       })
       .catch((error) => {
         console.error("There was an error updating the user!", error);
@@ -59,7 +59,7 @@ const UpdateEmployeeForm = () => {
   };
 
   const handleCancel = () => {
-    navigate("/thong-tin-ca-nhan");
+    navigate("/tai-khoan");
   };
 
   return (

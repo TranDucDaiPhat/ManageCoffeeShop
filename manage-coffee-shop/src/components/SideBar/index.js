@@ -21,9 +21,16 @@ const menuItems = [
   {
     title: "Nhân Viên",
     submenu: [
-      { title: "Lịch làm việc", path: "/lich-lam-viec" },
-      { title: "Danh sách nhân viên", path: "/danh-sach-nhan-vien" },
-      { title: "Thêm nhân viên", path: "/them-nhan-vien" },
+      { title: "Lịch Làm Việc", path: "/lich-lam-viec" },
+      { title: "Danh Sách Nhân Viên", path: "/danh-sach-nhan-vien" },
+      { title: "Thêm Nhân Viên", path: "/them-nhan-vien" },
+    ],
+  },
+  {
+    title: "Thống Kê",
+    submenu: [
+      { title: "Thống Kê Doanh Thu", path: "/thong-ke-doanh-thu" },
+      { title: "Thống Kê Sản Phẩm", path: "/thong-ke-san-pham" },
     ],
   },
   {
@@ -44,7 +51,6 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
       [index]: !prev[index], // Đảo trạng thái submenu
     }));
   };
-
 
   return (
     <div className={styles.sidebar}>
