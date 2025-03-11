@@ -15,12 +15,14 @@ const UpdateEmployeeForm = () => {
     password: "",
     avatar: "",
   });
+  const [avatarPreview, setAvatarPreview] = useState("");
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/user")
       .then((response) => {
         setUser(response.data);
+        setAvatarPreview(response.data.avatar);
       })
       .catch((error) => {
         console.error("There was an error fetching the user!", error);
@@ -32,12 +34,24 @@ const UpdateEmployeeForm = () => {
     setUser({ ...user, [name]: value });
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result);
+        setUser({ ...user, avatar: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .put("http://localhost:5000/user", user)
       .then(() => {
-        navigate("/thong-tin");
+        navigate("/thong-tin-ca-nhan");
       })
       .catch((error) => {
         console.error("There was an error updating the user!", error);
@@ -45,7 +59,7 @@ const UpdateEmployeeForm = () => {
   };
 
   const handleCancel = () => {
-    navigate("/tai-khoan");
+    navigate("/thong-tin-ca-nhan");
   };
 
   return (
@@ -123,14 +137,20 @@ const UpdateEmployeeForm = () => {
           />
         </div>
         <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Avatar URL</label>
+          <label className={styles.inputLabel}>Avatar</label>
           <input
-            type="text"
-            name="avatar"
-            value={user.avatar}
-            onChange={handleChange}
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
             className={styles.inputField}
           />
+          {avatarPreview && (
+            <img
+              src={avatarPreview}
+              alt="Avatar Preview"
+              className={styles.avatarPreview}
+            />
+          )}
         </div>
         <div className={styles.buttonGroup}>
           <button type="submit" className={styles.button}>
