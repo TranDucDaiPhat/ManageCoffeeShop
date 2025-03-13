@@ -1,5 +1,6 @@
 import "./GlobalStyles.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Login, Order, Customer, OrderHistory } from "./pages";
 import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
@@ -8,12 +9,12 @@ import SalesStatistics from "./pages/Statistics/SalesStatistics";
 function App() {
   return (
     <Router>
-      <div style={{ padding: "10px" }}>
+      <div>
         <Routes>
-          {/* <Route path="/" element={<Login />} /> */}
-          {/* <Route path="/home" element={<Home />} /> */}
-          {/* <Route path="/tao-hoa-don" element={<Order />} /> */}
-          {/* <Route path="/lich-su-don-hang" element={<LichSuDonHang />} /> */}
+          <Route path="/" element={<Login />} />
+          <Route path="/tao-hoa-don" element={<Order />} />
+          <Route path="/khach-hang" element={<Customer />} />
+          <Route path="/lich-su-don-hang" element={<OrderHistory />} />
           {/* <Route path="/danh-sach-san-pham" element={<DanhSachSanPham />} /> */}
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />

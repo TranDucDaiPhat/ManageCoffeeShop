@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { VariableSizeGrid as Grid } from "react-window";
+import axios from "axios";
 import { Sidebar } from "../../components";
 import styles from "./Order.module.css"
-import { items } from "../../ExampleData/MonAn";
 
 const types = ['Tất cả', 'Classic Cocktails', 'Trà', 'Bánh Ngọt', 'Cà Phê']
 
@@ -15,13 +15,40 @@ const formatCurrency = (amount, locale = "vi-VN", currency = "VND") => {
 };
 
 function Order() {
+    const [items, setItems] = useState([]);
     const [openSidebar, setOpenSidebar] = useState(false);
     const [currentType, setCurrentType] = useState(types[0]);
-    const [currentListItem, setCurrentListItem] = useState(items);
+    const [currentListItem, setCurrentListItem] = useState([]);
     const [orderItems, setOrderItems] = useState([]);
     const [tongTien, setTongTien] = useState(0);
-    const [tienKhachTra, setTienKhachTra] = useState();
+    const [tienKhachTra, setTienKhachTra] = useState('');
     const [tienThua, setTienThua] = useState();
+
+    const [gridWidth, setGridWidth] = useState(window.innerWidth * 0.46);
+    const [columns, setColumns] = useState(window.innerWidth * 0.44 < 600 ? 2 : 3);
+
+    useEffect(() => {
+        axios.get("http://localhost:5000/items")
+            .then(response => {
+                setItems(response.data)
+                setCurrentListItem(response.data)
+            })
+            .catch(error => console.error("Lỗi khi gọi API:", error));
+    }, []);
+    useEffect(() => {
+        const handleResize = () => {
+            const newWidth = window.innerWidth * 0.46;
+            setGridWidth(newWidth);
+            if (newWidth > 750) {
+                setColumns(3)
+            } else {
+                setColumns(2)
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         const tongTien = TinhTongTien()
@@ -33,15 +60,16 @@ function Order() {
 
     function handleAddItemToOrder(item) {
         const newOrderItems = [...orderItems, {
-            item,
+            maMon: item.maMon,
+            tenMon: item.tenMon,
             soLuong: 1,
-            tong: item.donGia
+            donGia: item.donGia
         }];
         setOrderItems(newOrderItems)
     }
 
     const Item = ({ columnIndex, rowIndex, style }) => {
-        const index = rowIndex * 2 + columnIndex;
+        const index = rowIndex * columns + columnIndex;
         const item = currentListItem[index]
         if (item) {
             return (
@@ -68,10 +96,34 @@ function Order() {
         }
     }
 
+    async function createOrder() {
+        if (orderItems.length > 0) {
+            const hoaDon = {
+                maHoaDon: "HD" + Math.ceil(Math.random() * 1111),
+                maKhachHang: null,
+                maNhanVien: null,
+                ngayTao: new Date().toISOString().slice(0, 19),
+                tongTien,
+                phuongThucThanhToan: "Tiền mặt",
+                chiTietHoaDon: orderItems
+            }
+            try {
+                const response = await axios.post("http://localhost:5000/orders", hoaDon);
+                console.log("✅ Hóa đơn đã gửi thành công:", response.data);
+                return response.data; // Trả về dữ liệu phản hồi từ server
+            } catch (error) {
+                console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
+                throw error;
+            }
+        } else {
+            console.log("do nothing")
+        }
+    }
+
     const OrderItem = ({ orderItem, index }) => {
         return (
             <div className={styles.orderItem}>
-                <p style={{ flex: 5 }}>{`${index + 1}.  ${orderItem.item.tenMon}`}</p>
+                <p style={{ flex: 5 }}>{`${index + 1}.  ${orderItem.tenMon}`}</p>
 
                 <div style={{ display: 'flex', flex: 3, flexDirection: 'row', alignItems: 'center' }}>
                     <button className={styles.buttonIcon} onClick={() => handleChangeQuantity(index, -1)}>
@@ -83,9 +135,9 @@ function Order() {
                     </button>
                 </div>
 
-                <p style={{ flex: 3 }}>{orderItem.item.donGia}</p>
+                <p style={{ flex: 3 }}>{orderItem.donGia}</p>
 
-                <p style={{ flex: 2 }}>{orderItem.tong}</p>
+                <p style={{ flex: 2 }}>{orderItem.donGia * orderItem.soLuong}</p>
 
                 <button className={styles.buttonIcon} onClick={() => deleteOrderItem(index)}>
                     {"✖"}
@@ -98,7 +150,7 @@ function Order() {
         const quantity = orderItems[index].soLuong + value
         if (quantity > 0) {
             const newOrderItems = [...orderItems];
-            newOrderItems[index] = { ...newOrderItems[index], soLuong: quantity, tong: newOrderItems[index].item.donGia * quantity };
+            newOrderItems[index] = { ...newOrderItems[index], soLuong: quantity };
             setOrderItems(newOrderItems);
         }
     }
@@ -109,14 +161,14 @@ function Order() {
 
     function TinhTongTien() {
         return orderItems.reduce((init, current) => {
-            return init + current.tong
+            return init + current.soLuong * current.donGia
         }, 0)
     }
 
     return (
-        <div>
+        <div style={{ padding: 12 }}>
             <button
-                className={styles.toggleButton}
+                className="toggleButtonSidebar"
                 onClick={() => setOpenSidebar(!openSidebar)}
             >☰</button>
             {openSidebar ? <Sidebar openSidebar onOpenSidebar={setOpenSidebar} /> : <></>}
@@ -133,7 +185,7 @@ function Order() {
                     </div>
 
                     <div className={styles.mainMenu}>
-                        <div style={{ marginBottom: 5 }}>
+                        <div>
                             {types.map((type, index) => {
                                 return <button
                                     className={clsx(styles.btnType, {
@@ -144,14 +196,13 @@ function Order() {
                                 >{type}</button>
                             })}
                         </div>
-
                         <Grid
-                            columnCount={2}
-                            rowCount={Math.ceil(currentListItem.length / 2)}
-                            columnWidth={() => 250} // Chiều rộng mỗi cột
+                            columnCount={columns}
+                            rowCount={Math.ceil(currentListItem.length / columns)}
+                            columnWidth={() => gridWidth / columns - 30} // Chiều rộng mỗi cột
                             rowHeight={() => 240} // Chiều cao mỗi hàng
-                            width={540} // Tổng chiều rộng
-                            height={390} // Tổng chiều cao
+                            width={gridWidth} // Tổng chiều rộng
+                            height={Math.min(600, window.innerHeight * 0.78)} // Tổng chiều cao
                         >
                             {Item}
                         </Grid>
@@ -173,7 +224,7 @@ function Order() {
                             <p style={{ flex: 3 }}>Tổng</p>
                         </div>
 
-                        <div style={{ maxHeight: '240px', overflowY: 'auto', marginRight: '-10px' }}>
+                        <div style={{ maxHeight: '50vh', overflowY: 'auto', marginRight: '-10px' }}>
                             {orderItems.map((orderItem, index) => {
                                 return <OrderItem key={index} orderItem={orderItem} index={index} />
                             })}
@@ -205,13 +256,12 @@ function Order() {
                                     <p style={{ fontWeight: 700, marginLeft: 5 }}>{formatCurrency(tienThua || 0)}</p>
                                 </div>
                                 <div style={{ flex: 1, justifyContent: 'center' }}>
-                                    <button className={styles.btnThanhToan}>
+                                    <button className={styles.btnThanhToan} onClick={createOrder}>
                                         <img src="/image/50-dollar.png" style={{ width: 24 }} />
                                         Thanh Toán
                                     </button>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex' }}></div>
                         </div>
                     </div>
                 </div>

@@ -1,29 +1,12 @@
-.toggleButton {
-    width: 35px;
-    height: 35px;
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    border-radius: 55px;
-    background-color: #ecebeb;
-    cursor: pointer;
-    border: none;
-}
 
-.toggleButton:hover {
-    background-color: rgb(130, 128, 128);
-}
 .content {
     display: flex;
-    flex-direction: row;
     width: 100%;
-    justify-content: center;
-    align-items: center;
 }
 
 .contentMenu {
     width: 50%;
-    margin: 5px;
+    height: 94vh;
 }
 
 .headForm {
@@ -32,11 +15,12 @@
 }
 
 .mainMenu {
-    width: 95%;
-    height: 460px;
+    width: 97%;
+    height: 95%;
     background-color: #ecebeb;
     border-radius: 15px;
     padding: 10px;
+    margin-left: 10px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
 }
 
@@ -49,11 +33,12 @@
     justify-content: center;
     align-items: center;
     margin-left: 40px;
+    box-shadow: -2px 0 2px -1px rgba(0, 0, 0, 0.2);
 }
 
 .contentOrder {
     width: 50%;
-    margin: 5px;
+    height: 94vh;
 }
 
 .searchInput {
@@ -66,6 +51,7 @@
     width: 250px;
     transition: 0.3s ease-in-out;
     margin: 0 15px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px;
 }
 
 .searchInput img {
