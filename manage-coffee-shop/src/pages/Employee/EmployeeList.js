@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./EmployeeList.module.css";
 import { Sidebar } from "../../components";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeList = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -18,7 +20,9 @@ const EmployeeList = () => {
         console.error("There was an error fetching the employees!", error);
       });
   }, []);
-
+  const handleSubmit = () => {
+    navigate("/them-nhan-vien");
+  };
   const filteredEmployees = employees.filter((emp) =>
     emp.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -59,7 +63,9 @@ const EmployeeList = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className={styles.addButton}>Thêm Nhân Viên</button>
+          <button className={styles.addButton} onClick={handleSubmit}>
+            Thêm Nhân Viên
+          </button>
         </div>
 
         <table className={styles.employeeTable}>

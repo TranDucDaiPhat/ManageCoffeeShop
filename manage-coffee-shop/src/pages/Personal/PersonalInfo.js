@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import styles from "./PersonalInfo.module.css";
 import { Sidebar } from "../../components";
 
@@ -53,6 +54,9 @@ const PersonalInfo = () => {
         <p>
           <strong>Mật Khẩu:</strong> {user.password}
         </p>
+        <Link to="/cap-nhat-thong-tin">
+          <button className={styles.updateButton}>Cập Nhật Thông Tin</button>
+        </Link>
       </div>
     </div>
   );

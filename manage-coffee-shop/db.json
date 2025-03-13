@@ -1,0 +1,14 @@
+{
+    "sales": [
+      { "date": "2025-03-01", "revenue": 1500 },
+      { "date": "2025-03-02", "revenue": 2000 },
+      { "date": "2025-03-03", "revenue": 2500 },
+      { "date": "2025-03-04", "revenue": 3000 },
+      { "date": "2025-03-05", "revenue": 3500 }
+    ],
+    "products": [
+      { "id": 1, "name": "Product A", "sales": 100, "image": "https://via.placeholder.com/150" },
+      { "id": 2, "name": "Product B", "sales": 150, "image": "https://via.placeholder.com/150" },
+      { "id": 3, "name": "Product C", "sales": 200, "image": "https://via.placeholder.com/150" }
+    ]
+  }

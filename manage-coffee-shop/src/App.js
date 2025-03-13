@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
+import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
+import SalesStatistics from "./pages/Statistics/SalesStatistics";
 function App() {
   return (
     <Router>
@@ -16,6 +18,8 @@ function App() {
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />
           <Route path="/tai-khoan" element={<PersonalInfo />} />
+          <Route path="/cap-nhat-thong-tin" element={<UpdateEmployeeForm />} />
+          <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
         </Routes>
       </div>
     </Router>
