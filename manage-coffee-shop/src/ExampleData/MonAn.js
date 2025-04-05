@@ -1,4 +1,4 @@
-export const items = [
+const items = [
     {
         maMon: '1',
         tenMon: 'Mojito',
@@ -145,3 +145,5 @@ export const items = [
         tinhTrang: 'Còn hàng'
     },
 ]
+
+module.exports = items;

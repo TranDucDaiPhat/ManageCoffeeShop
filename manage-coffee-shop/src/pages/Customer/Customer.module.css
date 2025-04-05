@@ -1,0 +1,157 @@
+
+.screen {
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(213, 211, 211);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 96%;
+    height: 95%;
+    background-color: rgb(255, 255, 255);
+    border-radius: 25px;
+    padding: 5px;
+}
+
+.content {
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.contentList {
+    width: 55%;
+    height: 100%;
+    padding: 5px;
+    background-color: rgb(230, 230, 230);
+    border-radius: 15px;
+    margin-right: 25px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
+}
+
+.contentForm {
+    width: 35%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: rgb(230, 230, 230);
+    border-radius: 15px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
+    padding: 15px;
+}
+
+.customInput {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 5px 9px;
+    width: 210px;
+    transition: 0.3s ease-in-out;
+    margin-right: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 3px;
+}
+
+.customInput img {
+    width: 21px;
+    height: 21px;
+}
+
+.customInput input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    width: 100%;
+    padding-left: 5px;
+}
+
+/* Hiệu ứng khi focus */
+.customInput:focus-within {
+    border-color: #007bff;
+    /* Đổi màu viền khi nhập */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.customButton {
+    display: flex;
+    width: 18vh;
+    height: 32px;
+    background-color: #608fe5;
+    font-weight: 500;
+    font-size: 16px;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 1px;
+    cursor: pointer; /* Con trỏ chuột thành bàn tay khi hover */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover: đổi màu nền, thêm hiệu ứng scale */
+.customButton:hover {
+    background-color: #5985d7; /* Màu tối hơn khi hover */
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 2px; /* Đổ bóng lớn hơn */
+}
+
+/* Khi click giữ nút */
+.customButton:active {
+    transform: scale(0.95); /* Thu nhỏ lại khi nhấn */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px; /* Giảm bóng */
+}
+
+.tableContainer {
+    width: 100%;
+    margin-top: 20px;
+    max-height: 90%;
+    overflow-y: auto;
+}
+
+.customerTable {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
+.customerTable th, .customerTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.customerTable th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.customerTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.customerTable tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.selectedRow {
+    background: #d1ecf1 !important;
+    color: #0c5460;
+    font-weight: bold;
+}
+
+.enableButton {
+    background: #ccc !important;  
+    color: #666 !important;  
+    cursor: not-allowed !important;
+    opacity: 0.6;              
+    pointer-events: none;         
+}

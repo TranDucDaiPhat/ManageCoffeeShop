@@ -1,18 +1,51 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useAuth } from "../../AuthContext";
 import styles from './Login.module.css'
 
 function Login() {
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("admin");
+    const [password, setPassword] = useState("1111");
     const navigate = useNavigate();
+    const { fetchUserRole } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log("Tên tài khoản:", username);
-        console.log("Mật khẩu:", password);
-        navigate('/tao-hoa-don')
+        if (username.trim() == '' || password.trim == '') {
+            toast.error("Vui lòng nhập username và password!");
+            return;
+        }
+        try {
+            const res = await fetch("http://localhost:5000/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ tenTaiKhoan: username }),
+              credentials: "include", // Để nhận cookie từ server
+            });
+        
+            if (!res.ok) {
+              throw new Error(`Lỗi đăng nhập: ${res.status}`);
+            }
+        
+            const data = await res.json(); // Nhận phản hồi từ server
+            console.log("Đăng nhập thành công:", data);
+        
+            // Gọi lại API lấy quyền
+            await fetchUserRole();
+        
+            // Chuyển hướng dựa vào role
+            if (data.role === "Manager") {
+            //   navigate("/manager-dashboard");
+            } else {
+              navigate("/tao-hoa-don");
+            }
+          } catch (error) {
+            console.error("Lỗi khi đăng nhập:", error.message);
+            toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
+          }
     };
 
     return (
@@ -23,8 +56,8 @@ function Login() {
                     <img alt='coffee shop' src='/image/coffee-shop.jpg' width={455} />
                 </div>
                 <div>
-                    <form onSubmit={handleSubmit} className={styles.login_form}>
-                        <h3 style={{marginBottom:15}}>Đăng Nhập</h3>
+                    <form onSubmit={handleLogin} className={styles.login_form}>
+                        <h3 style={{ marginBottom: 15 }}>Đăng Nhập</h3>
                         <input
                             type="text"
                             placeholder="Tên tài khoản"

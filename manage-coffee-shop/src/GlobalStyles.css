@@ -23,14 +23,25 @@ body {
     width: 35px;
     height: 35px;
     position: absolute;
-    left: 15px;
-    top: 15px;
+
+    left: 12px;
+    top: 10px;
+
     border-radius: 55px;
     background-color: #ecebeb;
     cursor: pointer;
     border: none;
+
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 1px;
+
 }
 
 .toggleButtonSidebar:hover {
     background-color: rgb(130, 128, 128);
+
+}
+
+span {
+    font-size: 1.4vw;
+
 }
