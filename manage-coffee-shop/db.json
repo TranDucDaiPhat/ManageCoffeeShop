@@ -1,0 +1,266 @@
+{
+  "mons": [
+    {
+      "id": "1",
+      "ten": "Trà xanh đặc biệt",
+      "loai": "Trà xanh",
+      "gia": "25000",
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img1.jpg"
+    },
+    {
+      "id": "2",
+      "ten": "Trà xanh mật ong",
+      "loai": "Trà xanh",
+      "gia": 27000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img2.jpg"
+    },
+    {
+      "id": "3",
+      "ten": "Cà phê sữa đá",
+      "loai": "Cà phê",
+      "gia": 30000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img3.jpg"
+    },
+    {
+      "id": "4",
+      "ten": "Cà phê đen",
+      "loai": "Cà phê",
+      "gia": 28000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img4.jpg"
+    },
+    {
+      "id": "5",
+      "ten": "Cocktail Mojito",
+      "loai": "Cocktail",
+      "gia": 50000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img5.jpg"
+    },
+    {
+      "id": "6",
+      "ten": "Cocktail Blue Lagoon",
+      "loai": "Cocktail",
+      "gia": 55000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img6.jpg"
+    },
+    {
+      "id": "7",
+      "ten": "Trà trái cây nhiệt đới",
+      "loai": "Trà trái cây",
+      "gia": 40000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img7.jpg"
+    },
+    {
+      "id": "8",
+      "ten": "Trà dâu tây",
+      "loai": "Trà trái cây",
+      "gia": 38000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img8.jpg"
+    },
+    {
+      "id": "9",
+      "ten": "Trà xanh bạc hà",
+      "loai": "Trà xanh",
+      "gia": 29000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img9.jpg"
+    },
+    {
+      "id": "10",
+      "ten": "Trà xanh đào",
+      "loai": "Trà xanh",
+      "gia": 31000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img1.jpg"
+    },
+    {
+      "id": "11",
+      "ten": "Cà phê trứng",
+      "loai": "Cà phê",
+      "gia": 35000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img2.jpg"
+    },
+    {
+      "id": "12",
+      "ten": "Cà phê cốt dừa",
+      "loai": "Cà phê",
+      "gia": 38000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img3.jpg"
+    },
+    {
+      "id": "13",
+      "ten": "Cocktail Margarita",
+      "loai": "Cocktail",
+      "gia": 60000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img4.jpg"
+    },
+    {
+      "id": "14",
+      "ten": "Cocktail Piña Colada",
+      "loai": "Cocktail",
+      "gia": 65000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img5.jpg"
+    },
+    {
+      "id": "15",
+      "ten": "Trà đào cam sả",
+      "loai": "Trà trái cây",
+      "gia": 45000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img6.jpg"
+    },
+    {
+      "id": "16",
+      "ten": "Trà vải hoa hồng",
+      "loai": "Trà trái cây",
+      "gia": 48000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img7.jpg"
+    },
+    {
+      "id": "17",
+      "ten": "Trà xanh chanh sả",
+      "loai": "Trà xanh",
+      "gia": 30000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img8.jpg"
+    },
+    {
+      "id": "18",
+      "ten": "Trà xanh gừng",
+      "loai": "Trà xanh",
+      "gia": 32000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img9.jpg"
+    },
+    {
+      "id": "19",
+      "ten": "Cà phê muối",
+      "loai": "Cà phê",
+      "gia": 33000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img1.jpg"
+    },
+    {
+      "id": "20",
+      "ten": "Cà phê đá xay",
+      "loai": "Cà phê",
+      "gia": 40000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img2.jpg"
+    },
+    {
+      "id": "21",
+      "ten": "Cocktail Daiquiri",
+      "loai": "Cocktail",
+      "gia": 58000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img3.jpg"
+    },
+    {
+      "id": "22",
+      "ten": "Cocktail Whiskey Sour",
+      "loai": "Cocktail",
+      "gia": 62000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img4.jpg"
+    },
+    {
+      "id": "23",
+      "ten": "Trà dứa nha đam",
+      "loai": "Trà trái cây",
+      "gia": 42000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img5.jpg"
+    },
+    {
+      "id": "24",
+      "ten": "Trà chanh dây",
+      "loai": "Trà trái cây",
+      "gia": 43000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img6.jpg"
+    },
+    {
+      "id": "25",
+      "ten": "Trà xanh lài",
+      "loai": "Trà xanh",
+      "gia": 26000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img7.jpg"
+    },
+    {
+      "id": "26",
+      "ten": "Trà xanh nha đam",
+      "loai": "Trà xanh",
+      "gia": 33000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img8.jpg"
+    },
+    {
+      "id": "27",
+      "ten": "Cà phê sữa nóng",
+      "loai": "Cà phê",
+      "gia": 31000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img9.jpg"
+    },
+    {
+      "id": "28",
+      "ten": "Cà phê đen nóng",
+      "loai": "Cà phê",
+      "gia": 29000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img1.jpg"
+    },
+    {
+      "id": "29",
+      "ten": "Cocktail Negroni",
+      "loai": "Cocktail",
+      "gia": 70000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img2.jpg"
+    },
+    {
+      "id": "30",
+      "ten": "Cocktail Aperol Spritz",
+      "loai": "Cocktail",
+      "gia": 63000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img3.jpg"
+    },
+    {
+      "id": "31",
+      "ten": "Trà ổi hồng",
+      "loai": "Trà trái cây",
+      "gia": 46000,
+      "donVi": "ly",
+      "hinhAnh": "/public/image/img4.jpg"
+    },
+    {
+      "id": "8713",
+      "ten": "Trà đào cam sả",
+      "loai": "Trà trái cây",
+      "gia": 35000,
+      "donvi": "ly",
+      "hinhAnh": "/public/image/tradao.jpg"
+    },
+    {
+      "id": "9889",
+      "name": "Trà Đào",
+      "gia": 45000,
+      "loai": "Tratraicay"
+    }
+  ]
+}

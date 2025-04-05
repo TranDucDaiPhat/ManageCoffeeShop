@@ -116,7 +116,7 @@ function Order() {
     return (
         <div>
             <button
-                className={styles.toggleButton}
+                className="toggleButtonSidebar"
                 onClick={() => setOpenSidebar(!openSidebar)}
             >☰</button>
             {openSidebar ? <Sidebar openSidebar onOpenSidebar={setOpenSidebar} /> : <></>}

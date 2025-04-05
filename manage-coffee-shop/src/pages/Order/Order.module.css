@@ -1,18 +1,4 @@
-.toggleButton {
-    width: 35px;
-    height: 35px;
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    border-radius: 55px;
-    background-color: #ecebeb;
-    cursor: pointer;
-    border: none;
-}
 
-.toggleButton:hover {
-    background-color: rgb(130, 128, 128);
-}
 .content {
     display: flex;
     flex-direction: row;
