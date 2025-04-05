@@ -18,7 +18,7 @@ const orders = [
         "maHoaDon": "HD002",
         "maKhachHang": null,
         "maNhanVien": "NV002",
-        "ngayTao": "2025-03-09T15:45:00",
+        "ngayTao": "2025-03-11T15:45:00",
         "tongTien": 85000,
         "phuongThucThanhToan": "Chuyển khoản",
         "chiTietHoaDon": [
@@ -30,7 +30,7 @@ const orders = [
         "maHoaDon": "HD003",
         "maKhachHang": "KH002",
         "maNhanVien": "NV003",
-        "ngayTao": "2025-03-08T08:20:00",
+        "ngayTao": "2025-03-12T08:20:00",
         "tongTien": 230000,
         "phuongThucThanhToan": "Thẻ tín dụng",
         "chiTietHoaDon": [
@@ -42,7 +42,7 @@ const orders = [
         "maHoaDon": "HD004",
         "maKhachHang": "KH003",
         "maNhanVien": "NV001",
-        "ngayTao": "2025-03-07T18:00:00",
+        "ngayTao": "2025-03-13T18:00:00",
         "tongTien": 50000,
         "phuongThucThanhToan": "Tiền mặt",
         "chiTietHoaDon": [
@@ -53,7 +53,7 @@ const orders = [
         "maHoaDon": "HD005",
         "maKhachHang": null,
         "maNhanVien": "NV004",
-        "ngayTao": "2025-03-06T13:10:00",
+        "ngayTao": "2025-03-14T13:10:00",
         "tongTien": 78000,
         "phuongThucThanhToan": "Chuyển khoản",
         "chiTietHoaDon": [
@@ -64,7 +64,7 @@ const orders = [
         "maHoaDon": "HD006",
         "maKhachHang": "KH004",
         "maNhanVien": "NV002",
-        "ngayTao": "2025-03-05T09:50:00",
+        "ngayTao": "2025-03-15T09:50:00",
         "tongTien": 150000,
         "phuongThucThanhToan": "Tiền mặt",
         "chiTietHoaDon": [
@@ -75,7 +75,7 @@ const orders = [
         "maHoaDon": "HD007",
         "maKhachHang": "KH005",
         "maNhanVien": "NV005",
-        "ngayTao": "2025-03-04T11:30:00",
+        "ngayTao": "2025-03-16T11:30:00",
         "tongTien": 92000,
         "phuongThucThanhToan": "Thẻ tín dụng",
         "chiTietHoaDon": [
@@ -86,7 +86,7 @@ const orders = [
         "maHoaDon": "HD008",
         "maKhachHang": null,
         "maNhanVien": "NV003",
-        "ngayTao": "2025-03-03T14:40:00",
+        "ngayTao": "2025-03-17T14:40:00",
         "tongTien": 310000,
         "phuongThucThanhToan": "Chuyển khoản",
         "chiTietHoaDon": [
@@ -98,7 +98,7 @@ const orders = [
         "maHoaDon": "HD009",
         "maKhachHang": "KH006",
         "maNhanVien": "NV001",
-        "ngayTao": "2025-03-02T17:15:00",
+        "ngayTao": "2025-03-18T17:15:00",
         "tongTien": 120000,
         "phuongThucThanhToan": "Tiền mặt",
         "chiTietHoaDon": [
@@ -109,7 +109,7 @@ const orders = [
         "maHoaDon": "HD010",
         "maKhachHang": "KH007",
         "maNhanVien": "NV002",
-        "ngayTao": "2025-03-01T12:05:00",
+        "ngayTao": "2025-03-19T12:05:00",
         "tongTien": 210000,
         "phuongThucThanhToan": "Thẻ tín dụng",
         "chiTietHoaDon": [
@@ -126,7 +126,134 @@ const orders = [
         "chiTietHoaDon": [
             { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
         ]
-    }
+    },
+
+
+
+
+
+
+    {
+        "maHoaDon": "HD011",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-11T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD012",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-12T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD013",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-13T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD014",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-14T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD015",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-14T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD016",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-15T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD017",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-16T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD018",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-16T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD019",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-17T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD020",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-18T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD021",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-18T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },{
+        "maHoaDon": "HD022",
+        "maKhachHang": "KH007",
+        "maNhanVien": "NV002",
+        "ngayTao": "2025-03-19T12:05:00",
+        "tongTien": 210000,
+        "phuongThucThanhToan": "Thẻ tín dụng",
+        "chiTietHoaDon": [
+            { "maMon": "M014", "tenMon": "Chanh Dây Đá Xay", "soLuong": 3, "donGia": 70000 }
+        ]
+    },
 ]
 
 module.exports = orders;

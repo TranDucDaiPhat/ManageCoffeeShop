@@ -1,0 +1,23 @@
+.itemWrapper {
+    width: 200px;
+    height: 200px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 5px;
+}
+
+.itemInfo {
+    width: 200px;
+    height: 70px;
+    background: rgb(205, 204, 204);
+    border-end-start-radius: 25px;
+    border-end-end-radius: 25px;
+    position: absolute;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

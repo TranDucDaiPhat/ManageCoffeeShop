@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import clsx from "clsx";
 import { VariableSizeGrid as Grid } from "react-window";
 import axios from "axios";
-import { Sidebar } from "../../components";
+import { toast } from "react-toastify";
+import { Sidebar, MenuItems, OrderList } from "../../components";
 import styles from "./Order.module.css"
 
 const types = ['Tất cả', 'Classic Cocktails', 'Trà', 'Bánh Ngọt', 'Cà Phê']
@@ -15,18 +16,24 @@ const formatCurrency = (amount, locale = "vi-VN", currency = "VND") => {
 };
 
 function Order() {
-    const [items, setItems] = useState([]);
-    const [openSidebar, setOpenSidebar] = useState(false);
-    const [currentType, setCurrentType] = useState(types[0]);
-    const [currentListItem, setCurrentListItem] = useState([]);
-    const [orderItems, setOrderItems] = useState([]);
-    const [tongTien, setTongTien] = useState(0);
-    const [tienKhachTra, setTienKhachTra] = useState('');
-    const [tienThua, setTienThua] = useState();
+    const [items, setItems] = useState([]);  // Danh sách món lấy từ API
+    const [openSidebar, setOpenSidebar] = useState(false);  // Trạng thái tắt/mở sidebar
+    const [currentType, setCurrentType] = useState(types[0]);  // Loại món hiện tại
+    const [currentListItem, setCurrentListItem] = useState([]); // Danh sách món lọc theo loại món
+    const [orderItems, setOrderItems] = useState([]); // Danh sách các sản phẩm trong hoá đơn
+    const [tienKhachTra, setTienKhachTra] = useState('');  // Số tiền khách trả
+    const [tienThua, setTienThua] = useState(0);  // Số tiền thừa
+    const [phone, setPhone] = useState('');  // lưu input số điện thoại của KH
+    const [customer, setCustomer] = useState(null);  // lưu thông tin khách hàng nếu có
 
-    const [gridWidth, setGridWidth] = useState(window.innerWidth * 0.46);
-    const [columns, setColumns] = useState(window.innerWidth * 0.44 < 600 ? 2 : 3);
+    const [gridWidth, setGridWidth] = useState(window.innerWidth * 0.46);  // Tính chiều rộng của màn hình để set chiều rộng cho danh sách món
+    const [columns, setColumns] = useState(window.innerWidth * 0.44 < 600 ? 2 : 3);  // Tính số cột dựa theo chiều rộng của màn hình
 
+    const menuOrderRef = useRef(null);  // Lưu địa chỉ của danh sách hoá đơn (để tự động cuộn xuống khi thêm 1 sản phẩm)
+    const prevLengthMenu = useRef(items.length);  // Lưu số lượng sản phẩm trong menu (chỉ cuộn khi số lượng tăng)
+    const [searchText, setSearchText] = useState(null);  // input tìm kiếm
+
+    // Lấy danh sách món từ API
     useEffect(() => {
         axios.get("http://localhost:5000/items")
             .then(response => {
@@ -35,6 +42,8 @@ function Order() {
             })
             .catch(error => console.error("Lỗi khi gọi API:", error));
     }, []);
+
+    // Khi cửa sổ thay đổi, tính toán lại cột (tối đa 3, tối thiểu 2)
     useEffect(() => {
         const handleResize = () => {
             const newWidth = window.innerWidth * 0.46;
@@ -50,42 +59,39 @@ function Order() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    // Khi thêm sản phẩm vào hoá đơn, tự động cuộn xuống
     useEffect(() => {
-        const tongTien = TinhTongTien()
-        setTongTien(tongTien)
-        if (tienKhachTra) {
-            setTienThua(tienKhachTra - tongTien)
+        if (menuOrderRef.current) {
+            if (orderItems.length > prevLengthMenu.current) {
+                menuOrderRef.current.scrollTop = menuOrderRef.current.scrollHeight;
+            }
+            prevLengthMenu.current = orderItems.length;
         }
-    }, [orderItems])
+    }, [orderItems.length]);
 
-    function handleAddItemToOrder(item) {
-        const newOrderItems = [...orderItems, {
-            maMon: item.maMon,
-            tenMon: item.tenMon,
-            soLuong: 1,
-            donGia: item.donGia
-        }];
-        setOrderItems(newOrderItems)
-    }
+    // Tính tổng tiền, tiền thừa khi danh sách sản phẩm thay đổi
+    const tongTien = useMemo(() => 
+        orderItems.reduce((sum, item) => sum + item.soLuong * item.donGia, 0), 
+        [orderItems]
+    );
+    
+    useEffect(() => {
+        setTienThua(tienKhachTra - tongTien);
+    }, [tienKhachTra, tongTien]);
 
-    const Item = ({ columnIndex, rowIndex, style }) => {
-        const index = rowIndex * columns + columnIndex;
-        const item = currentListItem[index]
-        if (item) {
-            return (
-                <div style={{ ...style, display: "flex", justifyContent: "center", alignItems: "center", cursor: 'pointer' }} onClick={() => handleAddItemToOrder(item)}>
-                    <div className={styles.itemWrapper}>
-                        <img src={item.hinhAnh || '\\image\\no-image.jpg'} height={145} width={120} style={{ objectFit: "cover" }} />
-                        <div className={styles.itemInfo}>
-                            <p style={{ fontWeight: 700 }}>{item.tenMon}</p>
-                            <p>{formatCurrency(item.donGia)}</p>
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-    };
+    // Thêm sản phẩm vào hoá đơn
+    const handleAddItemToOrder = useCallback((item) => {
+        setOrderItems(prevOrderItems => {
+            return prevOrderItems.some(o => o.maMon === item.maMon)
+                ? prevOrderItems.map(o =>
+                    o.maMon === item.maMon ? { ...o, soLuong: o.soLuong + 1 } : o
+                  )
+                : [...prevOrderItems, { ...item, soLuong: 1 }];
+        });
+    }, []);
+    
 
+    // Thay đổi loại sản phẩm và lọc danh sách sản phẩm theo loại
     function handleChangeType(type) {
         setCurrentType(type)
         if (type == 'Tất cả') {
@@ -96,77 +102,99 @@ function Order() {
         }
     }
 
+    // Tạo hoá đơn và gửi API lưu vào CSDL
     async function createOrder() {
-        if (orderItems.length > 0) {
-            const hoaDon = {
-                maHoaDon: "HD" + Math.ceil(Math.random() * 1111),
-                maKhachHang: null,
-                maNhanVien: null,
-                ngayTao: new Date().toISOString().slice(0, 19),
-                tongTien,
-                phuongThucThanhToan: "Tiền mặt",
-                chiTietHoaDon: orderItems
-            }
-            try {
-                const response = await axios.post("http://localhost:5000/orders", hoaDon);
-                console.log("✅ Hóa đơn đã gửi thành công:", response.data);
-                return response.data; // Trả về dữ liệu phản hồi từ server
-            } catch (error) {
-                console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
-                throw error;
-            }
-        } else {
-            console.log("do nothing")
+        // nếu chưa có sản phẩm trong hoá đơn thì không làm gì cả
+        if (orderItems.length <= 0) {
+            return;
         }
-    }
-
-    const OrderItem = ({ orderItem, index }) => {
-        return (
-            <div className={styles.orderItem}>
-                <p style={{ flex: 5 }}>{`${index + 1}.  ${orderItem.tenMon}`}</p>
-
-                <div style={{ display: 'flex', flex: 3, flexDirection: 'row', alignItems: 'center' }}>
-                    <button className={styles.buttonIcon} onClick={() => handleChangeQuantity(index, -1)}>
-                        <img src="/image/24-minus.png" />
-                    </button>
-                    <p>{orderItem.soLuong}</p>
-                    <button className={styles.buttonIcon} onClick={() => handleChangeQuantity(index, 1)}>
-                        <img src="/image/24-plus.png" />
-                    </button>
-                </div>
-
-                <p style={{ flex: 3 }}>{orderItem.donGia}</p>
-
-                <p style={{ flex: 2 }}>{orderItem.donGia * orderItem.soLuong}</p>
-
-                <button className={styles.buttonIcon} onClick={() => deleteOrderItem(index)}>
-                    {"✖"}
-                </button>
-            </div>
-        )
-    }
-
-    function handleChangeQuantity(index, value) {
-        const quantity = orderItems[index].soLuong + value
-        if (quantity > 0) {
-            const newOrderItems = [...orderItems];
-            newOrderItems[index] = { ...newOrderItems[index], soLuong: quantity };
-            setOrderItems(newOrderItems);
+        // Nếu chưa nhập số tiền của khách thì báo lỗi
+        if (tienKhachTra+''.trim().length == 0) {
+            toast.error("Chưa nhập số tiền của khách")
+            return;
         }
+        // Nếu tiền thừa < 0 thì báo lỗi
+        if (parseFloat(tienThua) < 0) {
+            toast.error("Khách trả chưa đủ tiền")
+            return;
+        }
+        
+        const hoaDon = {
+            maHoaDon: "HD" + Math.ceil(Math.random() * 1111),
+            maKhachHang: customer ? customer.id : null,
+            maNhanVien: null,
+            ngayTao: new Date().toISOString().slice(0, 19),
+            tongTien,
+            phuongThucThanhToan: "Tiền mặt",
+            chiTietHoaDon: orderItems
+        }
+        try {
+            const response = await axios.post("http://localhost:5000/orders", hoaDon);
+            toast.success("Thanh toán thành công")
+            return response.data; // Trả về dữ liệu phản hồi từ server
+        } catch (error) {
+            console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
+            throw error;
+        }
+        
     }
 
-    function deleteOrderItem(index) {
-        setOrderItems(orderItems.filter((ỉtem, i) => i !== index));
-    }
+    // Xử lý người người dùng nhập số điện thoại và nhấn Enter
+    const handleKeyUp = (event) => {
+        if (event.key === "Enter") {
+            const text = phone.trim()
+            if (text.length < 10) {
+                toast.error("Vui lòng nhập đúng số điện thoại")
+                setCustomer(null);
+            } else {
+                findCustomerByPhone(text)
+            }
+        }
+    };
 
-    function TinhTongTien() {
-        return orderItems.reduce((init, current) => {
-            return init + current.soLuong * current.donGia
-        }, 0)
-    }
+    // Gọi API tìm số điện thoại
+    const findCustomerByPhone = async (phone) => {
+        try {
+            const response = await axios.get(`http://localhost:5000/customers?phone=${phone}`);
+            setCustomer(response.data);
+        } catch (err) {
+            setCustomer(null);
+            toast.error("Không tìm thấy khách hàng")
+        }
+    };
 
+    // Thay đổi số lượng sản phẩm trên từng chi tiết hoá đơn
+    const handleChangeQuantity = useCallback((index, value) => {
+        setOrderItems(prevOrderItems => {
+            const quantity = prevOrderItems[index].soLuong + value
+            if (quantity > 0) {
+                const newOrderItems = [...prevOrderItems];
+                newOrderItems[index] = { ...prevOrderItems[index], soLuong: quantity };
+                return newOrderItems
+            }
+        })
+    }, [])
+
+    // Xoá một sản phẩm khỏi hoá đơn
+    const deleteOrderItem = useCallback((index) => {
+        setOrderItems(prevOrderItems => {
+            return prevOrderItems.filter((ỉtem, i) => i !== index)
+        })
+    },[])
+
+    // Lọc sản phẩm theo loại và theo nội dung tìm kiếm
+    const finalFilteredProducts = useMemo(() => {
+        return searchText
+          ? currentListItem.filter((p) =>
+              p.tenMon.toLowerCase().includes(searchText.toLowerCase())
+            )
+          : currentListItem;
+      }, [searchText, currentListItem]);
+
+    
     return (
         <div style={{ padding: 12 }}>
+            {/* nút ẩn hiện side bar */}
             <button
                 className="toggleButtonSidebar"
                 onClick={() => setOpenSidebar(!openSidebar)}
@@ -174,13 +202,19 @@ function Order() {
             {openSidebar ? <Sidebar openSidebar onOpenSidebar={setOpenSidebar} /> : <></>}
 
             <div className={styles.content}>
+                {/* Danh sách sản phẩm */}
                 <div className={styles.contentMenu}>
                     <div className={styles.headForm}>
                         <div className={styles.describe}>Thực đơn</div>
 
                         <div className={styles.searchInput}>
                             <img src="/image/16-search-icon.png" alt="Search" width={18} />
-                            <input type="text" placeholder="Tìm kiếm..." />
+                            <input 
+                                type="text" 
+                                placeholder="Tìm kiếm..." 
+                                style={{fontSize:'1.2vw'}}
+                                onChange={(e) => setSearchText(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -196,53 +230,68 @@ function Order() {
                                 >{type}</button>
                             })}
                         </div>
-                        <Grid
-                            columnCount={columns}
-                            rowCount={Math.ceil(currentListItem.length / columns)}
-                            columnWidth={() => gridWidth / columns - 30} // Chiều rộng mỗi cột
-                            rowHeight={() => 240} // Chiều cao mỗi hàng
-                            width={gridWidth} // Tổng chiều rộng
-                            height={Math.min(600, window.innerHeight * 0.78)} // Tổng chiều cao
-                        >
-                            {Item}
-                        </Grid>
+
+                        {/* Danh sách sản phẩm */}
+                        <MenuItems 
+                            columns={columns} 
+                            list={finalFilteredProducts} 
+                            gridWidth={gridWidth} 
+                            onAddItems={handleAddItemToOrder}
+                            formated={formatCurrency}
+                        />
                     </div>
                 </div>
+
+                {/* Danh sách chi tiết hoá đơn */}
                 <div className={styles.contentOrder}>
-                    <div className={styles.headForm}>
-                        <div className={styles.describe}>Hoá Đơn</div>
-                        <button className={styles.buttonIcon}>
-                            <img src="/image/24-plus.png" width={25} />
-                        </button>
+                    <div className={styles.headForm} style={{justifyContent:'space-between'}}>
+                        <div style={{display:'flex'}}>
+                            <div className={styles.describe}>Hoá Đơn</div>
+                            <button className={styles.buttonIcon}>
+                                <img src="/image/24-plus.png" width={25} />
+                            </button>
+                        </div>
+                            
+                        <div style={{display:'flex', alignItems:'center'}}>
+                            <span style={{color:'gray'}}>{customer ? customer.name : ''}</span>
+                            <div className={styles.searchInput} style={{width:'25vh'}}>
+                                <input 
+                                    type="number" 
+                                    value={phone} 
+                                    placeholder="SDT khách hàng"
+                                    onChange={e => setPhone(e.target.value)} 
+                                    onKeyUp={handleKeyUp}
+                                    style={{fontSize:'1.2vw'}}
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className={styles.mainMenu} style={{ padding: 15, position: 'relative' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 10, marginBottom: 15, fontSize: 14 }}>
+                    <div className={styles.mainMenu} style={{ position: 'relative' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', margin: 5, fontSize: 14 }}>
                             <p style={{ flex: 5 }}>Tên sản phẩm</p>
                             <p style={{ flex: 3 }}>Số lượng</p>
                             <p style={{ flex: 3 }}>Đơn giá</p>
                             <p style={{ flex: 3 }}>Tổng</p>
                         </div>
 
-                        <div style={{ maxHeight: '50vh', overflowY: 'auto', marginRight: '-10px' }}>
-                            {orderItems.map((orderItem, index) => {
-                                return <OrderItem key={index} orderItem={orderItem} index={index} />
-                            })}
+                        <div ref={menuOrderRef} style={{ maxHeight: '47vh', overflowY: 'scroll' }}>
+                            <OrderList orderItems={orderItems} onChangeQuantity={handleChangeQuantity} onDeleteOrderItem={deleteOrderItem} />
                         </div>
 
                         {/* Thông tin thanh toán */}
                         <div className={styles.payment}>
                             <div className={styles.linePayment}>
-                                <p style={{ flex: 1 }}>{`Tổng tiền: ${formatCurrency(tongTien || 0)}`}</p>
+                                <span style={{ flex: 1 }}>{`Tổng tiền: ${formatCurrency(tongTien || 0)}`}</span>
                                 <div style={{ display: 'flex', flex: 1, fontWeight: 700 }}>
-                                    <p >{'Khách cần trả:'}</p>
-                                    <p style={{ color: 'blue', marginLeft: 5 }}>{formatCurrency(tongTien || 0)}</p>
+                                    <span >{'Khách cần trả:'}</span>
+                                    <span style={{ color: 'blue', marginLeft: 5 }}>{formatCurrency(tongTien || 0)}</span>
                                 </div>
                             </div>
                             <div className={styles.linePayment}>
-                                <p style={{ flex: 1 }}>{`Giảm giá: 0`}</p>
+                                <span style={{ flex: 1 }}>{`Giảm giá: 0`}</span>
                                 <div style={{ display: 'flex', flex: 1 }}>
-                                    <p >{'Khách thanh toán:'}</p>
+                                    <span >{'Khách thanh toán:'}</span>
                                     <input type="number" className={styles.change} value={tienKhachTra} onChange={e => {
                                         const tienTra = e.target.value;
                                         setTienKhachTra(tienTra)
@@ -250,15 +299,15 @@ function Order() {
                                     }} />
                                 </div>
                             </div>
-                            <div className={styles.linePayment}>
+                            <div className={styles.linePayment} style={{ marginTop: 10 }}>
                                 <div style={{ display: 'flex', flex: 1 }}>
-                                    <p >{'Tiền thừa:'}</p>
-                                    <p style={{ fontWeight: 700, marginLeft: 5 }}>{formatCurrency(tienThua || 0)}</p>
+                                    <span>{'Tiền thừa:'}</span>
+                                    <span style={{ fontWeight: 700, marginLeft: 5 }}>{formatCurrency(tienThua || 0)}</span>
                                 </div>
-                                <div style={{ flex: 1, justifyContent: 'center' }}>
-                                    <button className={styles.btnThanhToan} onClick={createOrder}>
-                                        <img src="/image/50-dollar.png" style={{ width: 24 }} />
-                                        Thanh Toán
+                                <div style={{ flex: 1 }}>
+                                    <button className={styles.customButton} onClick={createOrder}>
+                                        <img src="/image/50-dollar.png" style={{ width: 24, marginRight: 5 }} />
+                                        <span>Thanh Toán</span>
                                     </button>
                                 </div>
                             </div>
@@ -266,7 +315,6 @@ function Order() {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }

@@ -1,0 +1,16 @@
+.orderItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid gray;
+}
+
+.buttonIcon {
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    display: flex;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+}

@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import clsx from 'clsx';
+import { toast } from "react-toastify";
 import styles from './Customer.module.css'
 import { Sidebar } from '../../components';
 
 
 function Customer() {
     const [openSidebar, setOpenSidebar] = useState(false);
+    const [customers, setCustomers] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
@@ -16,24 +19,40 @@ function Customer() {
         setPhone(customer.phone)
     };
 
-    const customers = [
-        { id: 1, phone: '0987654321', name: 'Nguyễn Văn A' },
-        { id: 2, phone: '0912345678', name: 'Trần Thị B' },
-        { id: 3, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 4, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 5, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 6, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 7, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 8, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 9, phone: '0909876543', name: 'Lê Văn C' },
-        { id: 11, phone: '0909876543', name: 'Lê Văn C' },
-    ];
+    useEffect(() => {
+        axios.get("http://localhost:5000/customers", { withCredentials: true })
+            .then(response => {
+                setCustomers(response.data);
+            })
+            .catch(error => console.error("Lỗi khi gọi API:", error));
+    }, []);
 
     const refreshInput = () => {
         setSelectedCustomer(null);
         setName('')
         setPhone('')
     };
+
+    async function handleAddCustomer() {
+        // Kiểm tra thông tin hợp lệ
+        if (phone.trim() == '' || name.trim() == '') {
+            toast.error("Vui lòng nhập tên và số điện thoại khách hàng!");
+            return;
+        }
+
+        const customer = {
+
+        }
+
+        // try {
+        //     const response = await axios.post("http://localhost:5000/customers", hoaDon);
+        //     toast.success("Thanh toán thành công")
+        //     return response.data; // Trả về dữ liệu phản hồi từ server
+        // } catch (error) {
+        //     console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
+        //     throw error;
+        // }
+    }
 
     return (
         <div className={styles.screen}>
@@ -89,19 +108,19 @@ function Customer() {
 
                     <div className={styles.contentForm}>
                         <div style={{ margin: 15 }}>
-                            <h3 style={{ textAlign: 'center' }}>Thông tin khách hàng</h3> <br/>
+                            <h3 style={{ textAlign: 'center' }}>Thông tin khách hàng</h3> <br />
                             <p>Số điện thoại:</p>
                             <div style={{ display: 'flex' }}>
                                 <div className={styles.customInput}>
-                                    <input 
-                                        value={phone} 
-                                        type="number" 
-                                        placeholder="Số điện thoại..." 
+                                    <input
+                                        value={phone}
+                                        type="number"
+                                        placeholder="Số điện thoại..."
                                         onChange={(e) => setPhone(e.target.value)}
                                     />
                                 </div>
-                                <button 
-                                    className={styles.customButton} 
+                                <button
+                                    className={styles.customButton}
                                     style={{ backgroundColor: '#b3b4b4' }}
                                     onClick={refreshInput}
                                 >
@@ -111,36 +130,37 @@ function Customer() {
                             <br />
                             <p>Tên khách hàng:</p>
                             <div className={styles.customInput}>
-                                <input 
-                                    value={name} 
-                                    type="text" 
-                                    placeholder="Tên khách hàng..." 
+                                <input
+                                    value={name}
+                                    type="text"
+                                    placeholder="Tên khách hàng..."
                                     onChange={(e) => setName(e.target.value)}
                                 />
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <button 
+                            <button
                                 className={clsx(styles.customButton, {
                                     [styles.enableButton]: selectedCustomer ? false : true
-                                })} 
+                                })}
                                 style={{ backgroundColor: '#ff2b5c' }}
                             >
                                 Xoá
                             </button>
-                            <button 
+                            <button
                                 className={clsx(styles.customButton, {
                                     [styles.enableButton]: selectedCustomer ? false : true
-                                })} 
+                                })}
                             >
                                 Cập nhật
                             </button>
-                            <button 
+                            <button
                                 className={clsx(styles.customButton, {
                                     [styles.enableButton]: selectedCustomer ? true : false
-                                })} 
+                                })}
                                 style={{ width: '27vh', backgroundColor: '#5CC467' }}
+                                onClick={handleAddCustomer}
                             >
                                 Thêm Khách hàng
                             </button>

@@ -3,3 +3,4 @@ export { default as Order } from "./Order";
 export { default as Customer } from  "./Customer"
 export { default as OrderHistory } from "./OrderHistory"
 export { default as EmployeeList } from "./Employee/EmployeeList";
+export { default as Unauthorized } from "./Unauthorized"

@@ -4,6 +4,7 @@ import axios from "axios";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays } from "date-fns";
 import styles from './OrderHistory.module.css'
 import { Sidebar } from '../../components';
+import { useAuth } from "../../AuthContext";
 
 function OrderHistory() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -16,6 +17,7 @@ function OrderHistory() {
     const [showConfirm, setShowConfirm] = useState(false); // Hiển thị xác nhận xóa
     const [countdown, setCountdown] = useState(5); // Đếm ngược 5 giây
 
+    const { role } = useAuth();
 
     useEffect(() => {
         const today = new Date().toISOString().split("T")[0];
@@ -101,6 +103,54 @@ function OrderHistory() {
         setCurrentMonth(addDays(currentMonth, 30));
     };
 
+    const Calendar = () => {
+        return (
+            <div className={styles.contentCalendar}>
+                <h3 style={{ textAlign: 'center' }}>Ngày lập hoá đơn</h3>
+                <div className={styles.calendarWrapper}>
+                    {/* Thanh điều hướng tháng */}
+                    <div className={styles.calendarHeader}>
+                        <button onClick={prevMonth}>&lt;</button>
+                        <h3>{'Tháng ' + format(currentMonth, "MM yyyy")}</h3>
+                        <button onClick={nextMonth}>&gt;</button>
+                    </div>
+
+                    {/* Hiển thị lịch */}
+                    <div className={styles.calendarGrid}>
+                        {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day, index) => (
+                            <div key={index} className={styles.calendarDayHeader}>{day}</div>
+                        ))}
+                        {generateCalendarDays().map((day, index) => (
+                            <div
+                                key={index}
+                                className={`${styles.calendarDay} ${format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ? styles.selectedDay : ""}`}
+                                onClick={() => handleDateClick(day)}
+                            >
+                                {format(day, "d")}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Hiển thị ngày đã chọn */}
+                    {selectedDate && (
+                        <p className={styles.selectedDate}>
+                            Ngày bạn đã chọn: <strong>{format(selectedDate, "dd/MM/yyyy")}</strong>
+                        </p>
+                    )}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button
+                        className={styles.customButton}
+                        style={{ backgroundColor: '#007bff' }}
+                        onClick={fetchOrders}
+                    >
+                        Xác nhận
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className={styles.screen}>
             <button
@@ -115,7 +165,7 @@ function OrderHistory() {
 
 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 15, marginBottom: 8 }}>
-                    <div style={{ width: '90%', display: 'flex', alignItems: 'center' }}>
+                    <div style={{ width: '90%', display: 'flex', alignItems: 'center', justifyContent:role === "Employee" ? "center" : "flex-start" }}>
                         <div>Từ trước đến nay:</div>
                         <div className={styles.customInput}>
                             <input type="number" placeholder="Nhập số mã hoá đơn..." />
@@ -128,7 +178,7 @@ function OrderHistory() {
                     </div>
                 </div>
 
-                <div className={styles.content}>
+                <div className={styles.content}> 
                     <div className={styles.contentList}>
                         <div className={styles.tableContainer}>
                             <table className={styles.orderTable}>
@@ -157,59 +207,16 @@ function OrderHistory() {
                         </div>
                     </div>
 
-                    <div className={styles.contentCalendar}>
-                        <h3 style={{ textAlign: 'center' }}>Ngày lập hoá đơn</h3>
-                        <div className={styles.calendarWrapper}>
-                            {/* Thanh điều hướng tháng */}
-                            <div className={styles.calendarHeader}>
-                                <button onClick={prevMonth}>&lt;</button>
-                                <h3>{'Tháng ' + format(currentMonth, "MM yyyy")}</h3>
-                                <button onClick={nextMonth}>&gt;</button>
-                            </div>
-
-                            {/* Hiển thị lịch */}
-                            <div className={styles.calendarGrid}>
-                                {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day, index) => (
-                                    <div key={index} className={styles.calendarDayHeader}>{day}</div>
-                                ))}
-                                {generateCalendarDays().map((day, index) => (
-                                    <div
-                                        key={index}
-                                        className={`${styles.calendarDay} ${format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd") ? styles.selectedDay : ""}`}
-                                        onClick={() => handleDateClick(day)}
-                                    >
-                                        {format(day, "d")}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Hiển thị ngày đã chọn */}
-                            {selectedDate && (
-                                <p className={styles.selectedDate}>
-                                    Ngày bạn đã chọn: <strong>{format(selectedDate, "dd/MM/yyyy")}</strong>
-                                </p>
-                            )}
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <button
-                                className={styles.customButton}
-                                style={{ backgroundColor: '#007bff' }}
-                                onClick={fetchOrders}
-                            >
-                                Xác nhận
-                            </button>
-                        </div>
-                    </div>
+                    {role == "Manager" ? <Calendar /> : <></>}
                 </div>
-            </div>
-
+            </div >
             {/* Popup hiển thị chi tiết hóa đơn */}
             {selectedOrder && (
                 <div className={styles.popup}>
                     <div className={styles.popupContent}>
                         <button className={styles.closeButton} onClick={closePopup}>✖</button>
-                        <h3>🧾 Hóa đơn: {selectedOrder.maHoaDon}</h3>
-                        <p><strong>Khách hàng:</strong> {selectedOrder.maKhachHang || "Khách lẻ"}</p>
+                        <h3 style={{ marginBottom: 5 }}>🧾 Hóa đơn: {selectedOrder.maHoaDon}</h3>
+                        {selectedOrder.maKhachHang ? <p><strong>Khách hàng:</strong> {selectedOrder.maKhachHang}</p> : <></>}
                         <p><strong>Nhân viên:</strong> {selectedOrder.maNhanVien}</p>
                         <p><strong>Ngày tạo:</strong> {new Date(selectedOrder.ngayTao).toLocaleString()}</p>
                         <p><strong>Phương thức thanh toán:</strong> {selectedOrder.phuongThucThanhToan}</p>
@@ -265,6 +272,7 @@ function OrderHistory() {
             )}
         </div>
     );
+
 }
 
 export default OrderHistory;
