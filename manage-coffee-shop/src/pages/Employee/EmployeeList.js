@@ -12,9 +12,10 @@ const EmployeeList = () => {
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token =
-      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQzNzA1NjQsImlhdCI6MTc0NDM2Njk2NCwic2NvcGUiOiJBRE1JTiJ9.qpM4TV72wPhS1wwoBBfIqQa6T_NvNQCyp5FqDL-21A7zu3zS8GCYL3sLzN-hyfXaqmnOjmTQYQhmEzBqceWdXA";
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQzNzQ2OTMsImlhdCI6MTc0NDM3MTA5Mywic2NvcGUiOiJBRE1JTiJ9.Q5lVihwV9l3IRQ6IS6P_LVeuqes5pYX8ItqUTxip5EGxB8I1DXWZxyAXep-Su2-Jm3-pN8N7zRtmZ1bGMKXIEw";
+
+  const fetchEmployees = () => {
     axios
       .get("http://localhost:8081/myapp/api/business/employee", {
         headers: {
@@ -29,22 +30,51 @@ const EmployeeList = () => {
       .catch((error) => {
         console.error("Lỗi khi lấy danh sách nhân viên:", error);
       });
-  }, [navigate]);
+  };
 
-  // Handle search term change
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const handleDelete = () => {
+    if (!currentEmployee) return;
+    const confirmDelete = window.confirm("Bạn có chắc muốn xoá nhân viên này?");
+    if (!confirmDelete) return;
+
+    axios
+      .delete(
+        `http://localhost:8081/myapp/api/business/employee/${currentEmployee.empId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        alert("Xoá thành công!");
+        setCurrentEmployee(null);
+        fetchEmployees();
+      })
+      .catch((error) => {
+        console.error("Lỗi khi xoá nhân viên:", error);
+        alert("Không thể xoá nhân viên!");
+      });
+  };
+
+  const handleEdit = () => {
+    if (currentEmployee) {
+      navigate(`/sua-nhan-vien/${currentEmployee.empId}`);
+    }
+  };
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Filter employees based on the search term
   const filteredEmployees = employees.filter((emp) =>
     emp.empName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Handle when clicking "Thêm Nhân Viên"
-  const handleSubmit = () => {
-    navigate("/them-nhan-vien");
-  };
 
   return (
     <div className={styles.container}>
@@ -54,9 +84,9 @@ const EmployeeList = () => {
       >
         ☰
       </button>
-      {openSidebar ? (
+      {openSidebar && (
         <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
-      ) : null}
+      )}
 
       <div className={styles.content}>
         <h2 className={styles.title}>Danh sách nhân viên</h2>
@@ -72,23 +102,28 @@ const EmployeeList = () => {
           <div>
             <button
               className={clsx(styles.customButton, {
-                [styles.enableButton]: !currentEmployee,
+                [styles.disabledButton]: !currentEmployee,
               })}
-              style={{ backgroundColor: "#ff2b5c" }}
+              onClick={handleDelete}
               disabled={!currentEmployee}
+              style={{ backgroundColor: "#ff2b5c" }}
             >
               Xoá
             </button>
             <button
               className={clsx(styles.customButton, {
-                [styles.enableButton]: !currentEmployee,
+                [styles.disabledButton]: !currentEmployee,
               })}
-              style={{ backgroundColor: "#5985d7" }}
+              onClick={handleEdit}
               disabled={!currentEmployee}
+              style={{ backgroundColor: "#5985d7" }}
             >
               Chỉnh sửa
             </button>
-            <button className={styles.customButton} onClick={handleSubmit}>
+            <button
+              className={styles.customButton}
+              onClick={() => navigate("/them-nhan-vien")}
+            >
               Thêm Nhân Viên
             </button>
           </div>
@@ -99,23 +134,25 @@ const EmployeeList = () => {
             <table className={styles.employeeTable}>
               <thead>
                 <tr>
-                  <th>Tên Nhân Viên</th>
-                  <th>Năm Sinh</th>
-                  <th>Số Điện Thoại</th>
-                  <th>Chức Vụ</th>
+                  <th>Mã</th>
+                  <th>Tên</th>
+                  <th>Năm sinh</th>
+                  <th>Điện thoại</th>
+                  <th>Chức vụ</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEmployees.map((emp) => (
                   <tr
-                    key={emp.empName}
+                    key={emp.empId}
                     onClick={() => setCurrentEmployee(emp)}
                     className={
-                      currentEmployee?.empName === emp.empName
+                      currentEmployee?.empId === emp.empId
                         ? styles.selectedRow
                         : ""
                     }
                   >
+                    <td>{emp.empId}</td>
                     <td>{emp.empName}</td>
                     <td>{emp.empYearOfBirth}</td>
                     <td>{emp.empPhone}</td>
