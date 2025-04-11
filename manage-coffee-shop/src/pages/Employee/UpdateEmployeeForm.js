@@ -1,169 +1,115 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import styles from "./UpdateEmployeeForm.module.css";
 
 const UpdateEmployeeForm = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    fullName: "",
-    birthDate: "",
-    phoneNumber: "",
-    sex: "",
-    role: "",
-    email: "",
-    password: "",
-    avatar: "",
+  const [formData, setFormData] = useState({
+    empName: "",
+    empPhone: "",
+    empYearOfBirth: "",
+    empAccount: "",
+    empRole: "",
   });
-  const [avatarPreview, setAvatarPreview] = useState("");
+
+  const token = "YOUR_TOKEN_HERE";
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/user")
-      .then((response) => {
-        setUser(response.data);
-        setAvatarPreview(response.data.avatar);
+      .get(`http://localhost:8081/myapp/api/business/employee/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch((error) => {
-        console.error("There was an error fetching the user!", error);
+      .then((res) => {
+        setFormData(res.data);
+      })
+      .catch((err) => {
+        alert("Không thể tải thông tin nhân viên");
+        navigate("/");
       });
-  }, []);
+  }, [id]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-        setUser({ ...user, avatar: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put("http://localhost:5000/user", user)
+      .put(
+        `http://localhost:8081/myapp/api/business/employee/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then(() => {
-        navigate("/tai-khoan");
+        alert("Cập nhật thành công!");
+        navigate("/");
       })
-      .catch((error) => {
-        console.error("There was an error updating the user!", error);
+      .catch(() => {
+        alert("Có lỗi xảy ra khi cập nhật.");
       });
-  };
-
-  const handleCancel = () => {
-    navigate("/tai-khoan");
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.header}>Cập Nhật Thông Tin</h1>
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Họ và Tên</label>
+      <h1 className={styles.header}>Chỉnh sửa nhân viên</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label>
+          Họ và tên:
           <input
             type="text"
-            name="fullName"
-            value={user.fullName}
+            name="empName"
+            value={formData.empName}
             onChange={handleChange}
-            className={styles.inputField}
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Ngày tháng năm sinh</label>
-          <input
-            type="date"
-            name="birthDate"
-            value={user.birthDate}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Số điện thoại</label>
+        </label>
+        <label>
+          Số điện thoại:
           <input
             type="text"
-            name="phoneNumber"
-            value={user.phoneNumber}
+            name="empPhone"
+            value={formData.empPhone}
             onChange={handleChange}
-            className={styles.inputField}
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Giới tính</label>
+        </label>
+        <label>
+          Năm sinh:
           <input
             type="text"
-            name="sex"
-            value={user.sex}
+            name="empYearOfBirth"
+            value={formData.empYearOfBirth}
             onChange={handleChange}
-            className={styles.inputField}
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Chức Vụ</label>
+        </label>
+        <label>
+          Tài khoản:
           <input
             type="text"
-            name="role"
-            value={user.role}
+            name="empAccount"
+            value={formData.empAccount}
             onChange={handleChange}
-            className={styles.inputField}
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
+        </label>
+        <label>
+          Chức vụ:
+          <select
+            name="empRole"
+            value={formData.empRole}
             onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Mật Khẩu</label>
-          <input
-            type="password"
-            name="password"
-            value={user.password}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Avatar</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className={styles.inputField}
-          />
-          {avatarPreview && (
-            <img
-              src={avatarPreview}
-              alt="Avatar Preview"
-              className={styles.avatarPreview}
-            />
-          )}
-        </div>
-        <div className={styles.buttonGroup}>
-          <button type="submit" className={styles.button}>
-            Cập Nhật
-          </button>
-          <button
-            type="button"
-            className={styles.button}
-            onClick={handleCancel}
           >
-            Hủy
-          </button>
-        </div>
+            <option value="">-- Chọn --</option>
+            <option value="USER">Nhân viên</option>
+            <option value="ADMIN">Quản lý</option>
+          </select>
+        </label>
+        <button type="submit">Lưu thay đổi</button>
       </form>
     </div>
   );

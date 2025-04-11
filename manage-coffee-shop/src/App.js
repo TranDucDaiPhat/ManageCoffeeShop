@@ -1,11 +1,13 @@
-
-
-import './GlobalStyles.css'
-import { BrowserRouter as Router, Routes,Navigate, Route } from "react-router-dom";
+import "./GlobalStyles.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Navigate,
+  Route,
+} from "react-router-dom";
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
-
 
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
 import { AuthProvider } from "./AuthContext";
@@ -28,9 +30,9 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* route cho Employee */}
-          <Route element={<ProtectedRoute allowedRoles={["Employee"]} />}>
-
-          </Route>
+          <Route
+            element={<ProtectedRoute allowedRoles={["Employee"]} />}
+          ></Route>
 
           {/* route cho Manager */}
           <Route element={<ProtectedRoute allowedRoles={["Manager"]} />}>
@@ -39,12 +41,14 @@ function App() {
           </Route>
 
           {/* route chung cho Employee và Managet*/}
-          <Route element={<ProtectedRoute allowedRoles={["Employee","Manager"]} />}>
+          <Route
+            element={<ProtectedRoute allowedRoles={["Employee", "Manager"]} />}
+          >
             <Route path="/tao-hoa-don" element={<Order />} />
           </Route>
 
           {/* Nếu không có quyền, chuyển hướng về login */}
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/" />} />
 
           <Route path="/khach-hang" element={<Customer />} />
           <Route path="/lich-su-don-hang" element={<OrderHistory />} />
