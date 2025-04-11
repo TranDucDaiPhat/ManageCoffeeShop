@@ -6,20 +6,25 @@ import { Sidebar } from "../../components";
 const EmployeeForm = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
-    birthDate: "",
-    username: "",
-    password: "",
-    confirmPassword: "",
-    gender: "male",
-    role: "employee",
+    empName: "",
+    empPhone: "",
+    empYearOfBirth: "",
+    empAccount: "",
+    empPassword: "",
+    empRole: "",
   });
   const [employees, setEmployees] = useState([]);
 
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQzNzA1NjQsImlhdCI6MTc0NDM2Njk2NCwic2NvcGUiOiJBRE1JTiJ9.qpM4TV72wPhS1wwoBBfIqQa6T_NvNQCyp5FqDL-21A7zu3zS8GCYL3sLzN-hyfXaqmnOjmTQYQhmEzBqceWdXA";
+
   useEffect(() => {
     axios
-      .get("http://localhost:5000/employees")
+      .get("http://localhost:8081/myapp/api/business/employee", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setEmployees(response.data);
       })
@@ -35,15 +40,32 @@ const EmployeeForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     axios
-      .post("http://localhost:5000/employees", formData)
+      .post("http://localhost:8081/myapp/api/business/employee", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setEmployees([...employees, response.data]);
-        console.log("Employee added:", response.data);
+        alert("Thêm nhân viên thành công!");
       })
       .catch((error) => {
         console.error("There was an error adding the employee!", error);
+        alert("Lỗi khi thêm nhân viên!");
       });
+  };
+
+  const handleQuickCreate = () => {
+    setFormData({
+      empName: "",
+      empPhone: "",
+      empYearOfBirth: "",
+      empAccount: "",
+      empPassword: "",
+      empRole: "",
+    });
   };
 
   return (
@@ -54,9 +76,9 @@ const EmployeeForm = () => {
       >
         ☰
       </button>
-      {openSidebar ? (
-        <Sidebar openSidebar onOpenSidebar={setOpenSidebar} />
-      ) : null}
+      {openSidebar && (
+        <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
+      )}
 
       <div className={styles.container}>
         <h1 className={styles.header}>Thêm Nhân Viên Mới</h1>
@@ -68,9 +90,9 @@ const EmployeeForm = () => {
             <label className={styles.inputLabel}>Họ và Tên</label>
             <input
               type="text"
-              name="fullName"
+              name="empName"
               placeholder="Nhập họ và tên..."
-              value={formData.fullName}
+              value={formData.empName}
               onChange={handleChange}
               className={styles.inputField}
             />
@@ -80,60 +102,33 @@ const EmployeeForm = () => {
             <label className={styles.inputLabel}>Số Điện Thoại</label>
             <input
               type="text"
-              name="phoneNumber"
+              name="empPhone"
               placeholder="Nhập số điện thoại..."
-              value={formData.phoneNumber}
+              value={formData.empPhone}
               onChange={handleChange}
               className={styles.inputField}
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>
-              Nhập Ngày Tháng Năm Sinh
-            </label>
+            <label className={styles.inputLabel}>Năm Sinh</label>
             <input
-              type="date"
-              name="birthDate"
-              value={formData.birthDate}
+              type="text"
+              name="empYearOfBirth"
+              placeholder="Nhập năm sinh (VD: 1999)"
+              value={formData.empYearOfBirth}
               onChange={handleChange}
               className={styles.inputField}
             />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Giới Tính</label>
-            <div className={styles.radioGroup}>
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  checked={formData.gender === "male"}
-                  onChange={handleChange}
-                />
-                Nam
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  checked={formData.gender === "female"}
-                  onChange={handleChange}
-                />
-                Nữ
-              </label>
-            </div>
           </div>
 
           <div className={styles.inputGroup}>
             <label className={styles.inputLabel}>Tài Khoản</label>
             <input
               type="text"
-              name="username"
-              placeholder="Nhập thông tin tài khoản..."
-              value={formData.username}
+              name="empAccount"
+              placeholder="Nhập tên tài khoản..."
+              value={formData.empAccount}
               onChange={handleChange}
               className={styles.inputField}
             />
@@ -143,21 +138,9 @@ const EmployeeForm = () => {
             <label className={styles.inputLabel}>Mật Khẩu</label>
             <input
               type="password"
-              name="password"
+              name="empPassword"
               placeholder="Nhập mật khẩu..."
-              value={formData.password}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Nhập Lại Mật Khẩu</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Nhập lại mật khẩu..."
-              value={formData.confirmPassword}
+              value={formData.empPassword}
               onChange={handleChange}
               className={styles.inputField}
             />
@@ -169,9 +152,9 @@ const EmployeeForm = () => {
               <label>
                 <input
                   type="radio"
-                  name="role"
-                  value="employee"
-                  checked={formData.role === "employee"}
+                  name="empRole"
+                  value="USER"
+                  checked={formData.empRole === "USER"}
                   onChange={handleChange}
                 />
                 Nhân Viên
@@ -179,9 +162,9 @@ const EmployeeForm = () => {
               <label>
                 <input
                   type="radio"
-                  name="role"
-                  value="manager"
-                  checked={formData.role === "manager"}
+                  name="empRole"
+                  value="ADMIN"
+                  checked={formData.empRole === "ADMIN"}
                   onChange={handleChange}
                 />
                 Quản Lý
@@ -190,8 +173,12 @@ const EmployeeForm = () => {
           </div>
 
           <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.button}>
-              Tạo Nhanh
+            <button
+              type="button"
+              className={styles.button}
+              onClick={handleQuickCreate}
+            >
+              Nhập Lại
             </button>
             <button type="submit" className={styles.button}>
               Thêm nhân viên

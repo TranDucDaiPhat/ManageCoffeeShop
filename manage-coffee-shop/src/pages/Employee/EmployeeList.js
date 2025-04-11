@@ -9,21 +9,39 @@ const EmployeeList = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentEmployee, setCurrentEmployee] = useState(null)
+  const [currentEmployee, setCurrentEmployee] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token =
+      "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQzNzA1NjQsImlhdCI6MTc0NDM2Njk2NCwic2NvcGUiOiJBRE1JTiJ9.qpM4TV72wPhS1wwoBBfIqQa6T_NvNQCyp5FqDL-21A7zu3zS8GCYL3sLzN-hyfXaqmnOjmTQYQhmEzBqceWdXA";
     axios
-      .get("http://localhost:5000/employees")
+      .get("http://localhost:8081/myapp/api/business/employee", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      })
       .then((response) => {
-        const data = response.data;
-
-        setEmployees(data.filter((emp) => emp.quyen != "Manager"));
+        const filteredData = response.data.filter((emp) => emp.empRole !== "");
+        setEmployees(filteredData);
       })
       .catch((error) => {
-        console.error("There was an error fetching the employees!", error);
+        console.error("Lỗi khi lấy danh sách nhân viên:", error);
       });
-  }, []);
+  }, [navigate]);
+
+  // Handle search term change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter employees based on the search term
+  const filteredEmployees = employees.filter((emp) =>
+    emp.empName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Handle when clicking "Thêm Nhân Viên"
   const handleSubmit = () => {
     navigate("/them-nhan-vien");
   };
@@ -37,7 +55,7 @@ const EmployeeList = () => {
         ☰
       </button>
       {openSidebar ? (
-        <Sidebar openSidebar onOpenSidebar={setOpenSidebar} />
+        <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
       ) : null}
 
       <div className={styles.content}>
@@ -49,22 +67,24 @@ const EmployeeList = () => {
             placeholder="🔍 Tìm kiếm"
             className={styles.searchInput}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
           />
           <div>
             <button
               className={clsx(styles.customButton, {
-                [styles.enableButton]: currentEmployee ? false : true
+                [styles.enableButton]: !currentEmployee,
               })}
-              style={{ backgroundColor: '#ff2b5c' }}
+              style={{ backgroundColor: "#ff2b5c" }}
+              disabled={!currentEmployee}
             >
               Xoá
             </button>
             <button
-              style={{ backgroundColor: '#5985d7' }}
               className={clsx(styles.customButton, {
-                [styles.enableButton]: currentEmployee ? false : true
+                [styles.enableButton]: !currentEmployee,
               })}
+              style={{ backgroundColor: "#5985d7" }}
+              disabled={!currentEmployee}
             >
               Chỉnh sửa
             </button>
@@ -79,55 +99,33 @@ const EmployeeList = () => {
             <table className={styles.employeeTable}>
               <thead>
                 <tr>
-                  <th>Mã Nhân Viên</th>
                   <th>Tên Nhân Viên</th>
                   <th>Năm Sinh</th>
                   <th>Số Điện Thoại</th>
-                  <th>Giới Tính</th>
+                  <th>Chức Vụ</th>
                 </tr>
               </thead>
               <tbody>
-                {employees.map((emp) => (
-                  <tr key={emp.maNhanVien}
+                {filteredEmployees.map((emp) => (
+                  <tr
+                    key={emp.empName}
                     onClick={() => setCurrentEmployee(emp)}
-                    className={currentEmployee?.maNhanVien === emp.maNhanVien ? styles.selectedRow : ""}
+                    className={
+                      currentEmployee?.empName === emp.empName
+                        ? styles.selectedRow
+                        : ""
+                    }
                   >
-                    <td>{emp.maNhanVien}</td>
-                    <td>{emp.tenNhanVien}</td>
-                    <td>{emp.namSinh}</td>
-                    <td>{emp.soDienThoai}</td>
-                    <td>{emp.gioiTinh}</td>
+                    <td>{emp.empName}</td>
+                    <td>{emp.empYearOfBirth}</td>
+                    <td>{emp.empPhone}</td>
+                    <td>{emp.empRole}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
-
-        {/* <div className={styles.tableContainer}>
-          <table className={styles.headerTable}>
-            <thead>
-              <tr>
-                <th>Mã Nhân Viên</th>
-                <th>Tên Nhân Viên</th>
-                <th>Năm Sinh</th>
-                <th>Số Điện Thoại</th>
-                <th>Giới Tính</th>
-              </tr>
-            </thead>
-            <tbody className={styles.bodyTable}>
-              {employees.map((emp) => (
-                <tr key={emp.maNhanVien} onClick={() => setCurrentEmployee(emp)}>
-                  <td>{emp.maNhanVien}</td>
-                  <td>{emp.tenNhanVien}</td>
-                  <td>{emp.namSinh}</td>
-                  <td>{emp.soDienThoai}</td>
-                  <td>{emp.gioiTinh}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div> */}
       </div>
     </div>
   );
