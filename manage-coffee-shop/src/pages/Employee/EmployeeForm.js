@@ -16,8 +16,8 @@ const EmployeeForm = () => {
   const [employees, setEmployees] = useState([]);
 
   const token =
-"eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1NDYwMDQsImlhdCI6MTc0NDU0MjQwNCwic2NvcGUiOiJBRE1JTiJ9.Wtdd6lqKQSqYDz0xtB1AEe0J_Q7UTJ8DGcnyMXbejNp_HMQMXrpMQ4VZyGSkQAGloVpWgkiSra2uvUi7zrbpBA"  
-useEffect(() => {
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1ODQzNTIsImlhdCI6MTc0NDU4MDc1Miwic2NvcGUiOiJBRE1JTiJ9.sy5YRofvOpBFaifNeXRXJ-xvwupSx_QJJSWch01B8t69bxR2MrJ5V2iAbehEByTgi-UUefeYeYGTzuEyXBNtqw";
+  useEffect(() => {
     axios
       .get("http://localhost:8081/myapp/api/business/employee", {
         headers: {
@@ -85,99 +85,100 @@ useEffect(() => {
         <form onSubmit={handleSubmit} className={styles.formContainer}>
           <h2 className={styles.formTitle}>Thông Tin Chung</h2>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Họ và Tên</label>
-            <input
-              type="text"
-              name="empName"
-              placeholder="Nhập họ và tên..."
-              value={formData.empName}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
+          <div className={styles.formGrid}>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Họ và Tên</label>
+              <input
+                type="text"
+                name="empName"
+                placeholder="Nhập họ và tên..."
+                value={formData.empName}
+                onChange={handleChange}
+                className={styles.inputField}
+              />
+            </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Số Điện Thoại</label>
-            <input
-              type="text"
-              name="empPhone"
-              placeholder="Nhập số điện thoại..."
-              value={formData.empPhone}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Số Điện Thoại</label>
+              <input
+                type="text"
+                name="empPhone"
+                placeholder="Nhập số điện thoại..."
+                value={formData.empPhone}
+                onChange={handleChange}
+                className={styles.inputField}
+              />
+            </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Năm Sinh</label>
-            <input
-              type="text"
-              name="empYearOfBirth"
-              placeholder="Nhập năm sinh (VD: 1999)"
-              value={formData.empYearOfBirth}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Nhập Năm Sinh</label>
+              <input
+                type="text"
+                name="empYearOfBirth"
+                placeholder="YYYY"
+                value={formData.empYearOfBirth}
+                onChange={handleChange}
+                className={styles.inputField}
+              />
+            </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Tài Khoản</label>
-            <input
-              type="text"
-              name="empAccount"
-              placeholder="Nhập tên tài khoản..."
-              value={formData.empAccount}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Tài Khoản</label>
+              <input
+                type="text"
+                name="empAccount"
+                placeholder="Nhập thông tin tài khoản..."
+                value={formData.empAccount}
+                onChange={handleChange}
+                className={styles.inputField}
+              />
+            </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Mật Khẩu</label>
-            <input
-              type="password"
-              name="empPassword"
-              placeholder="Nhập mật khẩu..."
-              value={formData.empPassword}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Chức Vụ</label>
+              <div className={styles.radioGroup}>
+                <label>
+                  <input
+                    type="radio"
+                    name="empRole"
+                    value="USER"
+                    checked={formData.empRole === "USER"}
+                    onChange={handleChange}
+                  />
+                  Nhân Viên
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="empRole"
+                    value="ADMIN"
+                    checked={formData.empRole === "ADMIN"}
+                    onChange={handleChange}
+                  />
+                  Quản Lý
+                </label>
+              </div>
+            </div>
 
-          <div className={styles.inputGroup}>
-            <label className={styles.inputLabel}>Chức Vụ</label>
-            <div className={styles.radioGroup}>
-              <label>
-                <input
-                  type="radio"
-                  name="empRole"
-                  value="USER"
-                  checked={formData.empRole === "USER"}
-                  onChange={handleChange}
-                />
-                Nhân Viên
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="empRole"
-                  value="ADMIN"
-                  checked={formData.empRole === "ADMIN"}
-                  onChange={handleChange}
-                />
-                Quản Lý
-              </label>
+            <div className={styles.inputGroup}>
+              <label className={styles.inputLabel}>Mật Khẩu</label>
+              <input
+                type="password"
+                name="empPassword"
+                placeholder="Nhập mật khẩu..."
+                value={formData.empPassword}
+                onChange={handleChange}
+                className={styles.inputField}
+              />
             </div>
           </div>
-
           <div className={styles.buttonGroup}>
             <button
               type="button"
               className={styles.button}
               onClick={handleQuickCreate}
             >
-              Nhập Lại
+              Tạo Lại
             </button>
             <button type="submit" className={styles.button}>
               Thêm nhân viên

@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import styles from "./UpdateEmployeeForm.module.css";
+import { Sidebar } from "../../components";
 
 const UpdateEmployeeForm = () => {
+  const [openSidebar, setOpenSidebar] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     empPhone: "",
     empAccount: "",
-    empPassword: ""
+    empPassword: "",
   });
 
   const token =
-    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1NDYwMDQsImlhdCI6MTc0NDU0MjQwNCwic2NvcGUiOiJBRE1JTiJ9.Wtdd6lqKQSqYDz0xtB1AEe0J_Q7UTJ8DGcnyMXbejNp_HMQMXrpMQ4VZyGSkQAGloVpWgkiSra2uvUi7zrbpBA";
-
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1ODQzNTIsImlhdCI6MTc0NDU4MDc1Miwic2NvcGUiOiJBRE1JTiJ9.sy5YRofvOpBFaifNeXRXJ-xvwupSx_QJJSWch01B8t69bxR2MrJ5V2iAbehEByTgi-UUefeYeYGTzuEyXBNtqw";
   useEffect(() => {
     axios
       .get(`http://localhost:8081/myapp/api/business/employee/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        withCredentials: true, 
+        withCredentials: true,
       })
       .then((res) => {
         setFormData(res.data);
@@ -29,7 +33,7 @@ const UpdateEmployeeForm = () => {
       .catch((err) => {
         if (err.response && err.response.status === 401) {
           alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-          navigate("/login");
+          navigate("/");
         } else {
           alert("Không thể tải thông tin nhân viên");
           navigate("/");
@@ -59,12 +63,12 @@ const UpdateEmployeeForm = () => {
       )
       .then(() => {
         alert("Cập nhật thành công!");
-        navigate("/");
+        navigate("/danh-sach-nhan-vien");
       })
       .catch((err) => {
         if (err.response && err.response.status === 401) {
           alert("Bạn không có quyền cập nhật. Vui lòng đăng nhập lại.");
-          navigate("/");
+          navigate("/danh-sach-nhan-vien");
         } else {
           alert("Có lỗi xảy ra khi cập nhật.");
         }
@@ -73,7 +77,26 @@ const UpdateEmployeeForm = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.header}>Chỉnh sửa nhân viên</h1>
+      <button
+        className="toggleButtonSidebar"
+        onClick={() => setOpenSidebar(!openSidebar)}
+      >
+        ☰
+      </button>
+      {openSidebar && (
+        <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
+      )}
+      <div className={styles.topBar}>
+        <Button
+          type="link"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate("/danh-sach-nhan-vien")}
+          className={`${styles.backButton} ${openSidebar ? styles.shifted : ""}`}
+        >
+          Quay lại
+        </Button>
+        <h1 className={styles.header}>Chỉnh sửa nhân viên</h1>
+      </div>
       <form onSubmit={handleSubmit} className={styles.form}>
         <label>
           Số điện thoại:
@@ -96,11 +119,11 @@ const UpdateEmployeeForm = () => {
           />
         </label>
         <label>
-          Tài khoản:
+          Mật khẩu:
           <input
-            type="passwordpassword"
-            name="empAccoun"
-            value={formData.empAccount}
+            type="password"
+            name="empPassword"
+            value={formData.empPassword}
             onChange={handleChange}
             required
           />

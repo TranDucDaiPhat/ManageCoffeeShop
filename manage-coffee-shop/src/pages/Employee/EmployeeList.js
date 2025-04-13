@@ -13,7 +13,7 @@ const EmployeeList = () => {
   const navigate = useNavigate();
 
   const token =
-"eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1NDc0NDcsImlhdCI6MTc0NDU0Mzg0Nywic2NvcGUiOiJBRE1JTiJ9.WSfVnXf5vNH60ZcBDPjTY1D5PLvSIWf0j14ITRAJUfQa3LTgbun9jCLVZIMNRGhkn9RPJOWtTW1BXhmGv7wBrA"
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1ODQzNTIsImlhdCI6MTc0NDU4MDc1Miwic2NvcGUiOiJBRE1JTiJ9.sy5YRofvOpBFaifNeXRXJ-xvwupSx_QJJSWch01B8t69bxR2MrJ5V2iAbehEByTgi-UUefeYeYGTzuEyXBNtqw";
   const fetchEmployees = () => {
     axios
       .get("http://localhost:8081/myapp/api/business/employee", {
@@ -127,6 +127,34 @@ const EmployeeList = () => {
             </button>
           </div>
         </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "40px",
+            background: "#f1eded",
+            padding: "10px 0",
+            width: "65%",
+            borderRadius: "8px",
+            marginBottom: "15px",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          <div style={{ textAlign: "center" }}>
+            <div>Tổng số nhân viên</div>
+            <div style={{ fontSize: "22px", marginTop: "5px" }}>
+              {employees.filter((emp) => emp.empRole === "USER").length}
+            </div>
+          </div>
+          <div style={{ borderLeft: "1px solid gray", height: "40px" }}></div>
+          <div style={{ textAlign: "center" }}>
+            <div>Tổng số quản lý</div>
+            <div style={{ fontSize: "22px", marginTop: "5px" }}>
+              {employees.filter((emp) => emp.empRole === "ADMIN").length}
+            </div>
+          </div>
+        </div>
 
         <div className={styles.contentList}>
           <div className={styles.tableContainer}>
@@ -155,7 +183,7 @@ const EmployeeList = () => {
                     <td>{emp.empName}</td>
                     <td>{emp.empYearOfBirth}</td>
                     <td>{emp.empPhone}</td>
-                    <td>{emp.empRole}</td>
+                    <td>{emp.empRole === "ADMIN" ? "Quản lý" : "Nhân viên"}</td>
                   </tr>
                 ))}
               </tbody>

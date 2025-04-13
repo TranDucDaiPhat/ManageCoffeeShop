@@ -19,7 +19,6 @@ import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
 import SalesStatistics from "./pages/Statistics/SalesStatistics";
 
-
 function App() {
   return (
     <AuthProvider>
@@ -37,7 +36,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={["Manager"]} />}>
             <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />
             <Route
-              path="/cap-nhat-thong-tin"
+              path="/cap-nhat-thong-tin/:id"
               element={<UpdateEmployeeForm />}
             />
           </Route>
