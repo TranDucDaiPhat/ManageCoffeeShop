@@ -19,7 +19,6 @@ import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
 import SalesStatistics from "./pages/Statistics/SalesStatistics";
 
-import UploadImage from "./pages/UploadImage";
 
 function App() {
   return (
@@ -37,7 +36,10 @@ function App() {
           {/* route cho Manager */}
           <Route element={<ProtectedRoute allowedRoles={["Manager"]} />}>
             <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />
-            <Route path="/upload-image" element={<UploadImage />} />
+            <Route
+              path="/cap-nhat-thong-tin"
+              element={<UpdateEmployeeForm />}
+            />
           </Route>
 
           {/* route chung cho Employee và Managet*/}
@@ -55,7 +57,6 @@ function App() {
           {/* <Route path="/danh-sach-san-pham" element={<DanhSachSanPham />} /> */}
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/tai-khoan" element={<PersonalInfo />} />
-          <Route path="/cap-nhat-thong-tin" element={<UpdateEmployeeForm />} />
           <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />

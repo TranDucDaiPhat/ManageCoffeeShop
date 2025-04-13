@@ -7,14 +7,13 @@ const UpdateEmployeeForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    empName: "",
     empPhone: "",
-    empYearOfBirth: "",
     empAccount: "",
-    empRole: "",
+    empPassword: ""
   });
 
-  const token = "YOUR_TOKEN_HERE";
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1NDYwMDQsImlhdCI6MTc0NDU0MjQwNCwic2NvcGUiOiJBRE1JTiJ9.Wtdd6lqKQSqYDz0xtB1AEe0J_Q7UTJ8DGcnyMXbejNp_HMQMXrpMQ4VZyGSkQAGloVpWgkiSra2uvUi7zrbpBA";
 
   useEffect(() => {
     axios
@@ -22,18 +21,27 @@ const UpdateEmployeeForm = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true, 
       })
       .then((res) => {
         setFormData(res.data);
       })
       .catch((err) => {
-        alert("Không thể tải thông tin nhân viên");
-        navigate("/");
+        if (err.response && err.response.status === 401) {
+          alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+          navigate("/login");
+        } else {
+          alert("Không thể tải thông tin nhân viên");
+          navigate("/");
+        }
       });
-  }, [id]);
+  }, [id, navigate]);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -46,14 +54,20 @@ const UpdateEmployeeForm = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       )
       .then(() => {
         alert("Cập nhật thành công!");
         navigate("/");
       })
-      .catch(() => {
-        alert("Có lỗi xảy ra khi cập nhật.");
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          alert("Bạn không có quyền cập nhật. Vui lòng đăng nhập lại.");
+          navigate("/");
+        } else {
+          alert("Có lỗi xảy ra khi cập nhật.");
+        }
       });
   };
 
@@ -62,30 +76,13 @@ const UpdateEmployeeForm = () => {
       <h1 className={styles.header}>Chỉnh sửa nhân viên</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <label>
-          Họ và tên:
-          <input
-            type="text"
-            name="empName"
-            value={formData.empName}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
           Số điện thoại:
           <input
             type="text"
             name="empPhone"
             value={formData.empPhone}
             onChange={handleChange}
-          />
-        </label>
-        <label>
-          Năm sinh:
-          <input
-            type="text"
-            name="empYearOfBirth"
-            value={formData.empYearOfBirth}
-            onChange={handleChange}
+            required
           />
         </label>
         <label>
@@ -95,19 +92,18 @@ const UpdateEmployeeForm = () => {
             name="empAccount"
             value={formData.empAccount}
             onChange={handleChange}
+            required
           />
         </label>
         <label>
-          Chức vụ:
-          <select
-            name="empRole"
-            value={formData.empRole}
+          Tài khoản:
+          <input
+            type="passwordpassword"
+            name="empAccoun"
+            value={formData.empAccount}
             onChange={handleChange}
-          >
-            <option value="">-- Chọn --</option>
-            <option value="USER">Nhân viên</option>
-            <option value="ADMIN">Quản lý</option>
-          </select>
+            required
+          />
         </label>
         <button type="submit">Lưu thay đổi</button>
       </form>
