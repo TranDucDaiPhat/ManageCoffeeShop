@@ -11,10 +11,10 @@ function MenuItems({columns, list, gridWidth, onAddItems, formated}) {
             return (
                 <div style={{ ...style, display: "flex", justifyContent: "center", alignItems: "center", cursor: 'pointer' }} onClick={() => onAddItems(item)}>
                     <div className={styles.itemWrapper}>
-                        <img src={item.hinhAnh || '\\image\\no-image.jpg'} height={145} width={120} style={{ objectFit: "cover" }} />
+                        <img src={item.productImg || '\\image\\no-image.jpg'} height={145} width={120} style={{ objectFit: "cover" }} />
                         <div className={styles.itemInfo}>
-                            <p style={{ fontWeight: 700 }}>{item.tenMon}</p>
-                            <p>{formated(item.donGia)}</p>
+                            <p style={{ fontWeight: 700 }}>{item.productName}</p>
+                            <p>{formated(item.productPrice)}</p>
                         </div>
                     </div>
                 </div>

@@ -28,18 +28,18 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* route cho Employee */}
-          <Route element={<ProtectedRoute allowedRoles={["Employee"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
 
           </Route>
 
-          {/* route cho Manager */}
-          <Route element={<ProtectedRoute allowedRoles={["Manager"]} />}>
+          {/* route cho ADMIN */}
+          <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
             <Route path="/danh-sach-nhan-vien" element={<EmployeeList />} />
             <Route path="/upload-image" element={<UploadImage />} />
           </Route>
 
           {/* route chung cho Employee và Managet*/}
-          <Route element={<ProtectedRoute allowedRoles={["Employee","Manager"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["USER","ADMIN"]} />}>
             <Route path="/tao-hoa-don" element={<Order />} />
           </Route>
 

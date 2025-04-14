@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import clsx from "clsx";
-import { VariableSizeGrid as Grid } from "react-window";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Sidebar, MenuItems, OrderList } from "../../components";
+import { useAuth } from "../../AuthContext";
+import { createOrder, findCustomerByPhone, fetchProducts, fetchCategories } from "../../API"
 import styles from "./Order.module.css"
-
-const types = ['Tất cả', 'Classic Cocktails', 'Trà', 'Bánh Ngọt', 'Cà Phê']
 
 const formatCurrency = (amount, locale = "vi-VN", currency = "VND") => {
     return new Intl.NumberFormat(locale, {
@@ -17,8 +16,9 @@ const formatCurrency = (amount, locale = "vi-VN", currency = "VND") => {
 
 function Order() {
     const [items, setItems] = useState([]);  // Danh sách món lấy từ API
+    const [categories, setCategories] = useState([])
     const [openSidebar, setOpenSidebar] = useState(false);  // Trạng thái tắt/mở sidebar
-    const [currentType, setCurrentType] = useState(types[0]);  // Loại món hiện tại
+    const [currentType, setCurrentType] = useState({ categoryId: 0, categoryName: 'Tất cả' });  // Loại món hiện tại
     const [currentListItem, setCurrentListItem] = useState([]); // Danh sách món lọc theo loại món
     const [orderItems, setOrderItems] = useState([]); // Danh sách các sản phẩm trong hoá đơn
     const [tienKhachTra, setTienKhachTra] = useState('');  // Số tiền khách trả
@@ -32,15 +32,22 @@ function Order() {
     const menuOrderRef = useRef(null);  // Lưu địa chỉ của danh sách hoá đơn (để tự động cuộn xuống khi thêm 1 sản phẩm)
     const prevLengthMenu = useRef(items.length);  // Lưu số lượng sản phẩm trong menu (chỉ cuộn khi số lượng tăng)
     const [searchText, setSearchText] = useState(null);  // input tìm kiếm
+    const { employeeId } = useAuth();
 
     // Lấy danh sách món từ API
     useEffect(() => {
-        axios.get("http://localhost:5000/items")
-            .then(response => {
-                setItems(response.data)
-                setCurrentListItem(response.data)
-            })
-            .catch(error => console.error("Lỗi khi gọi API:", error));
+        const getProducts = async () => {
+            const data = await fetchProducts();
+            setItems(data)
+            setCurrentListItem(data)
+        };
+        const getCategories = async () => {
+            const data = await fetchCategories();
+            data.unshift({ categoryId: 0, categoryName: 'Tất cả' })
+            setCategories(data)
+        };
+        getCategories();
+        getProducts();
     }, []);
 
     // Khi cửa sổ thay đổi, tính toán lại cột (tối đa 3, tối thiểu 2)
@@ -70,46 +77,46 @@ function Order() {
     }, [orderItems.length]);
 
     // Tính tổng tiền, tiền thừa khi danh sách sản phẩm thay đổi
-    const tongTien = useMemo(() => 
-        orderItems.reduce((sum, item) => sum + item.soLuong * item.donGia, 0), 
+    const orderTotal = useMemo(() =>
+        orderItems.reduce((sum, item) => sum + item.quantity * item.productPrice, 0),
         [orderItems]
     );
-    
+
     useEffect(() => {
-        setTienThua(tienKhachTra - tongTien);
-    }, [tienKhachTra, tongTien]);
+        setTienThua(tienKhachTra - orderTotal);
+    }, [tienKhachTra, orderTotal]);
 
     // Thêm sản phẩm vào hoá đơn
     const handleAddItemToOrder = useCallback((item) => {
         setOrderItems(prevOrderItems => {
-            return prevOrderItems.some(o => o.maMon === item.maMon)
+            return prevOrderItems.some(o => o.productName === item.productName)
                 ? prevOrderItems.map(o =>
-                    o.maMon === item.maMon ? { ...o, soLuong: o.soLuong + 1 } : o
-                  )
-                : [...prevOrderItems, { ...item, soLuong: 1 }];
+                    o.productName === item.productName ? { ...o, quantity: o.quantity + 1 } : o
+                )
+                : [...prevOrderItems, { ...item, quantity: 1 }];
         });
     }, []);
-    
+
 
     // Thay đổi loại sản phẩm và lọc danh sách sản phẩm theo loại
     function handleChangeType(type) {
         setCurrentType(type)
-        if (type == 'Tất cả') {
+        if (type.categoryName == 'Tất cả') {
             setCurrentListItem(items)
         } else {
-            const newItems = items.filter(item => item.loai == type)
+            const newItems = items.filter(item => item.categoryId == type.categoryId)
             setCurrentListItem(newItems)
         }
     }
 
     // Tạo hoá đơn và gửi API lưu vào CSDL
-    async function createOrder() {
+    async function handleCreateOrder() {
         // nếu chưa có sản phẩm trong hoá đơn thì không làm gì cả
         if (orderItems.length <= 0) {
             return;
         }
         // Nếu chưa nhập số tiền của khách thì báo lỗi
-        if (tienKhachTra+''.trim().length == 0) {
+        if (tienKhachTra + ''.trim().length == 0) {
             toast.error("Chưa nhập số tiền của khách")
             return;
         }
@@ -118,58 +125,55 @@ function Order() {
             toast.error("Khách trả chưa đủ tiền")
             return;
         }
-        
-        const hoaDon = {
-            maHoaDon: "HD" + Math.ceil(Math.random() * 1111),
-            maKhachHang: customer ? customer.id : null,
-            maNhanVien: null,
-            ngayTao: new Date().toISOString().slice(0, 19),
-            tongTien,
-            phuongThucThanhToan: "Tiền mặt",
-            chiTietHoaDon: orderItems
+        const orderDetails = orderItems.map(item => {
+            return {
+                productId: item.productId,
+                productQuantity: item.quantity,
+                subTotal: item.quantity * item.productPrice
+            }
+        })
+        const order = {
+            customerId: customer ? customer.customerId : null,
+            employeeId: employeeId,
+            orderDate: new Date().toISOString().slice(0, 19),
+            orderTotal: orderTotal,
+            paymentMethod: 'Tiền mặt',
+            orderDetails: orderDetails
         }
-        try {
-            const response = await axios.post("http://localhost:5000/orders", hoaDon);
-            toast.success("Thanh toán thành công")
-            return response.data; // Trả về dữ liệu phản hồi từ server
-        } catch (error) {
-            console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
-            throw error;
-        }
-        
+        console.log(order)
+        createOrder(order)
     }
 
     // Xử lý người người dùng nhập số điện thoại và nhấn Enter
     const handleKeyUp = (event) => {
         if (event.key === "Enter") {
-            const text = phone.trim()
-            if (text.length < 10) {
-                toast.error("Vui lòng nhập đúng số điện thoại")
-                setCustomer(null);
-            } else {
-                findCustomerByPhone(text)
-            }
+            handleFindCustomer()
         }
     };
 
-    // Gọi API tìm số điện thoại
-    const findCustomerByPhone = async (phone) => {
-        try {
-            const response = await axios.get(`http://localhost:5000/customers?phone=${phone}`);
-            setCustomer(response.data);
-        } catch (err) {
+    const handleFindCustomer = async () => {
+        const text = phone.trim()
+        if (text.length != 10) {
+            toast.error("Vui lòng nhập đúng số điện thoại")
             setCustomer(null);
-            toast.error("Không tìm thấy khách hàng")
+            return;
         }
-    };
+        const data = await findCustomerByPhone(text)
+        if (data) {
+            setCustomer(data);
+        } else {
+            setCustomer(null);
+            toast.error("Không tìm thấy khách hàng");
+        }
+    }
 
     // Thay đổi số lượng sản phẩm trên từng chi tiết hoá đơn
     const handleChangeQuantity = useCallback((index, value) => {
         setOrderItems(prevOrderItems => {
-            const quantity = prevOrderItems[index].soLuong + value
+            const quantity = prevOrderItems[index].quantity + value
             if (quantity > 0) {
                 const newOrderItems = [...prevOrderItems];
-                newOrderItems[index] = { ...prevOrderItems[index], soLuong: quantity };
+                newOrderItems[index] = { ...prevOrderItems[index], quantity: quantity };
                 return newOrderItems
             }
         })
@@ -180,18 +184,18 @@ function Order() {
         setOrderItems(prevOrderItems => {
             return prevOrderItems.filter((ỉtem, i) => i !== index)
         })
-    },[])
+    }, [])
 
     // Lọc sản phẩm theo loại và theo nội dung tìm kiếm
     const finalFilteredProducts = useMemo(() => {
         return searchText
-          ? currentListItem.filter((p) =>
-              p.tenMon.toLowerCase().includes(searchText.toLowerCase())
+            ? currentListItem.filter((p) =>
+                p.productName.toLowerCase().includes(searchText.toLowerCase())
             )
-          : currentListItem;
-      }, [searchText, currentListItem]);
+            : currentListItem;
+    }, [searchText, currentListItem]);
 
-    
+
     return (
         <div style={{ padding: 12 }}>
             {/* nút ẩn hiện side bar */}
@@ -209,10 +213,10 @@ function Order() {
 
                         <div className={styles.searchInput}>
                             <img src="/image/16-search-icon.png" alt="Search" width={18} />
-                            <input 
-                                type="text" 
-                                placeholder="Tìm kiếm..." 
-                                style={{fontSize:'1.2vw'}}
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm..."
+                                style={{ fontSize: '1.2vw' }}
                                 onChange={(e) => setSearchText(e.target.value)}
                             />
                         </div>
@@ -220,22 +224,22 @@ function Order() {
 
                     <div className={styles.mainMenu}>
                         <div>
-                            {types.map((type, index) => {
+                            {categories.map((category) => {
                                 return <button
                                     className={clsx(styles.btnType, {
-                                        [styles.activeType]: currentType == type
+                                        [styles.activeType]: currentType.categoryName == category.categoryName
                                     })}
-                                    key={index}
-                                    onClick={() => handleChangeType(type)}
-                                >{type}</button>
+                                    key={category.categoryId}
+                                    onClick={() => handleChangeType(category)}
+                                >{category.categoryName}</button>
                             })}
                         </div>
 
                         {/* Danh sách sản phẩm */}
-                        <MenuItems 
-                            columns={columns} 
-                            list={finalFilteredProducts} 
-                            gridWidth={gridWidth} 
+                        <MenuItems
+                            columns={columns}
+                            list={finalFilteredProducts}
+                            gridWidth={gridWidth}
                             onAddItems={handleAddItemToOrder}
                             formated={formatCurrency}
                         />
@@ -244,26 +248,29 @@ function Order() {
 
                 {/* Danh sách chi tiết hoá đơn */}
                 <div className={styles.contentOrder}>
-                    <div className={styles.headForm} style={{justifyContent:'space-between'}}>
-                        <div style={{display:'flex'}}>
+                    <div className={styles.headForm} style={{ justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex' }}>
                             <div className={styles.describe}>Hoá Đơn</div>
                             <button className={styles.buttonIcon}>
                                 <img src="/image/24-plus.png" width={25} />
                             </button>
                         </div>
-                            
-                        <div style={{display:'flex', alignItems:'center'}}>
-                            <span style={{color:'gray'}}>{customer ? customer.name : ''}</span>
-                            <div className={styles.searchInput} style={{width:'25vh'}}>
-                                <input 
-                                    type="number" 
-                                    value={phone} 
+
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span style={{ color: 'gray' }}>{customer ? customer.customerName : ''}</span>
+                            <div className={styles.searchInput} style={{ width: '25vh' }}>
+                                <input
+                                    type="number"
+                                    value={phone}
                                     placeholder="SDT khách hàng"
-                                    onChange={e => setPhone(e.target.value)} 
+                                    onChange={e => setPhone(e.target.value)}
                                     onKeyUp={handleKeyUp}
-                                    style={{fontSize:'1.2vw'}}
+                                    style={{ fontSize: '1.2vw' }}
                                 />
                             </div>
+                            <button className={styles.btnSearchCustomer} onClick={handleFindCustomer}>
+                                <img src="/image/16-search-icon.png" width={18} />
+                            </button>
                         </div>
                     </div>
 
@@ -282,10 +289,10 @@ function Order() {
                         {/* Thông tin thanh toán */}
                         <div className={styles.payment}>
                             <div className={styles.linePayment}>
-                                <span style={{ flex: 1 }}>{`Tổng tiền: ${formatCurrency(tongTien || 0)}`}</span>
+                                <span style={{ flex: 1 }}>{`Tổng tiền: ${formatCurrency(orderTotal || 0)}`}</span>
                                 <div style={{ display: 'flex', flex: 1, fontWeight: 700 }}>
                                     <span >{'Khách cần trả:'}</span>
-                                    <span style={{ color: 'blue', marginLeft: 5 }}>{formatCurrency(tongTien || 0)}</span>
+                                    <span style={{ color: 'blue', marginLeft: 5 }}>{formatCurrency(orderTotal || 0)}</span>
                                 </div>
                             </div>
                             <div className={styles.linePayment}>
@@ -295,7 +302,7 @@ function Order() {
                                     <input type="number" className={styles.change} value={tienKhachTra} onChange={e => {
                                         const tienTra = e.target.value;
                                         setTienKhachTra(tienTra)
-                                        setTienThua(tienTra - tongTien)
+                                        setTienThua(tienTra - orderTotal)
                                     }} />
                                 </div>
                             </div>
@@ -305,7 +312,7 @@ function Order() {
                                     <span style={{ fontWeight: 700, marginLeft: 5 }}>{formatCurrency(tienThua || 0)}</span>
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <button className={styles.customButton} onClick={createOrder}>
+                                    <button className={styles.customButton} onClick={handleCreateOrder}>
                                         <img src="/image/50-dollar.png" style={{ width: 24, marginRight: 5 }} />
                                         <span>Thanh Toán</span>
                                     </button>

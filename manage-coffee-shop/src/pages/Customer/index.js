@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { toast } from "react-toastify";
 import styles from './Customer.module.css'
 import { Sidebar } from '../../components';
+import { fetchCustomer, findCustomerByPhone, createCustomer } from '../../API';
 
 
 function Customer() {
@@ -12,19 +13,22 @@ function Customer() {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
+    const [searchInput, setSearchInput] = useState('');
 
     const handleRowClick = (customer) => {
         setSelectedCustomer(customer);
-        setName(customer.name)
-        setPhone(customer.phone)
+        setName(customer.customerName)
+        setPhone(customer.customerPhone)
     };
 
     useEffect(() => {
-        axios.get("http://localhost:5000/customers", { withCredentials: true })
-            .then(response => {
-                setCustomers(response.data);
-            })
-            .catch(error => console.error("Lỗi khi gọi API:", error));
+        const getCustomers = async () => {
+            const data = await fetchCustomer()
+            if (data) {
+                setCustomers(data)
+            }
+        }
+        getCustomers()
     }, []);
 
     const refreshInput = () => {
@@ -33,25 +37,36 @@ function Customer() {
         setPhone('')
     };
 
+    const handleFindCustomer = async () => {
+        const text = searchInput.trim()
+        if (text.length != 10) {
+            toast.error("Vui lòng nhập đúng số điện thoại")
+            return;
+        }
+        const data = await findCustomerByPhone(text)
+        console.log(data)
+        if (data) {
+            setCustomers([data]);
+        } else {
+            toast.error("Không tìm thấy khách hàng");
+        }
+    }
+
     async function handleAddCustomer() {
         // Kiểm tra thông tin hợp lệ
-        if (phone.trim() == '' || name.trim() == '') {
+        if (phone.trim().length != 10 || name.trim() == '') {
             toast.error("Vui lòng nhập tên và số điện thoại khách hàng!");
             return;
         }
-
-        const customer = {
-
+        console.log({customerName: name, customerPhone: phone})
+        const data = await createCustomer({customerName: name, customerPhone: phone})
+        console.log(data)
+        if (data) {
+            toast.success("Thêm khách hàng thành công");
+            setCustomers([...customers,data]);
+        } else {
+            toast.error("Không tìm thấy khách hàng");
         }
-
-        // try {
-        //     const response = await axios.post("http://localhost:5000/customers", hoaDon);
-        //     toast.success("Thanh toán thành công")
-        //     return response.data; // Trả về dữ liệu phản hồi từ server
-        // } catch (error) {
-        //     console.error("❌ Lỗi khi gửi hóa đơn:", error.response?.data || error.message);
-        //     throw error;
-        // }
     }
 
     return (
@@ -70,10 +85,15 @@ function Customer() {
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 15, marginBottom: 8 }}>
                     <div style={{ width: '90%', display: 'flex', flexDirection: 'row' }}>
                         <div className={styles.customInput}>
-                            <input type="number" placeholder="Nhập số điện thoại..." />
+                            <input 
+                                type="number" 
+                                placeholder="Nhập số điện thoại..."
+                                value={searchInput}
+                                onChange={(e) => {setSearchInput(e.target.value)}}
+                            />
                             <img src="/image/16-search-icon.png" alt="Search" width={18} />
                         </div>
-                        <button className={styles.customButton}>
+                        <button className={styles.customButton} onClick={handleFindCustomer} >
                             Tìm kiếm
                         </button>
                     </div>
@@ -92,13 +112,13 @@ function Customer() {
                                 </thead>
                                 <tbody>
                                     {customers.map((customer, index) => (
-                                        <tr key={customer.id}
-                                            className={selectedCustomer?.id === customer.id ? styles.selectedRow : ""}
+                                        <tr key={customer.customerId}
+                                            className={selectedCustomer?.customerId === customer.customerId ? styles.selectedRow : ""}
                                             onClick={() => handleRowClick(customer)}
                                         >
                                             <td>{index + 1}</td>
-                                            <td>{customer.phone}</td>
-                                            <td>{customer.name}</td>
+                                            <td>{customer.customerPhone}</td>
+                                            <td>{customer.customerName}</td>
                                         </tr>
                                     ))}
                                 </tbody>
