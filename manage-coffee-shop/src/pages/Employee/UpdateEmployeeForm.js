@@ -1,169 +1,134 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Button } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import styles from "./UpdateEmployeeForm.module.css";
+import { Sidebar } from "../../components";
 
 const UpdateEmployeeForm = () => {
-  const navigate = useNavigate();
-  const [user, setUser] = useState({
-    fullName: "",
-    birthDate: "",
-    phoneNumber: "",
-    sex: "",
-    role: "",
-    email: "",
-    password: "",
-    avatar: "",
-  });
-  const [avatarPreview, setAvatarPreview] = useState("");
+  const [openSidebar, setOpenSidebar] = useState(false);
 
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    empPhone: "",
+    empAccount: "",
+    empPassword: "",
+  });
+
+  const token =
+    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDQ1ODQzNTIsImlhdCI6MTc0NDU4MDc1Miwic2NvcGUiOiJBRE1JTiJ9.sy5YRofvOpBFaifNeXRXJ-xvwupSx_QJJSWch01B8t69bxR2MrJ5V2iAbehEByTgi-UUefeYeYGTzuEyXBNtqw";
   useEffect(() => {
     axios
-      .get("http://localhost:5000/user")
-      .then((response) => {
-        setUser(response.data);
-        setAvatarPreview(response.data.avatar);
+      .get(`http://localhost:8081/myapp/api/business/employee/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
       })
-      .catch((error) => {
-        console.error("There was an error fetching the user!", error);
+      .then((res) => {
+        setFormData(res.data);
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+          navigate("/");
+        } else {
+          alert("Không thể tải thông tin nhân viên");
+          navigate("/");
+        }
       });
-  }, []);
+  }, [id, navigate]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result);
-        setUser({ ...user, avatar: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put("http://localhost:5000/user", user)
+      .put(
+        `http://localhost:8081/myapp/api/business/employee/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      )
       .then(() => {
-        navigate("/tai-khoan");
+        alert("Cập nhật thành công!");
+        navigate("/danh-sach-nhan-vien");
       })
-      .catch((error) => {
-        console.error("There was an error updating the user!", error);
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          alert("Bạn không có quyền cập nhật. Vui lòng đăng nhập lại.");
+          navigate("/danh-sach-nhan-vien");
+        } else {
+          alert("Có lỗi xảy ra khi cập nhật.");
+        }
       });
-  };
-
-  const handleCancel = () => {
-    navigate("/tai-khoan");
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.header}>Cập Nhật Thông Tin</h1>
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Họ và Tên</label>
+      <button
+        className="toggleButtonSidebar"
+        onClick={() => setOpenSidebar(!openSidebar)}
+      >
+        ☰
+      </button>
+      {openSidebar && (
+        <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
+      )}
+      <div className={styles.topBar}>
+        <Button
+          type="link"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate("/danh-sach-nhan-vien")}
+          className={`${styles.backButton} ${openSidebar ? styles.shifted : ""}`}
+        >
+          Quay lại
+        </Button>
+        <h1 className={styles.header}>Chỉnh sửa nhân viên</h1>
+      </div>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <label>
+          Số điện thoại:
           <input
             type="text"
-            name="fullName"
-            value={user.fullName}
+            name="empPhone"
+            value={formData.empPhone}
             onChange={handleChange}
-            className={styles.inputField}
+            required
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Ngày tháng năm sinh</label>
-          <input
-            type="date"
-            name="birthDate"
-            value={user.birthDate}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Số điện thoại</label>
+        </label>
+        <label>
+          Tài khoản:
           <input
             type="text"
-            name="phoneNumber"
-            value={user.phoneNumber}
+            name="empAccount"
+            value={formData.empAccount}
             onChange={handleChange}
-            className={styles.inputField}
+            required
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Giới tính</label>
-          <input
-            type="text"
-            name="sex"
-            value={user.sex}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Chức Vụ</label>
-          <input
-            type="text"
-            name="role"
-            value={user.role}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            className={styles.inputField}
-          />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Mật Khẩu</label>
+        </label>
+        <label>
+          Mật khẩu:
           <input
             type="password"
-            name="password"
-            value={user.password}
+            name="empPassword"
+            value={formData.empPassword}
             onChange={handleChange}
-            className={styles.inputField}
+            required
           />
-        </div>
-        <div className={styles.inputGroup}>
-          <label className={styles.inputLabel}>Avatar</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className={styles.inputField}
-          />
-          {avatarPreview && (
-            <img
-              src={avatarPreview}
-              alt="Avatar Preview"
-              className={styles.avatarPreview}
-            />
-          )}
-        </div>
-        <div className={styles.buttonGroup}>
-          <button type="submit" className={styles.button}>
-            Cập Nhật
-          </button>
-          <button
-            type="button"
-            className={styles.button}
-            onClick={handleCancel}
-          >
-            Hủy
-          </button>
-        </div>
+        </label>
+        <button type="submit">Lưu thay đổi</button>
       </form>
     </div>
   );

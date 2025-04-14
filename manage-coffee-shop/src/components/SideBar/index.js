@@ -29,7 +29,6 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
       items.push({
         title: "Nhân Viên",
         submenu: [
-          { title: "Lịch Làm Việc", path: "/lich-lam-viec" },
           { title: "Danh Sách Nhân Viên", path: "/danh-sach-nhan-vien" },
           { title: "Thêm Nhân Viên", path: "/them-nhan-vien" },
         ],
