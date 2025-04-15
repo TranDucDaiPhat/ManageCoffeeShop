@@ -22,7 +22,7 @@ export const fetchProducts = async () => {
         }
 
         const products = await res.json();
-        console.log(products)
+        console.log("Get All Products: ", products)
         return products;
     } catch (error) {
         console.error("Lỗi khi gọi API sản phẩm:", error.message);

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import styles from './Customer.module.css'
 import { Sidebar } from '../../components';
 import { fetchCustomer, findCustomerByPhone, createCustomer } from '../../API';
-
+import { useAuth } from "../../AuthContext";
 
 function Customer() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -14,6 +14,7 @@ function Customer() {
     const [phone, setPhone] = useState('');
     const [name, setName] = useState('');
     const [searchInput, setSearchInput] = useState('');
+    const { role } = useAuth();
 
     const handleRowClick = (customer) => {
         setSelectedCustomer(customer);
@@ -28,7 +29,9 @@ function Customer() {
                 setCustomers(data)
             }
         }
-        getCustomers()
+        if (role == 'ADMIN') {
+            getCustomers()
+        }
     }, []);
 
     const refreshInput = () => {

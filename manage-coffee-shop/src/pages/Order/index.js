@@ -132,15 +132,21 @@ function Order() {
                 subTotal: item.quantity * item.productPrice
             }
         })
+
+        let date = ''
+        const vndate = new Date();
+        vndate.setHours(vndate.getHours() + 7); // Cộng 7 giờ theo giờ VN
+        date = vndate.toISOString().split('T')[0];
+
         const order = {
             customerId: customer ? customer.customerId : null,
             employeeId: employeeId,
-            orderDate: new Date().toISOString().slice(0, 19),
+            orderDate: date,
             orderTotal: orderTotal,
             paymentMethod: 'Tiền mặt',
             orderDetails: orderDetails
         }
-        console.log(order)
+        console.log("Create Order: ", order)
         createOrder(order)
     }
 

@@ -28,8 +28,8 @@ export const findCustomerByPhone = async (phone) => {
         return data
     } catch (err) {
         console.error(err);
-        return null;
         toast.error("Không tìm thấy khách hàng");
+        return null;
     }
 }
 
@@ -56,7 +56,7 @@ export const fetchCustomer = async () => {
         }
 
         const data = await res.json();
-        console.log("Customers:", data); 
+        console.log("Get All Customers:", data); 
         return data
     } catch (err) {
         console.error(err);
@@ -89,7 +89,7 @@ export const createCustomer = async (customer) => {
         }
 
         const data = await res.json();
-        console.log("Customers:", data); 
+        console.log("Create Customer:", data); 
         return data
     } catch (err) {
         console.error(err);

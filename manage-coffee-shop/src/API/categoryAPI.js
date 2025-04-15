@@ -24,7 +24,7 @@ export const fetchCategories = async () => {
         }
 
         const data = await res.json();
-        console.log("Categories:", data);
+        console.log("Get All Categories:", data);
 
         return data
     } catch (err) {

@@ -24,14 +24,16 @@ function OrderHistory() {
     useEffect(() => {
         let date = '';
         if (role == 'ADMIN') {
-            date = new Date().toISOString().split("T")[0]
+            const vndate = new Date();
+            vndate.setHours(vndate.getHours() + 7); // Cộng 7 giờ theo giờ VN
+            date = vndate.toISOString().split('T')[0];
         } else {
             date = 'today'
         }
         getOrdersByDate(date, setOrders)
     }, []);
 
-    
+
 
     // Gọi API khi chọn ngày
     const handleChangeOrders = () => {
@@ -169,7 +171,7 @@ function OrderHistory() {
 
 
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 15, marginBottom: 8 }}>
-                    <div style={{ width: '90%', display: 'flex', alignItems: 'center', justifyContent:role !== "ADMIN" ? "center" : "flex-start" }}>
+                    <div style={{ width: '90%', display: 'flex', alignItems: 'center', justifyContent: role !== "ADMIN" ? "center" : "flex-start" }}>
                         <div>Từ trước đến nay:</div>
                         <div className={styles.customInput}>
                             <input type="number" placeholder="Nhập số mã hoá đơn..." />
@@ -182,7 +184,7 @@ function OrderHistory() {
                     </div>
                 </div>
 
-                <div className={styles.content}> 
+                <div className={styles.content}>
                     <div className={styles.contentList}>
                         <div className={styles.tableContainer}>
                             <table className={styles.orderTable}>
@@ -231,7 +233,7 @@ function OrderHistory() {
                             <table className={styles.detailTable}>
                                 <thead>
                                     <tr>
-                                        <th>Nước uống</th>
+                                        <th>Món</th>
                                         <th>Số lượng</th>
                                         <th>Đơn giá</th>
                                         <th>Thành tiền</th>
