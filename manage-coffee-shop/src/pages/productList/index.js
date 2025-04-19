@@ -187,7 +187,8 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
 }}>
   {currentProducts.map((product, index) => (
     <div
-      key={product.id || index}
+      key={product.productId || index}
+
       style={{
         border: "1px solid #4CAF50", // viền xanh lá cây
         padding: "10px",
@@ -200,8 +201,7 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
         alignSelf: "start"
       }}
       onClick={() => {
-  console.log("Product ID:", product.id); // Kiểm tra ID của sản phẩm
-  navigate(`/ProductInfo/${product.id}`);
+  navigate(`/ProductInfo/${product.productId}`);
 }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";

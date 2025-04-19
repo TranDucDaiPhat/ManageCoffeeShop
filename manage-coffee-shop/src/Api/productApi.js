@@ -1,10 +1,9 @@
+const authToken = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJlbXBsb3llZUlkIjoxLCJleHAiOjE3NDUxMDQ2NTgsImlhdCI6MTc0NTEwMTA1OCwic2NvcGUiOiJBRE1JTiJ9.UJTGipu4TAKpBE63bHzY1Xv_8H_UtR-6jgSNHb-6QxM4mMfkhGBIJLKcC6_JzHM3WrF_lmoUW3OAZGsDjV1wVg";
 
-export async function getMons() {
-    const token = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJlbXBsb3llZUlkIjoxLCJleHAiOjE3NDUwOTM1MzQsImlhdCI6MTc0NTA4OTkzNCwic2NvcGUiOiJBRE1JTiJ9.y3bk2xOTAGwReirHXiE41MG8xn85q-3OK48uR839QWtVbPx7d8rAM7sUECiZad1MfQei4g_38mjuTN16eqh9OA";
-    
+export async function getMons() {   
     const response = await fetch("http://localhost:8081/myapp/api/business/products", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     });
   
@@ -17,11 +16,10 @@ export async function getMons() {
   }
   
   export async function getMonById(id) {
-    const token = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJlbXBsb3llZUlkIjoxLCJleHAiOjE3NDUwOTM1MzQsImlhdCI6MTc0NTA4OTkzNCwic2NvcGUiOiJBRE1JTiJ9.y3bk2xOTAGwReirHXiE41MG8xn85q-3OK48uR839QWtVbPx7d8rAM7sUECiZad1MfQei4g_38mjuTN16eqh9OA";
-  
+   
     const response = await fetch(`http://localhost:8081/myapp/api/business/products/${id}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
     });
   
@@ -30,5 +28,60 @@ export async function getMons() {
     }
   
     return response.json();
+  }
+  
+  export async function updateMonById(id, productData) {
+    
+    const response = await fetch(`http://localhost:8081/myapp/api/business/products/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify(productData),
+    });
+  
+    if (!response.ok) {
+      throw new Error("Không thể cập nhật sản phẩm");
+    }
+  
+    return response.json();
+  }
+  
+  // them san pham
+  export async function addProduct(productData) {
+   
+    const response = await fetch("http://localhost:8081/myapp/api/business/products", {
+      method: "POST",  // Chuyển từ PUT sang POST
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify(productData), // Truyền dữ liệu sản phẩm vào body
+    });
+  
+    if (!response.ok) {
+      throw new Error("Không thể thêm sản phẩm");
+    }
+  
+    return response.json();
+  }
+  
+  // hoan thanh 
+  export async function deleteMonById(id) {
+ 
+    const response = await fetch(`http://localhost:8081/myapp/api/business/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Không thể xoá sản phẩm");
+    }
+  
+    return await response.text(); // trả chuỗi: "Xóa sản phẩm thành công"
   }
   
