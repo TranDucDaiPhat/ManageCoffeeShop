@@ -1,4 +1,4 @@
-const authToken = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJlbXBsb3llZUlkIjoxLCJleHAiOjE3NDUxMDQ2NTgsImlhdCI6MTc0NTEwMTA1OCwic2NvcGUiOiJBRE1JTiJ9.UJTGipu4TAKpBE63bHzY1Xv_8H_UtR-6jgSNHb-6QxM4mMfkhGBIJLKcC6_JzHM3WrF_lmoUW3OAZGsDjV1wVg";
+const authToken = "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJlbXBsb3llZUlkIjoxLCJleHAiOjE3NDUyNDM0MDAsImlhdCI6MTc0NTIzOTgwMCwic2NvcGUiOiJBRE1JTiJ9.E7h9X5WXc1idn6EFtFLRTK2mj9--mGd3U3CVVvgRBVvAB4RhPAzwLyvCPvGEe2euHIeVNDvZCSVqngOL9dCZAA";
 
 export async function getCategories() {
     const response = await fetch("http://localhost:8081/myapp/api/business/categories", {

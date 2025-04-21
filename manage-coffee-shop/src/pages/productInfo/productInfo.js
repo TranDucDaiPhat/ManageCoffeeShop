@@ -5,6 +5,7 @@ import { getMonById, updateMonById, deleteMonById } from "../../Api/productApi";
 import { getCategories } from "../../Api/categoryApi"; // API thể loại
 import noImage from "../productList/no-image.jpg"; // Ảnh mặc định nếu không có ảnh
 
+import axios from "axios";
 export default function ProductInfo() {
   // Lấy id từ URL qua useParams
   const { id } = useParams();
@@ -22,7 +23,62 @@ export default function ProductInfo() {
   });
   const [error, setError] = useState(""); // Dùng để hiển thị lỗi nếu có
   const navigate = useNavigate(); // Điều hướng trang
+  // state upload hình ảnh
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  // Hàm xử lý upload ảnh lên Cloudinary
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    // Kiểm tra kích thước và định dạng file
+    if (file.size > 5 * 1024 * 1024) { // 5MB
+      alert("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
+      return;
+    }
+
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      alert("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "coffeeShop"); // Thay bằng upload preset của bạn
+    formData.append("cloud_name", "ddfzgrs87"); // Thay bằng cloud name của bạn
+
+    try {
+      setIsUploading(true);
+      setUploadProgress(0);
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/ddfzgrs8/image/upload`,
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          },
+        }
+      );
+
+      // Lấy URL từ response và cập nhật vào formData
+      setFormData({
+        ...formData,
+        productImg: response.data.secure_url,
+      });
+      alert("Upload ảnh thành công!");
+    } catch (error) {
+      console.error("Lỗi khi upload ảnh:", error);
+      alert("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
   // useEffect dùng để lấy dữ liệu khi component mount
   useEffect(() => {
     async function fetchData() {
@@ -110,155 +166,205 @@ export default function ProductInfo() {
   if (!product || categories.length === 0) return <p>Đang tải dữ liệu...</p>;
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      {/* Hiển thị tên sản phẩm */}
-      <h2 style={{ color: "#2e7d32" }}>{product.productName}</h2>
+    <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto", fontFamily: "Arial, sans-serif" }}>
+  {/* Hiển thị tên sản phẩm */}
+  <h2 style={{ color: "#2e7d32", textAlign: "center" }}>{product.productName}</h2>
 
-      {/* Hiển thị ảnh sản phẩm */}
-      <img
-        src={product.productImg || noImage}
-        alt={product.productName}
-        style={{
-          width: "100%",
-          maxHeight: "300px",
-          objectFit: "cover",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          marginBottom: "20px"
-        }}
-      />
-
-      {/* Thông tin sản phẩm */}
-      <p style={{ fontSize: "18px" }}>
-        <strong>Giá:</strong>{" "}
-        <span style={{ color: "#388e3c" }}>{product.productPrice} VND</span>
-      </p>
-      <p style={{ fontSize: "16px" }}>
-        <strong>Số lượng trong kho:</strong>{" "}
-        {product.productInventoryQuantity > 0
-          ? product.productInventoryQuantity
-          : "Hết hàng"}
-      </p>
-      <p style={{ fontSize: "16px" }}>
-        <strong>Mô tả:</strong>{" "}
-        {product.productDescription || "Sản phẩm chưa có mô tả chi tiết."}
-      </p>
-
-      {/* Form chỉnh sửa sản phẩm */}
-      <div>
-        {/* Tên sản phẩm */}
-        <label>
-          Tên sản phẩm:
-          <input
-            type="text"
-            name="productName"
-            value={formData.productName}
-            onChange={handleInputChange}
-          />
-        </label>
-
-        {/* Link ảnh sản phẩm */}
-        <label>
-          Ảnh sản phẩm:
-          <input
-            type="text"
-            name="productImg"
-            value={formData.productImg}
-            onChange={handleInputChange}
-          />
-        </label> 
-        <br/><br />
-
-        {/* Giá */}
-        <label>
-          Giá:
-          <input
-            type="number"
-            name="productPrice"
-            value={formData.productPrice}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-
-        {/* Số lượng trong kho */}
-        <label>
-          Số lượng trong kho:
-          <input
-            type="number"
-            name="productInventoryQuantity"
-            value={formData.productInventoryQuantity}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-
-        {/* Mô tả */}
-        <label>
-          Mô tả:
-          <textarea
-            name="productDescription"
-            value={formData.productDescription}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-
-        {/* Dropdown chọn thể loại */}
-        <label>
-          Thể loại:
-          <select
-            name="categoryId"
-            value={formData.categoryId || ""}
-            onChange={handleInputChange}
-          >
-            <option value="">Chọn thể loại</option>
-            {categories.map((category) => (
-              <option 
-                key={category.categoryId}
-                value={category.categoryId}
-              >
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        {/* Nút cập nhật */}
-        <br />
-        <button
-          onClick={handleUpdate}
+  {/* Hiển thị ảnh sản phẩm */}
+  {/* <div style={{ textAlign: "center" }}>
+    <img
+      src={product.productImg || noImage}
+      alt={product.productName}
+      style={{
+        width: "100%",
+        maxHeight: "300px",
+        objectFit: "cover",
+        borderRadius: "12px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+        marginBottom: "20px"
+      }}
+    />
+  </div> */}
+  <div style={{ textAlign: "center" }}>
+        <img
+          src={formData.productImg || noImage}
+          alt={product.productName}
           style={{
-            backgroundColor: "#388e3c",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            fontSize: "16px",
-            marginTop: "20px"
+            width: "100%",
+            maxHeight: "300px",
+            objectFit: "cover",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            marginBottom: "20px"
           }}
-        >
-          Cập nhật sản phẩm
-        </button>
+        />
+        
+        {/* Nút upload ảnh */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{
+            display: "inline-block",
+            padding: "8px 16px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginRight: "10px"
+          }}>
+            Chọn ảnh từ máy tính
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+              disabled={isUploading}
+            />
+          </label>
+          
+          {isUploading && (
+            <div style={{ marginTop: "10px" }}>
+              <progress value={uploadProgress} max="100" style={{ width: "100%" }} />
+              <p>Đang upload: {uploadProgress}%</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Nút xoá */}
+      {/* Link ảnh sản phẩm (vẫn giữ để có thể chỉnh sửa thủ công) */}
+      <label style={{ display: "flex", flexDirection: "column" }}>
+        Ảnh sản phẩm (URL):
+        <input
+          type="text"
+          name="productImg"
+          value={formData.productImg}
+          onChange={handleInputChange}
+          style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+        />
+      </label>
+  
+
+  {/* Thông tin sản phẩm */}
+  <div style={{ marginBottom: "30px", lineHeight: "1.6", fontSize: "16px" }}>
+    <p><strong>Giá:</strong> <span style={{ color: "#388e3c" }}>{product.productPrice} VND</span></p>
+    <p><strong>Số lượng trong kho:</strong> {product.productInventoryQuantity > 0 ? product.productInventoryQuantity : "Hết hàng"}</p>
+    <p><strong>Mô tả:</strong> {product.productDescription || "Sản phẩm chưa có mô tả chi tiết."}</p>
+  </div>
+
+  {/* Form chỉnh sửa sản phẩm */}
+  <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+    {/* Tên sản phẩm */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Tên sản phẩm:
+      <input
+        type="text"
+        name="productName"
+        value={formData.productName}
+        onChange={handleInputChange}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
+    </label>
+
+    {/* Link ảnh sản phẩm */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Ảnh sản phẩm:
+      <input
+        type="text"
+        name="productImg"
+        value={formData.productImg}
+        onChange={handleInputChange}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
+    </label>
+
+    {/* Giá */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Giá:
+      <input
+        type="number"
+        name="productPrice"
+        value={formData.productPrice}
+        onChange={handleInputChange}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
+    </label>
+
+    {/* Số lượng trong kho */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Số lượng trong kho:
+      <input
+        type="number"
+        name="productInventoryQuantity"
+        value={formData.productInventoryQuantity}
+        onChange={handleInputChange}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
+    </label>
+
+    {/* Mô tả */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Mô tả:
+      <textarea
+        name="productDescription"
+        value={formData.productDescription}
+        onChange={handleInputChange}
+        rows={4}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      />
+    </label>
+
+    {/* Dropdown chọn thể loại */}
+    <label style={{ display: "flex", flexDirection: "column" }}>
+      Thể loại:
+      <select
+        name="categoryId"
+        value={formData.categoryId || ""}
+        onChange={handleInputChange}
+        style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+      >
+        <option value="">Chọn thể loại</option>
+        {categories.map((category) => (
+          <option key={category.categoryId} value={category.categoryId}>
+            {category.categoryName}
+          </option>
+        ))}
+      </select>
+    </label>
+
+    {/* Các nút */}
+    <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
       <button
-        onClick={handleDelete}
+        onClick={handleUpdate}
         style={{
-          backgroundColor: "#d32f2f",
+          flex: 1,
+          backgroundColor: "#388e3c",
           color: "white",
-          padding: "10px 20px",
+          padding: "10px",
           border: "none",
           borderRadius: "5px",
           cursor: "pointer",
-          fontSize: "16px",
-          marginTop: "20px"
+          fontSize: "16px"
+        }}
+      >
+        Cập nhật sản phẩm
+      </button>
+
+      <button
+        onClick={handleDelete}
+        style={{
+          flex: 1,
+          backgroundColor: "#d32f2f",
+          color: "white",
+          padding: "10px",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "16px"
         }}
       >
         Xoá sản phẩm
       </button>
     </div>
+  </div>
+</div>
+
   );
 }
