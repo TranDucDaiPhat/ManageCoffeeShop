@@ -4,42 +4,59 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import styles from './Login.module.css'
+import { FaSpinner } from "react-icons/fa";
 
 function Login() {
     const [username, setUsername] = useState("admin");
     const [password, setPassword] = useState("admin");
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const { role, setAccessToken } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        if (username.trim() == '' || password.trim() == '') {
+    
+        if (username.trim() === '' || password.trim() === '') {
             toast.error("Vui lòng nhập username và password!");
             return;
         }
+    
+        setIsLoading(true); // Bắt đầu loading
+    
         try {
             const res = await fetch("http://localhost:8081/myapp/api/business/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.trim(), password: password }),
-                credentials: "include", // Để nhận cookie từ server
+                credentials: "include",
             });
-
+    
             if (!res.ok) {
-                throw new Error(`Lỗi đăng nhập: ${res.status}`);
+                // Nếu response có status mà không phải kết nối lỗi mạng
+                if (res.status === 401 || res.status === 403) {
+                    toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
+                } else {
+                    toast.error(`Lỗi từ server: ${res.status}`);
+                }
+                return;
             }
-
-            const data = await res.json(); // Nhận phản hồi từ server
-            console.log("token: ", data)
+    
+            const data = await res.json();
             sessionStorage.setItem("accessToken", data.token);
             setAccessToken(data.token);
-
+    
             navigate("/tao-hoa-don");
         } catch (error) {
             console.error("Lỗi khi đăng nhập:", error.message);
-            toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
+    
+            // Nếu không có phản hồi từ server (ví dụ server tắt)
+            toast.error("Không thể kết nối đến server!");
+        } finally {
+            setIsLoading(false); // Tắt loading
         }
     };
+    
+    
 
     return (
         <div className={styles.container}>
@@ -65,7 +82,16 @@ function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <button type="submit">Đăng Nhập</button>
+                        <button type="submit" disabled={isLoading}>
+                            {isLoading ? (
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <FaSpinner className={styles.spinner} />
+                                    Đang đăng nhập...
+                                </span>
+                            ) : (
+                                "Đăng Nhập"
+                            )}
+                        </button>
                         <a href="#" className={styles.forgot_password}>Quên mật khẩu?</a>
                     </form>
                 </div>

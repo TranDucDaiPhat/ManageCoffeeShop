@@ -18,6 +18,7 @@ import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
 import SalesStatistics from "./pages/Statistics/SalesStatistics";
+import UploadImage from "./pages/UploadImage";
 
 function App() {
   return (
@@ -57,7 +58,6 @@ function App() {
           <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
-          <Route path="/danh-sach-san-pham" element={<ProductList />} />
         </Routes>
       </Router>
     </AuthProvider>
