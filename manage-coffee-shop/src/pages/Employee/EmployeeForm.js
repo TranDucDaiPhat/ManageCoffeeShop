@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import styles from "./EmployeeForm.module.css";
 import { Sidebar } from "../../components";
 import { useNavigate } from "react-router-dom";
+import employeeApi from "../../API/employeeApi";
 
 const EmployeeForm = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -14,48 +14,67 @@ const EmployeeForm = () => {
     empPassword: "",
     empRole: "",
   });
-  const [employees, setEmployees] = useState([]);
   const navigate = useNavigate();
-  const token =
-    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDUzMjk5NzMsImlhdCI6MTc0NTMyNjM3Mywic2NvcGUiOiJBRE1JTiJ9.Jki842RFAQZ88Ao2ilQn_K4jxsjKnw6L0CiMyY-efHXqaIHzBWCYvV1uVEYMk5zNl-Ax8CeJ2p5uAU41WRBtcw";
-  useEffect(() => {
-    axios
-      .get("http://localhost:8081/myapp/api/business/employee", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setEmployees(response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the employees!", error);
-      });
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const {
+      empName,
+      empPhone,
+      empYearOfBirth,
+      empAccount,
+      empPassword,
+      empRole,
+    } = formData;
+
+    if (
+      !empName.trim() ||
+      !empPhone.trim() ||
+      !empYearOfBirth.trim() ||
+      !empAccount.trim() ||
+      !empPassword.trim() ||
+      !empRole.trim()
+    ) {
+      alert("Vui lòng điền đầy đủ tất cả các trường!");
+      return false;
+    }
+
+    if (!/^\d{4}$/.test(empYearOfBirth)) {
+      alert("Năm sinh phải gồm 4 chữ số!");
+      return false;
+    }
+
+    if (!/^[0-9]{10}$/.test(empPhone)) {
+      alert("Số điện thoại không hợp lệ!");
+      return false;
+    }
+
+    if (empPassword.length < 6) {
+      alert("Mật khẩu phải có ít nhất 6 ký tự!");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:8081/myapp/api/business/employee", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setEmployees([...employees, response.data]);
-        alert("Thêm nhân viên thành công!");
-        navigate("/danh-sach-nhan-vien");
-      })
-      .catch((error) => {
-        console.error("There was an error adding the employee!", error);
-        alert("Lỗi khi thêm nhân viên!");
-      });
+    if (!validateForm()) return;
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await employeeApi.create(formData, token);
+      alert("Thêm nhân viên thành công!");
+      navigate("/danh-sach-nhan-vien");
+    } catch (error) {
+      console.error("Lỗi khi thêm nhân viên:", error);
+      alert("Đã xảy ra lỗi, vui lòng thử lại!");
+    }
   };
 
   const handleQuickCreate = () => {
@@ -174,6 +193,7 @@ const EmployeeForm = () => {
               />
             </div>
           </div>
+
           <div className={styles.buttonGroup}>
             <button
               type="button"

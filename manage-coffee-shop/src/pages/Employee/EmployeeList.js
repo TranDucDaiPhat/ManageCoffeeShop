@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import clsx from "clsx";
 import styles from "./EmployeeList.module.css";
 import { Sidebar } from "../../components";
 import { useNavigate } from "react-router-dom";
+import employeeApi from "../../API/employeeApi";
 
 const EmployeeList = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -12,18 +12,11 @@ const EmployeeList = () => {
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const navigate = useNavigate();
 
-  const token =
-    "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwic3ViIjoiYWRtaW4iLCJleHAiOjE3NDUzMjk5NzMsImlhdCI6MTc0NTMyNjM3Mywic2NvcGUiOiJBRE1JTiJ9.Jki842RFAQZ88Ao2ilQn_K4jxsjKnw6L0CiMyY-efHXqaIHzBWCYvV1uVEYMk5zNl-Ax8CeJ2p5uAU41WRBtcw";
   const fetchEmployees = () => {
-    axios
-      .get("http://localhost:8081/myapp/api/business/employee", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      })
+    employeeApi
+      .getAll()
       .then((response) => {
-        const filteredData = response.data.filter((emp) => emp.empRole !== "");
+        const filteredData = response.filter((emp) => emp.empRole !== "");
         setEmployees(filteredData);
       })
       .catch((error) => {
@@ -40,16 +33,8 @@ const EmployeeList = () => {
     const confirmDelete = window.confirm("Bạn có chắc muốn xoá nhân viên này?");
     if (!confirmDelete) return;
 
-    axios
-      .delete(
-        `http://localhost:8081/myapp/api/business/employee/${currentEmployee.empId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
-      )
+    employeeApi
+      .deleteById(currentEmployee.empId)
       .then(() => {
         alert("Xoá thành công!");
         setCurrentEmployee(null);
@@ -127,6 +112,8 @@ const EmployeeList = () => {
             </button>
           </div>
         </div>
+
+        {/* Tổng số quản lý và nhân viên */}
         <div
           style={{
             display: "flex",
@@ -156,6 +143,7 @@ const EmployeeList = () => {
           </div>
         </div>
 
+        {/* Bảng nhân viên */}
         <div className={styles.contentList}>
           <div className={styles.tableContainer}>
             <table className={styles.employeeTable}>
