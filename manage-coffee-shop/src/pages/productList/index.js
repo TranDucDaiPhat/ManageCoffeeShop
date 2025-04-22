@@ -52,7 +52,7 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
 
   
   return (
-    
+
     <div
     style={{
       display: "flex",
@@ -189,6 +189,7 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
     <div
       key={product.productId || index}
 
+
       style={{
         border: "1px solid #4CAF50", // viền xanh lá cây
         padding: "10px",
@@ -286,6 +287,7 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
           THÊM SẢN PHẨM
         </button>
         
+
         </div>
       </div>
     </div>

@@ -1,16 +1,16 @@
 .container {
     display: flex;
-    flex-direction: column; 
-    justify-content: center; 
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    height: 90vh; 
+    height: 90vh;
     text-align: center;
 }
 
 .content {
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
     padding: 8px;
     border: 1px solid red;
@@ -49,6 +49,9 @@
     cursor: pointer;
     font-size: 16px;
     margin-top: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .login_form button:hover {
@@ -67,4 +70,18 @@
 .forgot_password:hover {
     color: #0056b3;
     text-decoration: underline;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

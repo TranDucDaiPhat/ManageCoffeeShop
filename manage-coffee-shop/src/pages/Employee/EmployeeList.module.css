@@ -176,3 +176,38 @@
   background: #d1ecf1 !important;
   color: #0c5460;
 }
+.statsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f1eded;
+  padding: 15px 0;
+  border-radius: 10px;
+  width: 65%;
+  margin-bottom: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
+}
+
+.statBox {
+  text-align: center;
+  flex: 1;
+}
+
+.statLabel {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+.statValue {
+  font-size: 22px;
+  margin-top: 5px;
+  font-weight: bold;
+  color: #000;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background-color: gray;
+}

@@ -51,7 +51,7 @@
     padding: 5px 9px;
     width: 250px;
     transition: 0.3s ease-in-out;
-    margin: 0 15px 5px 15px;
+    margin: 0 5px 5px 15px;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px;
 }
 
@@ -161,10 +161,23 @@ input[type="number"]::-webkit-inner-spin-button {
     transition: all 0.3s ease-in-out;
 }
 
+.btnSearchCustomer {
+    /* style={{padding:6, borderRadius: 25, border: 'none'}} */
+    padding: 6px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer; /* Con trỏ chuột thành bàn tay khi hover */
+    transition: all 0.2s ease-in-out;
+}
+
 /* Hover: đổi màu nền, thêm hiệu ứng scale */
 .customButton:hover {
     background-color: #4CAF50; /* Màu tối hơn khi hover */
     box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 2px; /* Đổ bóng lớn hơn */
+}
+
+.btnSearchCustomer:hover {
+    background-color: #d5d5d5; /* Màu tối hơn khi hover */
 }
 
 /* Khi click giữ nút */
@@ -173,3 +186,6 @@ input[type="number"]::-webkit-inner-spin-button {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px; /* Giảm bóng */
 }
 
+.btnSearchCustomer:active {
+    transform: scale(0.85); /* Thu nhỏ lại khi nhấn */
+}

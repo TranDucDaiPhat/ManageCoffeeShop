@@ -25,11 +25,10 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
     ];
 
     // Chỉ thêm menu "Nhân Viên" nếu role KHÔNG phải là "Employee"
-    if (role !== "Employee") {
+    if (role == "ADMIN") {
       items.push({
         title: "Nhân Viên",
         submenu: [
-          { title: "Lịch Làm Việc", path: "/lich-lam-viec" },
           { title: "Danh Sách Nhân Viên", path: "/danh-sach-nhan-vien" },
           { title: "Thêm Nhân Viên", path: "/them-nhan-vien" },
         ],

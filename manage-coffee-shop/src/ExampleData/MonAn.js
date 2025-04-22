@@ -6,7 +6,7 @@ const items = [
         donGia: 49000,
         moTa: 'Sự kết hợp tươi mát của rượu rum, lá bạc hà, chanh tươi và soda, mang đến hương vị sảng khoái.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img1.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174349/img1_kvxdhd.jpg'
     },
     {
         maMon: '2',
@@ -15,7 +15,7 @@ const items = [
         donGia: 49000,
         moTa: 'Một loại cocktail cổ điển với tequila, nước cốt chanh và rượu Cointreau, có vị chua nhẹ và chút mặn trên viền ly.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img2.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img2_m43puz.jpg'
     },
     {
         maMon: '3',
@@ -24,7 +24,7 @@ const items = [
         donGia: 49000,
         moTa: ' Hương vị nhiệt đới ngọt ngào từ dừa, dứa và rum trắng, tạo cảm giác như đang thư giãn bên bờ biển.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img3.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img3_e40io0.jpg'
     },
     {
         maMon: '4',
@@ -49,7 +49,7 @@ const items = [
         donGia: 49000,
         moTa: 'Cà phê đậm đặc, nguyên chất, dành cho những ai yêu thích hương vị mạnh mẽ.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img4.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img4_uqwqxd.jpg'
     },
     {
         maMon: '7',
@@ -58,7 +58,7 @@ const items = [
         donGia: 49000,
         moTa: 'Espresso pha thêm nước nóng, tạo vị thanh nhẹ hơn.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img5.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img5_wuyse9.jpg'
     },
     {
         maMon: '8',
@@ -99,7 +99,7 @@ const items = [
         donGia: 49000,
         moTa: 'Trà đen thơm ngát hòa quyện với đào tươi, cam vàng và hương sả thoang thoảng.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img6.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174356/img6_fl9cio.jpg'
     },
     {
         maMon: '13',
@@ -108,7 +108,7 @@ const items = [
         donGia: 49000,
         moTa: 'Matcha Nhật Bản kết hợp với sữa, tạo vị thơm béo và nhẹ nhàng.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img7.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img7_nirz24.jpg'
     },
     {
         maMon: '14',
@@ -125,7 +125,7 @@ const items = [
         donGia: 49000,
         moTa: 'Bánh ngọt Ý nổi tiếng với lớp kem mascarpone béo ngậy và hương vị cà phê đậm đà.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img8.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img8_qkurc8.jpg'
     },
     {
         maMon: '16',
@@ -134,7 +134,7 @@ const items = [
         donGia: 49000,
         moTa: 'Bánh phô mai mịn màng, có thể kết hợp với sốt dâu, việt quất hoặc chanh leo.',
         tinhTrang: 'Còn hàng',
-        hinhAnh: '\\image\\img9.jpg'
+        hinhAnh: 'https://res.cloudinary.com/dvpbtas1x/image/upload/v1744174350/img9_ga8dik.jpg'
     },
     {
         maMon: '17',

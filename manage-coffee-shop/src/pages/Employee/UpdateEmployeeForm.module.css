@@ -1,67 +1,104 @@
 .container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .header {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .formContainer {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .inputGroup {
-    margin-bottom: 15px;
-  }
-  
-  .inputLabel {
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .inputField {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .buttonGroup {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .button {
-    background-color: #28a745;
-    margin: 10px;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .button:hover {
-    background-color: #218838;
-  }
-  
-  .avatarPreview {
-    margin-top: 10px;
-    max-width: 100px;
-    max-height: 100px;
-    border-radius: 50%;
-  }
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
+  padding-left: 60px; 
+  position: relative;
+}
+
+.toggleButtonSidebar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.topBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  gap: 8px;
+}
+
+.backButton {
+  font-size: 14px !important;
+  align-self: flex-start;
+  margin-left: 10px;
+}
+
+.header {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.form {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 500px;
+  background-color: #f9f9f9;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 15px;
+}
+
+.form input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.form input:focus {
+  border-color: #5985d7;
+  outline: none;
+}
+
+.form button {
+  width: 100%;
+  background-color: #5985d7;
+  color: white;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form button:hover {
+  background-color: #426cc6;
+}
+
+.form button:active {
+  transform: scale(0.98);
+}
+.backButton {
+  font-size: 14px !important;
+  position: relative;
+  left: 0;
+  transition: left 0.3s ease;
+}
+
+.backButton.shifted {
+  left: 200px; 
+}
