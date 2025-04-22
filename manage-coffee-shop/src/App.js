@@ -63,6 +63,7 @@ function App() {
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
           <Route path="/productStatic" element={<ProductStatic/>} />
+          <Route path="/updateimg" element={<UploadImage/>} />
           
 
         </Routes>

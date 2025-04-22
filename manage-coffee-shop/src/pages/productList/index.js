@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Sidebar } from "../../components";
 import { useNavigate } from "react-router-dom";
 import noImage from "./no-image.jpg";  // Ảnh mặc định
-import { getMons } from "../../Api/productApi"; // đường dẫn đúng theo cấu trúc dự án của bạn
-import { getCategories } from "../../Api/categoryApi";
+import { getMons } from "../../API/productAPI"; // đường dẫn đúng theo cấu trúc dự án của bạn
+import { getCategories } from "../../API/categoryAPI";
 const ProductList = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
