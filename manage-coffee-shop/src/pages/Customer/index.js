@@ -7,6 +7,7 @@ import { Sidebar } from '../../components';
 import { fetchCustomer, findCustomerByPhone, createCustomer } from '../../API';
 import { useAuth } from "../../AuthContext";
 
+
 function Customer() {
     const [openSidebar, setOpenSidebar] = useState(false);
     const [customers, setCustomers] = useState([]);

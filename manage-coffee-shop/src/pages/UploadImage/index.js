@@ -58,7 +58,7 @@ function UploadImage() {
                 accept="image/*"
                 onChange={(e) => {
                     const file = e.target.files[0];
-                    if (!file) return; // 👈 Chặn lỗi khi không có file
+                    if (!file) return; // Chặn lỗi khi không có file
 
                     setImage(file);
                     setPreviewUrl(URL.createObjectURL(file));
