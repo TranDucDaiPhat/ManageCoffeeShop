@@ -28,9 +28,10 @@ function UploadImage() {
             toast.error("Đăng ảnh thất bại.");
         }
 
+    
     };
 
-  
+
 
     useEffect(() => {
         return () => {
@@ -57,6 +58,7 @@ function UploadImage() {
             />
 
             <button onClick={uploadToCloudinary}>Upload</button>
+
 
             <h3>Gallery</h3>
           
