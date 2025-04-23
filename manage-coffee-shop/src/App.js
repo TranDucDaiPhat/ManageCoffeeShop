@@ -9,6 +9,8 @@ import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
 
+import ProductStatic from "./pages/productStatic/productStatic";
+
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
 import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
@@ -29,9 +31,7 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* route cho Employee */}
-          <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-
-          </Route>
+          <Route element={<ProtectedRoute allowedRoles={["USER"]} />}></Route>
 
           {/* route cho ADMIN */}
           <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
@@ -43,7 +43,7 @@ function App() {
           </Route>
 
           {/* route chung cho Employee và Manager*/}
-          <Route element={<ProtectedRoute allowedRoles={["USER","ADMIN"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["USER", "ADMIN"]} />}>
             <Route path="/tao-hoa-don" element={<Order />} />
           </Route>
 
@@ -58,6 +58,7 @@ function App() {
           <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
+          <Route path="/productStatic" element={<ProductStatic />} />
         </Routes>
       </Router>
     </AuthProvider>
