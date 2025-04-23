@@ -56,14 +56,14 @@ const ProductStatic = () => {
       // Tính tổng số lượt mua của từng sản phẩm
       const salesMap = {};
       details.forEach((d) => {
-        salesMap[d.product_id] =
-          (salesMap[d.product_id] || 0) + d.product_quantity;
+        salesMap[d.productId] =
+          (salesMap[d.productId] || 0) + d.productQuantity;
       });
 
       // Gộp dữ liệu sản phẩm + số lượt bán
       const stats = products.map((p) => ({
         ...p,
-        total_sold: salesMap[p.product_id] || 0,
+        total_sold: salesMap[p.productId] || 0,
       }));
 
       // Sắp xếp theo total_sold
@@ -92,8 +92,8 @@ const ProductStatic = () => {
 
   const sortedProducts = [...products].sort((a, b) =>
     sortOrder === "desc"
-      ? b.product_inventory_quantity - a.product_inventory_quantity
-      : a.product_inventory_quantity - b.product_inventory_quantity
+      ? b.productInventoryQuantity - a.productInventoryQuantity
+      : a.productInventoryQuantity - b.productInventoryQuantity
   );
   useEffect(() => {
     const fetchData = async () => {
@@ -108,21 +108,21 @@ const ProductStatic = () => {
 
       const mergedStats = productsRes.data.map((product) => {
         const relatedDetails = billDetailRes.data.filter(
-          (detail) => detail.product_id === product.product_id
+          (detail) => detail.productId === product.productId
         );
 
         const totalSold = relatedDetails.reduce(
-          (sum, d) => sum + d.product_quantity,
+          (sum, d) => sum + d.productQuantity,
           0
         );
         const totalRevenue = relatedDetails.reduce(
-          (sum, d) => sum + d.sub_total,
+          (sum, d) => sum + d.subTotal,
           0
         );
 
         return {
-          product_id: product.product_id,
-          product_name: product.product_name,
+          productId: product.productId,
+          productName: product.productName,
           totalSold,
           totalRevenue,
         };
@@ -161,8 +161,8 @@ const ProductStatic = () => {
       "Doanh thu (VND)",
     ];
     const rows = filteredStatistics.map((item) => [
-      item.product_id,
-      item.product_name,
+      item.productId,
+      item.productName,
       item.totalSold,
       item.totalRevenue,
     ]);
@@ -179,7 +179,7 @@ const ProductStatic = () => {
 
   const filteredStatistics = statistics
     .filter((item) =>
-      item.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+      item.productName.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter((item) => {
       if (minRevenue && item.totalRevenue < parseInt(minRevenue)) return false;
@@ -295,9 +295,9 @@ const ProductStatic = () => {
               </thead>
               <tbody>
                 {filteredStatistics.map((item) => (
-                  <tr key={item.product_id}>
-                    <td>{item.product_id}</td>
-                    <td>{item.product_name}</td>
+                  <tr key={item.productId}>
+                    <td>{item.productId}</td>
+                    <td>{item.productName}</td>
                     <td>{item.totalSold}</td>
                     <td>{item.totalRevenue.toLocaleString()}</td>
                   </tr>
@@ -366,14 +366,14 @@ const ProductStatic = () => {
               <tbody>
                 {productStats.map((p) => (
                   <tr
-                    key={p.product_id}
+                    key={p.productId}
                     style={{
                       backgroundColor: "#fff",
                       borderBottom: "1px solid #ccc",
                     }}
                   >
                     <td style={{ padding: "10px", textAlign: "center" }}>
-                      {p.product_id}
+                      {p.productId}
                     </td>
                     <td style={{ padding: "10px" }}>{p.product_name}</td>
                     <td style={{ padding: "10px", textAlign: "center" }}>
@@ -439,18 +439,18 @@ const ProductStatic = () => {
               <tbody>
                 {sortedProducts.map((p) => (
                   <tr
-                    key={p.product_id}
+                    key={p.productId}
                     style={{
                       backgroundColor: "#fff",
                       borderBottom: "1px solid #ccc",
                     }}
                   >
                     <td style={{ padding: "10px", textAlign: "center" }}>
-                      {p.product_id}
+                      {p.productId}
                     </td>
-                    <td style={{ padding: "10px" }}>{p.product_name}</td>
+                    <td style={{ padding: "10px" }}>{p.productName}</td>
                     <td style={{ padding: "10px", textAlign: "center" }}>
-                      {p.product_inventory_quantity}
+                      {p.productInventoryQuantity}
                     </td>
                   </tr>
                 ))}

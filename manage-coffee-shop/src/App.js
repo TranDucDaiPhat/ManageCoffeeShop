@@ -19,7 +19,6 @@ import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
-import SalesStatistics from "./pages/Statistics/SalesStatistics";
 import UploadImage from "./pages/UploadImage";
 
 function App() {
@@ -55,7 +54,6 @@ function App() {
           {/* <Route path="/danh-sach-san-pham" element={<DanhSachSanPham />} /> */}
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/tai-khoan" element={<PersonalInfo />} />
-          <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/productStatic" element={<ProductStatic />} />
