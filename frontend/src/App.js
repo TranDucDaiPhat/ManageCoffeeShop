@@ -19,6 +19,8 @@ import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
+import SalesStatistics from "./pages/Statistics/SalesStatistics";
+import ProductStatic from './pages/productStatic/productStatic';
 import UploadImage from "./pages/UploadImage";
 
 function App() {
@@ -56,7 +58,9 @@ function App() {
           <Route path="/tai-khoan" element={<PersonalInfo />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
-          <Route path="/productStatic" element={<ProductStatic />} />
+          <Route path="/danh-sach-san-pham" element={<ProductList />} />
+          <Route path="/productStatic" element={<ProductStatic/>} />
+          <Route path="/updateimg" element={<UploadImage/>} />
         </Routes>
       </Router>
     </AuthProvider>

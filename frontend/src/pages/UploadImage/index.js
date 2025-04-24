@@ -28,18 +28,10 @@ function UploadImage() {
             toast.error("Đăng ảnh thất bại.");
         }
 
-        // await axios.post('http://localhost:5000/api/images', { url: imageUrl });
-        // fetchGallery();
+    
     };
 
-    // const fetchGallery = async () => {
-    //     const res = await axios.get('http://localhost:5000/api/images');
-    //     setGallery(res.data);
-    // };
 
-    // useEffect(() => {
-    //     fetchGallery();
-    // }, []);
 
     useEffect(() => {
         return () => {
@@ -67,14 +59,9 @@ function UploadImage() {
 
             <button onClick={uploadToCloudinary}>Upload</button>
 
-            {/* {uploadedUrl && <img src={uploadedUrl} alt="Uploaded" style={{ width: 200 }} />} */}
 
             <h3>Gallery</h3>
-            {/* <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                {gallery.map(img => (
-                    <img key={img._id} src={img.url} alt="" width={150} />
-                ))}
-            </div> */}
+          
 
             {previewUrl && (
                 <div style={{ margin: '10px 0' }}>

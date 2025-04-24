@@ -1,377 +1,310 @@
+// Import các hook và module cần thiết
 import React, { useState } from "react";
-import { Sidebar } from "../../components";
+import { useNavigate } from "react-router-dom";
+import { addProduct } from "../../API/productAPI";
+import { getCategories } from "../../API/categoryAPI";
+import noImage from "../productList/no-image.jpg";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-
-const AddProduct = () => {
-  const [openSidebar, setOpenSidebar] = useState(false);
-  const [image, setImage] = useState("/img8.jpg"); // Ảnh mặc định
-
-  // Xử lý khi chọn ảnh
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file)); // Hiển thị ảnh mới
-    }
-  };
-  const [product, setProduct] = useState({
-    ten: "",
-    gia: "",
-    loai: "",
-    donVi: "ly",
-    moTa: "",
-    hinhAnh: "",
+export default function AddProduct() {
+  const [categories, setCategories] = useState([]);
+  const [formData, setFormData] = useState({
+    productName: "",
+    productPrice: "",
+    productInventoryQuantity: "",
+    productDescription: "",
+    productImg: "",
+    categoryId: null,
   });
   
-  
-  const handleAddProduct = () => {
-    console.log("Sản phẩm thêm:", product);
-  
-    fetch("API_URL", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(product)
-    })
-    .then(response => response.json())
-    .then(data => console.log("Phản hồi từ server:", data))
-    .catch(error => console.error("Lỗi:", error));
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  // Cloudinary config
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvpbtas1x/image/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'coffeeShop';
+
+  // Lấy danh sách danh mục khi component mount
+  React.useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const categoryData = await getCategories();
+        setCategories(categoryData);
+      } catch (err) {
+        setError("Không thể tải danh sách thể loại");
+        console.error(err);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  // Hàm xử lý upload ảnh lên Cloudinary
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Tạo preview ảnh
+    setPreviewUrl(URL.createObjectURL(file));
+
+    // Kiểm tra kích thước và định dạng file
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
+      return;
+    }
+
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+      const response = await axios.post(CLOUDINARY_URL, formData);
+
+      if (response.status === 200) {
+        const imageUrl = response.data.secure_url;
+        setFormData({
+          ...formData,
+          productImg: imageUrl,
+        });
+        toast.success("Upload ảnh thành công!");
+      } else {
+        toast.error("Upload ảnh thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi khi upload ảnh:", error);
+      toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
+    }
+  };
+
+  // Clean up preview URL khi component unmount
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "categoryId" ? (value === "" ? null : Number(value)) : value,
+    }));
   };
   
-  
-  // Nếu có API, bạn có thể gửi dữ liệu lên server ở đây
-  fetch("API_URL", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(product)
-  }).then(response => response.json())
-    .then(data => console.log("Phản hồi từ server:", data));
-  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate dữ liệu
+    if (!formData.categoryId || isNaN(formData.categoryId)) {
+      toast.error("Vui lòng chọn thể loại hợp lệ");
+      return;
+    }
+    if (!formData.productName?.trim()) {
+      toast.error("Vui lòng nhập tên sản phẩm");
+      return;
+    }
+
+    try {
+      const dataToSend = {
+        ...formData,
+        categoryId: Number(formData.categoryId),
+      };
+      
+      console.log("Dữ liệu gửi lên server:", dataToSend);
+      await addProduct(dataToSend);
+      toast.success("Thêm sản phẩm thành công");
+      navigate("/danh-sach-san-pham");
+    } catch (err) {
+      console.error("Add product error:", err);
+      toast.error(`Lỗi khi thêm sản phẩm: ${err.message}`);
+    }
+  };
+
+  if (error) return <p>{error}</p>;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        position: "relative",
-        background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9))",
-        backdropFilter: "blur(10px)",
-        boxShadow: "inset 0 0 50px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      {openSidebar && (
-        <div style={{ width: "250px", transition: "width 0.5s ease", overflow: "hidden" }}>
-          <Sidebar openSidebar={openSidebar} onOpenSidebar={setOpenSidebar} />
-        </div>
-      )}
+    <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto", fontFamily: "Arial, sans-serif" }}>
+      <h2 style={{ color: "#2e7d32", textAlign: "center" }}>Thêm sản phẩm mới</h2>
 
-      <div
-        style={{
-          width: openSidebar ? `calc(100% - 250px)` : "100%",
-          transition: "width 0.5s ease",
-          padding: "20px",
-          backgroundColor: "#FFFFFF",
-          margin: "0 auto",
-        }}
-      >
-        {!openSidebar && <button onClick={() => setOpenSidebar(true)}>☰</button>}
-
-        {/* Nội dung */}
-        <div
-          style={{
-            backgroundColor: "#D9D9D9",
-            borderRadius: "15px",
-            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
-            width: "100%",
-            height: "100vh",
-            padding: "20px",
-          }}
-        >
-          <h1
+      <div style={{ textAlign: "center" }}>
+        {/* Hiển thị ảnh preview hoặc ảnh mặc định */}
+        {previewUrl ? (
+          <img
+            src={previewUrl}
+            alt="Preview"
             style={{
-              textAlign: "center",
-              marginBottom: "20px",
-              fontSize: "28px",
-              fontWeight: "bold",
-              color: "#8BC34A",
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              transition: "color 0.3s ease, transform 0.3s ease",
+              width: "100%",
+              maxHeight: "300px",
+              objectFit: "cover",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              marginBottom: "20px"
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#8BC34A";
-              e.currentTarget.style.transform = "scale(1.1)";
+          />
+        ) : (
+          <img
+            src={formData.productImg || noImage}
+            alt="Ảnh sản phẩm"
+            style={{
+              width: "100%",
+              maxHeight: "300px",
+              objectFit: "cover",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              marginBottom: "20px"
             }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#333";
-              e.currentTarget.style.transform = "scale(1)";
+          />
+        )}
+        
+        {/* Nút upload ảnh */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{
+            display: "inline-block",
+            padding: "8px 16px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginRight: "10px"
+          }}>
+            Chọn ảnh từ máy tính
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Form thêm sản phẩm */}
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Tên sản phẩm:
+          <input
+  type="text"
+  name="productName"
+  value={formData.productName}
+  onChange={handleInputChange}
+
+
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Ảnh sản phẩm (URL):
+          <input
+            type="text"
+            name="productImg"
+            value={formData.productImg}
+            onChange={handleInputChange}
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Giá:
+          <input
+            type="number"
+            name="productPrice"
+            value={formData.productPrice}
+            onChange={handleInputChange}
+            required
+            min="0"
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Số lượng trong kho:
+          <input
+            type="number"
+            name="productInventoryQuantity"
+            value={formData.productInventoryQuantity}
+            onChange={handleInputChange}
+            required
+            min="0"
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Mô tả:
+          <textarea
+            name="productDescription"
+            value={formData.productDescription}
+            onChange={handleInputChange}
+            rows={4}
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          />
+        </label>
+
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Thể loại:
+          <select
+            name="categoryId"
+            value={formData.categoryId ?? ""}
+            onChange={handleInputChange}
+            required
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          >
+            <option value="">Chọn thể loại</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Các nút */}
+        <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+          <button
+            type="submit"
+            style={{
+              flex: 1,
+              backgroundColor: "#388e3c",
+              color: "white",
+              padding: "10px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "16px"
             }}
           >
             Thêm sản phẩm
-          </h1>
+          </button>
 
-          <div>
-          <div style={{ marginBottom: "15px" }}>
-            <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                Tên sản phẩm
-            </label>
-            <input
-                type="text"
-                placeholder="Nhập tên sản phẩm..."
-                value={product.ten}
-                onChange={(e) => setProduct({ ...product, ten: e.target.value })}
-                style={{
-                width: "100%",
-                padding: "10px",
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
-                transition: "border-color 0.3s",
-                }}
-                onFocus={(e) => e.target.style.borderColor = "#4CAF50"}
-                onBlur={(e) => e.target.style.borderColor = "#ccc"}
-            />
-            </div>
-
-
-            <div style={{ display: "flex", gap: "20px" }}>
-              {/* Bên trái */}
-              <div style={{ width: "100%", paddingRight: "20px" }}>
-                 <div style={{ 
-                    width: "100%", 
-                    padding: "15px", 
-                    borderRadius: "10px", 
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", 
-                    backgroundColor: "#fff"
-                    }}>
-                    {/* Mã sản phẩm */}
-                    <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                        Phân loại:
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Nhập loại sản phẩm..."
-                        value={product.loai}
-                        onChange={(e) => setProduct({ ...product, loai: e.target.value })}
-        
-        
-                        style={{
-                        width: "100%",
-                        padding: "10px",
-                        marginBottom: "15px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "border-color 0.3s",
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = "#4CAF50"}
-                        onBlur={(e) => e.target.style.borderColor = "#ccc"}
-                    />
-
-                    {/* Giá */}
-                    <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                        Giá sản phẩm:
-                    </label>
-                    <input
-                        type="number"
-                        placeholder="Nhập giá..."
-                        value={product.gia}
-                        onChange={(e) => setProduct({ ...product, gia: e.target.value })}
-        
-                        style={{
-                        width: "100%",
-                        padding: "10px",
-                        marginBottom: "15px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "border-color 0.3s",
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = "#4CAF50"}
-                        onBlur={(e) => e.target.style.borderColor = "#ccc"}
-                    />
-
-                    {/* Đơn vị */}
-                    <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                        Đơn vị
-                    </label>
-                    <select
-                        style={{
-                        width: "100%",
-                        padding: "10px",
-                        marginBottom: "15px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                        }}
-                    >
-                        <option>Chai</option>
-                        <option>Lon</option>
-                        <option>Ly</option>
-                    </select>
-
-                    {/* Danh mục */}
-                    <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                        Danh mục
-                    </label>
-                    <select
-                        style={{
-                        width: "100%",
-                        padding: "10px",
-                        marginBottom: "15px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                        }}
-                    >
-                        <option>Trà</option>
-                        <option>Caffe</option>
-                        <option>Nước ngọt</option>
-                    </select>
-
-                    {/* Mô tả */}
-                    <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                        Mô tả
-                    </label>
-                    <textarea
-                        placeholder="Nhập mô tả..."
-                        value={product.moTa}
-                        onChange={(e) => setProduct({ ...product, moTa: e.target.value })}
-                        style={{
-                        width: "100%",
-                        height: "100px",
-                        padding: "10px",
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "border-color 0.3s",
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = "#4CAF50"}
-                        onBlur={(e) => e.target.style.borderColor = "#ccc"}
-                    ></textarea>
-                    </div>
-
-                <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                <button
-                onClick={handleAddProduct}
-                    style={{
-                        padding: "12px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#8BC34A",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                        marginRight: "10px",
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#6a9e3b";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                        e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#8BC34A";
-                        e.currentTarget.style.transform = "scale(1)";
-                        e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-                    }}
-                    >
-                    Thêm sản phẩm
-                </button>
-
-                <button
-                    style={{
-                        padding: "12px 20px",
-                        fontSize: "16px",
-                        backgroundColor: "#FF5252",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "10px",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#D32F2F";
-                        e.currentTarget.style.transform = "scale(1.05)";
-                        e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.3)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#FF5252";
-                        e.currentTarget.style.transform = "scale(1)";
-                        e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-                        
-                    }}
-                    onClick={handleAddProduct}
-                    >
-                    Xóa
-                </button>
-
-                </div>
-              </div>
-              {/* Bên phải */}
-              <div style={{ width: "50%" }}>
-                <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-                    Hình ảnh
-                </label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    style={{ marginBottom: "10px" }}
-                />
-                <div
-                    style={{
-                    width: "350px",
-                    height: "400px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "15px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    border: image ? "none" : "2px dashed #ccc",
-                    backgroundColor: image ? "transparent" : "#f0f0f0",
-                    }}
-                    onMouseEnter={(e) => {
-                    if (image) {
-                        e.currentTarget.style.transform = "scale(1.05)";
-                        e.currentTarget.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
-                    }
-                    }}
-                    onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-                    }}
-                >
-                    {image ? (
-                    <img
-                        src={image}
-                        alt="Ảnh sản phẩm"
-                        style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        borderRadius: "15px",
-                        }}
-                    />
-                    ) : (
-                    <span style={{ color: "#888" }}>Chưa có hình ảnh</span>
-                    )}
-                </div>
-                </div>
-
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/danh-sach-san-pham")}
+            style={{
+              flex: 1,
+              backgroundColor: "#757575",
+              color: "white",
+              padding: "10px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "16px"
+            }}
+          >
+            Hủy bỏ
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
-};
-
-export default AddProduct;
+}

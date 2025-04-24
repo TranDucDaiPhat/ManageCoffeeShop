@@ -32,3 +32,19 @@ export const fetchCategories = async () => {
         toast.error("Lỗi!!");
     }
 }
+
+export async function getCategories() {
+  const token = sessionStorage.getItem("accessToken");
+  const response = await fetch("http://localhost:8081/myapp/api/business/categories", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Không thể lấy dữ liệu món ăn");
+  }
+  
+  
+  return response.json();
+}
