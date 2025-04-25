@@ -27,48 +27,7 @@ export default function ProductInfo() {
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/ddfzgrs87/image/upload';
   const CLOUDINARY_UPLOAD_PRESET = 'coffeeShop';
 
-  // Hàm xử lý upload ảnh lên Cloudinary
-  // const handleImageUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   // Tạo preview ảnh
-  //   setPreviewUrl(URL.createObjectURL(file));
-
-  //   // Kiểm tra kích thước và định dạng file
-  //   if (file.size > 5 * 1024 * 1024) {
-  //     toast.error("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
-  //     return;
-  //   }
-
-  //   const validTypes = ["image/jpeg", "image/png", "image/webp"];
-  //   if (!validTypes.includes(file.type)) {
-  //     toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-  //   try {
-  //     const response = await axios.post(CLOUDINARY_URL, formData);
-
-  //     if (response.status === 200) {
-  //       const imageUrl = response.data.secure_url;
-  //       setFormData({
-  //         ...formData,
-  //         productImg: imageUrl,
-  //       });
-  //       toast.success("Upload ảnh thành công!");
-  //     } else {
-  //       toast.error("Upload ảnh thất bại");
-  //     }
-  //   } catch (error) {
-  //     console.error("Lỗi khi upload ảnh:", error);
-  //     toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
-  //   }
-  // };
+ 
   const handleImageUpload = async (e) => {
     // ... (phần code trước giữ nguyên)
     const file = e.target.files[0];
@@ -148,13 +107,6 @@ export default function ProductInfo() {
     fetchData();
   }, [id]);
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({
-  //     ...formData,
-  //     [name]: name === "categoryId" ? (value ? parseInt(value, 10) : null) : value,
-  //   });
-  // };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -163,26 +115,7 @@ export default function ProductInfo() {
     });
   };
 
-  // const handleUpdate = async () => {
-  //   if (formData.categoryId === null || isNaN(formData.categoryId)) {
-  //     toast.error("Vui lòng chọn thể loại hợp lệ");
-  //     return;
-  //   }
-
-  //   try {
-  //     const dataToSend = {
-  //       ...formData,
-  //       categoryId: Number(formData.categoryId),
-  //     };
-
-  //     await updateMonById(id, dataToSend);
-  //     toast.success("Cập nhật sản phẩm thành công");
-  //     navigate("/danh-sach-san-pham");
-  //   } catch (err) {
-  //     console.error("Update error:", err);
-  //     toast.error(`Lỗi khi cập nhật sản phẩm: ${err.message}`);
-  //   }
-  // };
+ 
   const handleUpdate = async () => {
     if (!formData.categoryId || isNaN(formData.categoryId)) {
       toast.error("Vui lòng chọn thể loại hợp lệ");
