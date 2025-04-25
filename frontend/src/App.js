@@ -1,15 +1,8 @@
 import "./GlobalStyles.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Navigate,
-  Route,
-} from "react-router-dom";
+import {BrowserRouter as Router,Routes,Navigate,Route} from "react-router-dom";
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
-
-import ProductStatic from "./pages/productStatic/productStatic";
 
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
 import { AuthProvider } from "./AuthContext";

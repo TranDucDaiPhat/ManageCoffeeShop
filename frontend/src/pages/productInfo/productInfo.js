@@ -6,6 +6,8 @@ import { getCategories } from "../../API/categoryAPI";
 import noImage from "../productList/no-image.jpg";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa"; 
+import styles from "./product.module.css"
 
 export default function ProductInfo() {
   const { id } = useParams();
@@ -22,6 +24,8 @@ export default function ProductInfo() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Cloudinary config
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvpbtas1x/image/upload';
@@ -46,28 +50,8 @@ export default function ProductInfo() {
       toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
       return;
     }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-    try {
-      const response = await axios.post(CLOUDINARY_URL, formData);
-
-      if (response.status === 200) {
-        const imageUrl = response.data.secure_url;
-        setFormData({
-          ...formData,
-          productImg: imageUrl,
-        });
-        toast.success("Upload ảnh thành công!");
-      } else {
-        toast.error("Upload ảnh thất bại");
-      }
-    } catch (error) {
-      console.error("Lỗi khi upload ảnh:", error);
-      toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
-    }
+    setImage(file);
+    setFormData({ ...formData, productImg: file.name })
   };
 
   // Clean up preview URL khi component unmount
@@ -145,21 +129,51 @@ export default function ProductInfo() {
       toast.error("Vui lòng chọn thể loại hợp lệ");
       return;
     }
+    console.log('product:', product)
+    console.log('product update:', formData)
   
+    let newImageUrl = product.productImg; // Dùng biến tạm để tránh lệ thuộc vào setState
+    setIsLoading(true);
+    // Nếu người dùng đổi ảnh, thì mới upload ảnh mới
+    if (product.productImg != formData.productImg) {
+      const data = new FormData();
+      data.append("file", image);
+      data.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  
+      try {
+        const response = await axios.post(CLOUDINARY_URL, data);
+        if (response.status === 200) {
+          newImageUrl = response.data.secure_url;
+          console.log(newImageUrl)
+        }
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+        toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
+        setIsLoading(false);
+        return;
+      }
+    }
+  
+    // Gửi dữ liệu cập nhật
     try {
       const dataToSend = {
         ...formData,
+        productImg: newImageUrl, // Gán ảnh mới (hoặc cũ nếu không thay đổi)
         categoryId: Number(formData.categoryId),
       };
-      console.log("Dữ liệu gửi lên server:", dataToSend); // ✅ Log tại đây
+  
+      console.log("Dữ liệu gửi lên server:", dataToSend);
       await updateMonById(id, dataToSend);
-      toast.success("Cập nhật sản phẩm thành công"); // Đã thêm dấu ngoặc đóng
+      toast.success("Cập nhật sản phẩm thành công");
       navigate("/danh-sach-san-pham");
     } catch (err) {
       console.error("Update error:", err);
       toast.error(`Lỗi khi cập nhật sản phẩm: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
+  
 
   const handleDelete = async () => {
     if (window.confirm("Bạn có chắc chắn muốn xoá sản phẩm này?")) {
@@ -209,7 +223,7 @@ export default function ProductInfo() {
             }}
           />
         )}
-        
+
         {/* Nút upload ảnh */}
         <div style={{ marginBottom: "20px" }}>
           <label style={{
@@ -246,7 +260,7 @@ export default function ProductInfo() {
           />
         </label>
 
-        <label style={{ display: "flex", flexDirection: "column" }}>
+        {/* <label style={{ display: "flex", flexDirection: "column" }}>
           Ảnh sản phẩm (URL):
           <input
             type="text"
@@ -255,7 +269,7 @@ export default function ProductInfo() {
             onChange={handleInputChange}
             style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
           />
-        </label>
+        </label> */}
 
         <label style={{ display: "flex", flexDirection: "column" }}>
           Giá:
@@ -291,25 +305,26 @@ export default function ProductInfo() {
         </label>
 
         <label style={{ display: "flex", flexDirection: "column" }}>
-        Thể loại:
-        <select
-  name="categoryId"
-  value={formData.categoryId ?? ""}
-  onChange={handleInputChange}
-  style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
->
-  <option value="">Chọn thể loại</option>
-  {categories.map((category) => (
-    <option key={category.categoryId} value={category.categoryId}>
-      {category.categoryName}
-    </option>
-  ))}
-</select>
-      </label>
+          Thể loại:
+          <select
+            name="categoryId"
+            value={formData.categoryId ?? ""}
+            onChange={handleInputChange}
+            style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+          >
+            <option value="">Chọn thể loại</option>
+            {categories.map((category) => (
+              <option key={category.categoryId} value={category.categoryId}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
+        </label>
 
         {/* Các nút */}
         <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
           <button
+            disabled={isLoading}
             onClick={handleUpdate}
             style={{
               flex: 1,
@@ -322,7 +337,14 @@ export default function ProductInfo() {
               fontSize: "16px"
             }}
           >
-            Cập nhật sản phẩm
+            {isLoading ? (
+              <span className={styles.loading}>
+                <FaSpinner className={styles.spinner} />
+                &nbsp;Đang cập nhật...
+              </span>
+            ) : (
+              "Cập nhật sản phẩm"
+            )}
           </button>
 
           <button

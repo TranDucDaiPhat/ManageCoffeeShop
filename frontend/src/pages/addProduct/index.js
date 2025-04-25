@@ -6,6 +6,8 @@ import { getCategories } from "../../API/categoryAPI";
 import noImage from "../productList/no-image.jpg";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa"; 
+import styles from "./product.module.css"
 
 export default function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -17,11 +19,12 @@ export default function AddProduct() {
     productImg: "",
     categoryId: null,
   });
-  
+
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState("");
-
+  const [image, setImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   // Cloudinary config
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dvpbtas1x/image/upload';
   const CLOUDINARY_UPLOAD_PRESET = 'coffeeShop';
@@ -59,28 +62,8 @@ export default function AddProduct() {
       toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
       return;
     }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-    try {
-      const response = await axios.post(CLOUDINARY_URL, formData);
-
-      if (response.status === 200) {
-        const imageUrl = response.data.secure_url;
-        setFormData({
-          ...formData,
-          productImg: imageUrl,
-        });
-        toast.success("Upload ảnh thành công!");
-      } else {
-        toast.error("Upload ảnh thất bại");
-      }
-    } catch (error) {
-      console.error("Lỗi khi upload ảnh:", error);
-      toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
-    }
+    setImage(file);
+    setFormData({ ...formData, productImg: file.name })
   };
 
   // Clean up preview URL khi component unmount
@@ -99,11 +82,11 @@ export default function AddProduct() {
       [name]: name === "categoryId" ? (value === "" ? null : Number(value)) : value,
     }));
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate dữ liệu
     if (!formData.categoryId || isNaN(formData.categoryId)) {
       toast.error("Vui lòng chọn thể loại hợp lệ");
@@ -114,12 +97,32 @@ export default function AddProduct() {
       return;
     }
 
+    const data = new FormData();
+    data.append("file", image);
+    data.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    let newImageUrl = ''; // Dùng biến tạm để tránh lệ thuộc vào setState
+    setIsLoading(true);
+    try {
+      const response = await axios.post(CLOUDINARY_URL, data);
+      if (response.status === 200) {
+        newImageUrl = response.data.secure_url;
+        console.log(newImageUrl)
+      }
+    } catch (error) {
+      console.error("Lỗi khi upload ảnh:", error);
+      toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
+      setIsLoading(false);
+      return;
+    }
+
+    // Gửi dữ liệu cập nhật
     try {
       const dataToSend = {
         ...formData,
+        productImg: newImageUrl, // Gán ảnh mới (hoặc cũ nếu không thay đổi)
         categoryId: Number(formData.categoryId),
       };
-      
+
       console.log("Dữ liệu gửi lên server:", dataToSend);
       await addProduct(dataToSend);
       toast.success("Thêm sản phẩm thành công");
@@ -127,6 +130,8 @@ export default function AddProduct() {
     } catch (err) {
       console.error("Add product error:", err);
       toast.error(`Lỗi khi thêm sản phẩm: ${err.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -165,7 +170,7 @@ export default function AddProduct() {
             }}
           />
         )}
-        
+
         {/* Nút upload ảnh */}
         <div style={{ marginBottom: "20px" }}>
           <label style={{
@@ -193,17 +198,17 @@ export default function AddProduct() {
         <label style={{ display: "flex", flexDirection: "column" }}>
           Tên sản phẩm:
           <input
-  type="text"
-  name="productName"
-  value={formData.productName}
-  onChange={handleInputChange}
+            type="text"
+            name="productName"
+            value={formData.productName}
+            onChange={handleInputChange}
 
 
             style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
           />
         </label>
 
-        <label style={{ display: "flex", flexDirection: "column" }}>
+        {/* <label style={{ display: "flex", flexDirection: "column" }}>
           Ảnh sản phẩm (URL):
           <input
             type="text"
@@ -212,7 +217,7 @@ export default function AddProduct() {
             onChange={handleInputChange}
             style={{ padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
           />
-        </label>
+        </label> */}
 
         <label style={{ display: "flex", flexDirection: "column" }}>
           Giá:
@@ -284,7 +289,14 @@ export default function AddProduct() {
               fontSize: "16px"
             }}
           >
-            Thêm sản phẩm
+            {isLoading ? (
+              <span className={styles.loading}>
+                <FaSpinner className={styles.spinner} />
+                &nbsp;Đang Thêm SP...
+              </span>
+            ) : (
+              "Thêm sản phẩm"
+            )}
           </button>
 
           <button
