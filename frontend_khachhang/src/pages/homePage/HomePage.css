@@ -1,0 +1,114 @@
+.home-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 80px auto 0; /* Cách navbar 80px */
+  }
+  
+  .banner-section {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .banner-section h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .products-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  
+  .product-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .product-image {
+    height: 200px;
+    overflow: hidden;
+  }
+  
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .product-info {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .product-info h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d32f2f;
+    margin-bottom: 15px;
+  }
+  
+  .order-btn {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .order-btn:hover {
+    background-color: #b71c1c;
+  }
+  
+  .best-seller-section {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 1px solid #eee;
+  }
+  
+  .best-seller-section h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .home-container {
+      margin-top: 120px; /* Tăng lên cho mobile */
+      padding: 10px;
+    }
+    
+    .products-section {
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .product-image {
+      height: 150px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .products-section {
+      grid-template-columns: 1fr;
+    }
+  }
