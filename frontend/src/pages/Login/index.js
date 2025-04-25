@@ -1,4 +1,4 @@
-import { useRef,useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -6,6 +6,8 @@ import { useAuth } from "../../AuthContext";
 import styles from './Login.module.css'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { FaSpinner } from "react-icons/fa"; 
+
 
 function Login() {
     const [username, setUsername] = useState("admin");
@@ -20,14 +22,14 @@ function Login() {
     // const handleLogin = async (e) => {
     //     e.preventDefault();
 
-    
+
     //     if (username.trim() === '' || password.trim() === '') {
     //         toast.error("Vui lòng nhập username và password!");
     //         return;
     //     }
-    
+
     //     setIsLoading(true); // Bắt đầu loading
-    
+
     //     try {
     //         const res = await fetch("http://localhost:8081/myapp/api/business/auth/login", {
     //             method: "POST",
@@ -35,7 +37,7 @@ function Login() {
     //             body: JSON.stringify({ username: username.trim(), password: password }),
     //             credentials: "include",
     //         });
-    
+
     //         if (!res.ok) {
     //             // Nếu response có status mà không phải kết nối lỗi mạng
     //             if (res.status === 401 || res.status === 403) {
@@ -45,15 +47,15 @@ function Login() {
     //             }
     //             return;
     //         }
-    
+
     //         const data = await res.json();
     //         sessionStorage.setItem("accessToken", data.token);
     //         setAccessToken(data.token);
-    
+
     //         navigate("/tao-hoa-don");
     //     } catch (error) {
     //         console.error("Lỗi khi đăng nhập:", error.message);
-    
+
     //         // Nếu không có phản hồi từ server (ví dụ server tắt)
     //         toast.error("Không thể kết nối đến server!");
     //     } finally {
@@ -61,14 +63,14 @@ function Login() {
 
     //     }
     // };
-    
+
     const handleLogin = async (e) => {
         e.preventDefault();
         if (username.trim() === '' || password.trim() === '') {
             toast.error("Vui lòng nhập username và password!");
             return;
         }
-    
+        setIsLoading(true); // Bắt đầu loading
         try {
             const res = await fetch("http://localhost:8081/myapp/api/business/auth/login", {
                 method: "POST",
@@ -76,32 +78,34 @@ function Login() {
                 body: JSON.stringify({ username: username.trim(), password: password }),
                 credentials: "include",
             });
-    
+            
             if (res.status === 429) {
                 const errorData = await res.json();
                 toast.error(errorData.token || "Bạn đã vượt quá số lần đăng nhập. Vui lòng thử lại sau.");
                 return;
             }
-    
+
             if (!res.ok) {
                 throw new Error(`Lỗi đăng nhập: ${res.status}`);
             }
-    
+
             const data = await res.json();
             console.log("token: ", data);
             sessionStorage.setItem("accessToken", data.token);
             setAccessToken(data.token);
-    
+
             navigate("/tao-hoa-don");
         } catch (error) {
             console.error("Lỗi khi đăng nhập:", error.message);
             toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
+        } finally {
+            setIsLoading(false); // Tắt loading
         }
     };
-    
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
-      };
+    };
 
     return (
         <div className={styles.container}>
@@ -120,8 +124,8 @@ function Login() {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                         />
-                        
-                       <div style={{ position: 'relative' }}>
+
+                        <div style={{ position: 'relative' }}>
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
@@ -131,18 +135,27 @@ function Login() {
                             />
                             <div
                                 style={{
-                                position: 'absolute',
-                                right: '8px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                cursor: 'pointer',
+                                    position: 'absolute',
+                                    right: '8px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
                                 }}
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                             </div>
                         </div>
-                        <button type="submit">Đăng Nhập</button>
+                        <button type="submit" disabled={isLoading} className={styles.login_btn}>
+                            {isLoading ? (
+                                <span className={styles.loading}>
+                                    <FaSpinner className={styles.spinner} />
+                                    &nbsp;Đang đăng nhập...
+                                </span>
+                            ) : (
+                                "Đăng Nhập"
+                            )}
+                        </button>
                         <a href="#" className={styles.forgot_password}>Quên mật khẩu?</a>
                     </form>
                 </div>

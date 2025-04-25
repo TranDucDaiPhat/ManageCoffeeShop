@@ -162,4 +162,3 @@ export async function addProduct(productData) {
   
     return await response.text(); // trả chuỗi: "Xóa sản phẩm thành công"
   }
-  

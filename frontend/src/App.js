@@ -1,10 +1,5 @@
 import "./GlobalStyles.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Navigate,
-  Route,
-} from "react-router-dom";
+import {BrowserRouter as Router,Routes,Navigate,Route} from "react-router-dom";
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
@@ -30,9 +25,7 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* route cho Employee */}
-          <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-
-          </Route>
+          <Route element={<ProtectedRoute allowedRoles={["USER"]} />}></Route>
 
           {/* route cho ADMIN */}
           <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
@@ -44,7 +37,7 @@ function App() {
           </Route>
 
           {/* route chung cho Employee và Manager*/}
-          <Route element={<ProtectedRoute allowedRoles={["USER","ADMIN"]} />}>
+          <Route element={<ProtectedRoute allowedRoles={["USER", "ADMIN"]} />}>
             <Route path="/tao-hoa-don" element={<Order />} />
           </Route>
 
@@ -56,14 +49,11 @@ function App() {
           {/* <Route path="/danh-sach-san-pham" element={<DanhSachSanPham />} /> */}
           <Route path="/them-nhan-vien" element={<EmployeeForm />} />
           <Route path="/tai-khoan" element={<PersonalInfo />} />
-          <Route path="/thong-ke-doanh-thu" element={<SalesStatistics />} />
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
           <Route path="/productStatic" element={<ProductStatic/>} />
           <Route path="/updateimg" element={<UploadImage/>} />
-          
-
         </Routes>
       </Router>
     </AuthProvider>

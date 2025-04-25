@@ -286,8 +286,6 @@ const totalPages = Math.ceil(products.length / itemsPerPage);
         >
           THÊM SẢN PHẨM
         </button>
-        
-
         </div>
       </div>
     </div>

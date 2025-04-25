@@ -1,0 +1,114 @@
+{
+    "products": [
+      {
+        "product_id": 1,
+        "product_name": "Cà phê sữa",
+        "product_description": "Ngon, béo",
+        "product_img": "caphe-sua.jpg",
+        "product_inventory_quantity": 100,
+        "product_price": 25000,
+        "category_id": 1
+      },
+      {
+        "product_id": 2,
+        "product_name": "Cà phê đen",
+        "product_description": "Đậm vị",
+        "product_img": "caphe-den.jpg",
+        "product_inventory_quantity": 120,
+        "product_price": 20000,
+        "category_id": 1
+      },
+      {
+        "product_id": 3,
+        "product_name": "Trà đào",
+        "product_description": "Mát lạnh, thơm ngon",
+        "product_img": "tra-dao.jpg",
+        "product_inventory_quantity": 80,
+        "product_price": 30000,
+        "category_id": 2
+      },
+      {
+        "product_id": 4,
+        "product_name": "Bánh mì",
+        "product_description": "Giòn, nóng hổi",
+        "product_img": "banh-mi.jpg",
+        "product_inventory_quantity": 50,
+        "product_price": 15000,
+        "category_id": 3
+      },
+      {
+        "product_id": 5,
+        "product_name": "Sinh tố bơ",
+        "product_description": "Béo ngậy, mát lạnh",
+        "product_img": "sinh-to-bo.jpg",
+        "product_inventory_quantity": 60,
+        "product_price": 35000,
+        "category_id": 2
+      }
+    ],
+    "bills": [
+      {
+        "bill_id": 1,
+        "bill_creation_date": "2025-04-04",
+        "bill_total": 50000,
+        "payment_method": "Tiền mặt",
+        "customer_id": 1,
+        "employee_id": 1
+      },
+      {
+        "bill_id": 2,
+        "bill_creation_date": "2025-04-02",
+        "bill_total": 65000,
+        "payment_method": "Chuyển khoản",
+        "customer_id": 2,
+        "employee_id": 2
+      },
+      {
+        "bill_id": 3,
+        "bill_creation_date": "2025-04-03",
+        "bill_total": 80000,
+        "payment_method": "Momo",
+        "customer_id": 1,
+        "employee_id": 1
+      }
+    ],
+    "bill_detail": [
+      {
+        "bill_id": 1,
+        "product_id": 1,
+        "product_quantity": 2,
+        "sub_total": 50000
+      },
+      {
+        "bill_id": 2,
+        "product_id": 2,
+        "product_quantity": 2,
+        "sub_total": 40000
+      },
+      {
+        "bill_id": 2,
+        "product_id": 4,
+        "product_quantity": 1,
+        "sub_total": 15000
+      },
+      {
+        "bill_id": 2,
+        "product_id": 5,
+        "product_quantity": 1,
+        "sub_total": 10000
+      },
+      {
+        "bill_id": 3,
+        "product_id": 3,
+        "product_quantity": 2,
+        "sub_total": 60000
+      },
+      {
+        "bill_id": 3,
+        "product_id": 5,
+        "product_quantity": 1,
+        "sub_total": 20000
+      }
+    ]
+  }
+  

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Sidebar } from "../../components";
-
 const ProductStatic = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [statistics, setStatistics] = useState([]);
@@ -59,9 +58,6 @@ const ProductStatic = () => {
         setProducts(response.data);
       });
   }, []);
-
- 
-
   const sortedProducts = [...products].sort((a, b) =>
     sortOrder === 'desc'
       ? b.product_inventory_quantity - a.product_inventory_quantity
@@ -321,7 +317,6 @@ const ProductStatic = () => {
           return null;
       }
     };
-  
 
   return (
     <div
@@ -362,7 +357,6 @@ const ProductStatic = () => {
           {renderContent()}
         </div>
     </div>
-      
     </div>
   );
 };

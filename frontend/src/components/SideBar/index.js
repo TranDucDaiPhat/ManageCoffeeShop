@@ -26,32 +26,33 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
 
     // Chỉ thêm menu "Nhân Viên" nếu role KHÔNG phải là "Employee"
     if (role == "ADMIN") {
-      items.push({
-        title: "Nhân Viên",
-        submenu: [
-          { title: "Danh Sách Nhân Viên", path: "/danh-sach-nhan-vien" },
-          { title: "Thêm Nhân Viên", path: "/them-nhan-vien" },
-        ],
-      },
-      {
-        title: "Thống Kê",
-        submenu: [
-          { title: "Thống Kê Doanh Thu", path: "/thong-ke-doanh-thu" },
-          { title: "Thống Kê Sản Phẩm", path: "/thong-ke-san-pham" },
-        ],
-      });
+      items.push(
+        {
+          title: "Nhân Viên",
+          submenu: [
+            { title: "Danh Sách Nhân Viên", path: "/danh-sach-nhan-vien" },
+            { title: "Thêm Nhân Viên", path: "/them-nhan-vien" },
+          ],
+        },
+        {
+          title: "Thống Kê",
+          submenu: [
+            { title: "Thống Kê ", path: "/productStatic" },
+
+            // { title: "Thống Kê Sản Phẩm", path: "/thong-ke-san-pham" },
+          ],
+        }
+      );
     }
 
     // Thêm menu Thống Kê & Tài Khoản
-    items.push(
-      {
-        title: "Tài Khoản",
-        submenu: [
-          { title: "Thông Tin", path: "/tai-khoan" },
-          { title: "Đăng Xuất", action: logout }, // Dùng action thay vì path
-        ],
-      }
-    );
+    items.push({
+      title: "Tài Khoản",
+      submenu: [
+        { title: "Thông Tin", path: "/tai-khoan" },
+        { title: "Đăng Xuất", action: logout }, // Dùng action thay vì path
+      ],
+    });
 
     return items;
   }, [role, logout]); // Chỉ tính toán lại nếu role hoặc logout thay đổi
@@ -79,10 +80,17 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
         <div key={index}>
           {item.submenu ? (
             <>
-              <div className={styles.menuItem} onClick={() => toggleSubmenu(index)}>
+              <div
+                className={styles.menuItem}
+                onClick={() => toggleSubmenu(index)}
+              >
                 {item.title} ▾
               </div>
-              <div className={`${styles.submenu} ${openMenuItem[index] ? styles.active : ""}`}>
+              <div
+                className={`${styles.submenu} ${
+                  openMenuItem[index] ? styles.active : ""
+                }`}
+              >
                 {item.submenu.map((subItem, subIndex) =>
                   subItem.action ? (
                     <button
@@ -99,7 +107,11 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
                       {subItem.title}
                     </button>
                   ) : (
-                    <Link key={subIndex} className={styles.submenuItem} to={subItem.path}>
+                    <Link
+                      key={subIndex}
+                      className={styles.submenuItem}
+                      to={subItem.path}
+                    >
                       {subItem.title}
                     </Link>
                   )
