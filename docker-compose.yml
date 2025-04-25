@@ -1,0 +1,32 @@
+services:
+  # DATABASE NETWORK
+  mariadb:
+    build: ./backend/mariadb
+    env_file:
+      - ./backend/mariadb/.env
+    ports:
+      - "3306:3306"
+    networks:
+      - databases
+
+  # FRONTEND NETWORK
+  coffeelayout:
+    build: ./frontend
+    container_name: coffeelayout
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - frontends
+    environment:
+      - NODE_ENV=production
+  
+
+# NETWORKS
+networks:
+  frontends:
+    driver: bridge
+  backends:
+    driver: bridge
+  databases:
+    driver: bridge
