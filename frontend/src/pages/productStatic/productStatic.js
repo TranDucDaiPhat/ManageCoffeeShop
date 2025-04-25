@@ -33,6 +33,8 @@ const ProductStatic = () => {
   const itemsPerPage = 2; // Đặt số lượng sản phẩm mỗi trang là 2
   const [products, setProducts] = useState([]); // ton kho
   const [productStats, setProductStats] = useState([]); //
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const [productsRes, detailsRes] = await Promise.all([
@@ -177,15 +179,21 @@ const ProductStatic = () => {
       item.totalSold,
       item.totalRevenue,
     ]);
-    const csvContent = [headers, ...rows]
-      .map((row) => row.join(","))
-      .join("\n");
+    const csvContent =
+      "\uFEFF" +
+      [headers, ...rows]
+        .map((row) => row.map((cell) => `"${cell}"`).join(","))
+        .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "thong_ke_san_pham.csv";
+    link.href = url;
+    link.setAttribute("download", "thong-ke-san-pham.csv");
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
 
   const filteredStatistics = statistics
