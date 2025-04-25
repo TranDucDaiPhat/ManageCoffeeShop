@@ -28,38 +28,81 @@ export default function ProductInfo() {
   const CLOUDINARY_UPLOAD_PRESET = 'coffeeShop';
 
   // Hàm xử lý upload ảnh lên Cloudinary
+  // const handleImageUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   // Tạo preview ảnh
+  //   setPreviewUrl(URL.createObjectURL(file));
+
+  //   // Kiểm tra kích thước và định dạng file
+  //   if (file.size > 5 * 1024 * 1024) {
+  //     toast.error("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
+  //     return;
+  //   }
+
+  //   const validTypes = ["image/jpeg", "image/png", "image/webp"];
+  //   if (!validTypes.includes(file.type)) {
+  //     toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  //   try {
+  //     const response = await axios.post(CLOUDINARY_URL, formData);
+
+  //     if (response.status === 200) {
+  //       const imageUrl = response.data.secure_url;
+  //       setFormData({
+  //         ...formData,
+  //         productImg: imageUrl,
+  //       });
+  //       toast.success("Upload ảnh thành công!");
+  //     } else {
+  //       toast.error("Upload ảnh thất bại");
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi khi upload ảnh:", error);
+  //     toast.error("Có lỗi xảy ra khi upload ảnh. Vui lòng thử lại.");
+  //   }
+  // };
   const handleImageUpload = async (e) => {
+    // ... (phần code trước giữ nguyên)
     const file = e.target.files[0];
-    if (!file) return;
-
-    // Tạo preview ảnh
-    setPreviewUrl(URL.createObjectURL(file));
-
-    // Kiểm tra kích thước và định dạng file
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
-      return;
-    }
-
-    const validTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!validTypes.includes(file.type)) {
-      toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
+      if (!file) return;
+  
+      // Tạo preview ảnh
+      setPreviewUrl(URL.createObjectURL(file));
+  
+      // Kiểm tra kích thước và định dạng file
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB");
+        return;
+      }
+  
+      const validTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Chỉ chấp nhận file ảnh (JPEG, PNG, WEBP)");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+  
     try {
       const response = await axios.post(CLOUDINARY_URL, formData);
-
+  
       if (response.status === 200) {
         const imageUrl = response.data.secure_url;
-        setFormData({
-          ...formData,
+        // Sửa lại thành functional update
+        setFormData(prevFormData => ({
+          ...prevFormData,
           productImg: imageUrl,
-        });
+        }));
         toast.success("Upload ảnh thành công!");
       } else {
         toast.error("Upload ảnh thất bại");
