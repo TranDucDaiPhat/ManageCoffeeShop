@@ -18,10 +18,6 @@ const getAuthConfig = () => {
   };
 };
 
-const productsRes = await axios.get(
-  "http://localhost:8081/myapp/api/business/products",
-  getAuthConfig()
-);
 const ProductStatic = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [statistics, setStatistics] = useState([]);
@@ -78,7 +74,22 @@ const ProductStatic = () => {
 
     fetchData();
   }, [sortOrder]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/myapp/api/business/products",
+          getAuthConfig()
+        );
+        setProducts(res.data);
+      } catch (err) {
+        console.error(err);
+        toast.error("Không thể tải dữ liệu sản phẩm");
+      }
+    };
 
+    fetchProducts();
+  }, []);
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
   };
@@ -375,7 +386,7 @@ const ProductStatic = () => {
                     <td style={{ padding: "10px", textAlign: "center" }}>
                       {p.productId}
                     </td>
-                    <td style={{ padding: "10px" }}>{p.product_name}</td>
+                    <td style={{ padding: "10px" }}>{p.productName}</td>
                     <td style={{ padding: "10px", textAlign: "center" }}>
                       {p.total_sold}
                     </td>
