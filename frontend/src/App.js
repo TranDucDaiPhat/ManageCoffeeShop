@@ -1,5 +1,10 @@
 import "./GlobalStyles.css";
-import {BrowserRouter as Router,Routes,Navigate,Route} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Navigate,
+  Route,
+} from "react-router-dom";
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
@@ -12,9 +17,12 @@ import EmployeeForm from "./pages/Employee/EmployeeForm";
 import EmployeeList from "./pages/Employee/EmployeeList";
 import PersonalInfo from "./pages/Personal/PersonalInfo";
 import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
-import SalesStatistics from "./pages/Statistics/SalesStatistics";
-import ProductStatic from './pages/productStatic/productStatic';
+import ProductStatic from "./pages/productStatic/productStatic";
 import UploadImage from "./pages/UploadImage";
+import Layout from "./components/Navbar/Layout";
+// import  Navbar from "./components/Navbar/Navbar"
+import HomePage from "./pages/homePage/HomePage";
+import Menu from "./pages/menu/Menu";
 
 function App() {
   return (
@@ -35,6 +43,11 @@ function App() {
               element={<UpdateEmployeeForm />}
             />
           </Route>
+          {/* Các route cần Navbar */}
+          <Route element={<Layout />}>
+            <Route path="/homepage" element={<HomePage />} />
+            <Route path="/menu" element={<Menu />} />
+          </Route>
 
           {/* route chung cho Employee và Manager*/}
           <Route element={<ProtectedRoute allowedRoles={["USER", "ADMIN"]} />}>
@@ -52,8 +65,8 @@ function App() {
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
-          <Route path="/productStatic" element={<ProductStatic/>} />
-          <Route path="/updateimg" element={<UploadImage/>} />
+          <Route path="/productStatic" element={<ProductStatic />} />
+          <Route path="/updateimg" element={<UploadImage />} />
         </Routes>
       </Router>
     </AuthProvider>
