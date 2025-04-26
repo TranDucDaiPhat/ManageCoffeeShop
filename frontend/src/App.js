@@ -18,6 +18,7 @@ import UploadImage from "./pages/UploadImage";
 import  Layout from "./components/Navbar/Layout"
 // import  Navbar from "./components/Navbar/Navbar"
 import HomePage from "./pages/homePage/HomePage";
+import Chatbox from "./pages/Chatbox/chatbox"
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
           <Route path="/productStatic" element={<ProductStatic/>} />
           <Route path="/updateimg" element={<UploadImage/>} />
+          <Route path="/chatbox" element={<Chatbox/>} />
         </Routes>
       </Router>
     </AuthProvider>
