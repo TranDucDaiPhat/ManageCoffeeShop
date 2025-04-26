@@ -23,6 +23,7 @@ import Layout from "./components/Navbar/Layout";
 // import  Navbar from "./components/Navbar/Navbar"
 import HomePage from "./pages/homePage/HomePage";
 import Menu from "./pages/menu/Menu";
+import AboutUs from "./pages/About/AboutUs";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/homepage" element={<HomePage />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/about" element={<AboutUs />} />
           </Route>
 
           {/* route chung cho Employee và Manager*/}
