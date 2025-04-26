@@ -46,6 +46,17 @@ export async function getMons() {
     
     return response.json();
   }
+  // luan them vao
+  export async function getMon() {   
+    const response = await fetch("http://localhost:8081/myapp/api/business/products");
+  
+    if (!response.ok) {
+      throw new Error("Không thể lấy dữ liệu món ăn");
+    }
+    
+    return response.json();
+}
+
   
   export async function getMonById(id) {
     const token = sessionStorage.getItem("accessToken");

@@ -15,6 +15,9 @@ import UpdateEmployeeForm from "./pages/Employee/UpdateEmployeeForm";
 import SalesStatistics from "./pages/Statistics/SalesStatistics";
 import ProductStatic from './pages/productStatic/productStatic';
 import UploadImage from "./pages/UploadImage";
+import  Layout from "./components/Navbar/Layout"
+// import  Navbar from "./components/Navbar/Navbar"
+import HomePage from "./pages/homePage/HomePage";
 
 function App() {
   return (
@@ -34,6 +37,11 @@ function App() {
               path="/cap-nhat-thong-tin/:id"
               element={<UpdateEmployeeForm />}
             />
+          </Route>
+           {/* Các route cần Navbar */}
+          <Route element={<Layout />}>
+          <Route path="/homepage" element={<HomePage/>} />
+
           </Route>
 
           {/* route chung cho Employee và Manager*/}
