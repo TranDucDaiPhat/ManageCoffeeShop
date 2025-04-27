@@ -24,6 +24,7 @@ import Layout from "./components/Navbar/Layout";
 import HomePage from "./pages/homePage/HomePage";
 import Menu from "./pages/menu/Menu";
 import AboutUs from "./pages/About/AboutUs";
+import Chatbox from "./pages/Chatbox/chatbox"
 
 function App() {
   return (
@@ -67,8 +68,9 @@ function App() {
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
-          <Route path="/productStatic" element={<ProductStatic />} />
-          <Route path="/updateimg" element={<UploadImage />} />
+          <Route path="/productStatic" element={<ProductStatic/>} />
+          <Route path="/updateimg" element={<UploadImage/>} />
+          <Route path="/chatbox" element={<Chatbox/>} />
         </Routes>
       </Router>
     </AuthProvider>
