@@ -3,7 +3,8 @@ import {BrowserRouter as Router,Routes,Navigate,Route} from "react-router-dom";
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
-
+import SignUp from "./pages/Auth/SignUp"
+import SignIn from "./pages/Auth/SignIn";
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
 import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
@@ -64,6 +65,8 @@ function App() {
           <Route path="/productStatic" element={<ProductStatic/>} />
           <Route path="/updateimg" element={<UploadImage/>} />
           <Route path="/chatbox" element={<Chatbox/>} />
+          <Route path="/SignIn" element={<SignIn/>} />
+          <Route path="/SignUp" element={<SignUp/>} />
         </Routes>
       </Router>
     </AuthProvider>
