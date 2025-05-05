@@ -134,66 +134,55 @@ const SignUp = () => {
     setOtp('');
   };
 
-  return (
-    <div className="app-container" ref={appContainerRef} style={styles.appContainer}>
-      <div className="content-wrapper" style={styles.contentWrapper}>
-        <div className="form-container" style={styles.formContainer}>
-          <div className="auth-header" style={styles.authHeader}>
-            <h2 style={styles.authTitle}>{showOtpPanel ? 'Xác minh OTP' : 'Tạo tài khoản'}</h2>
-            <p style={styles.authSubtitle}>
-              {showOtpPanel ? 'Nhập mã OTP đã gửi đến email của bạn' : 'Tham gia cùng chúng tôi'}
-            </p>
-          </div>
-
-          {showOtpPanel ? (
-            <form onSubmit={handleVerifyOtp} style={{ ...styles.form, opacity: showOtpPanel ? 1 : 0, transition: 'opacity 0.3s ease' }}>
-              <div className="form-group" style={styles.formGroup}>
-                <label style={styles.label}>Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  readOnly
-                  style={{ ...styles.input, backgroundColor: '#e9ecef', cursor: 'not-allowed' }}
-                />
-              </div>
-
-              <div className="form-group" style={styles.formGroup}>
-                <label style={styles.label}>Mã OTP</label>
-                <input
-                  type="text"
-                  placeholder="Nhập mã OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  required
-                  style={styles.input}
-                />
-              </div>
-
-              <div style={{ ...styles.formRow, justifyContent: 'center', gap: '1.5rem' }}>
-                <button
-                  type="button"
-                  onClick={handleCancelOtp}
-                  style={{
-                    ...styles.authButton,
-                    backgroundColor: '#6c757d',
-                    ':hover': { backgroundColor: '#5a6268', transform: 'translateY(-2px)' },
-                    flex: 1,
-                    maxWidth: '200px',
-                  }}
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="auth-button"
-                  style={{
-                    ...styles.authButton,
-                    flex: 1,
-                    maxWidth: '200px',
-                  }}
-                >
-                  Xác minh
-                </button>
+    return (
+      <div className="app-container" ref={appContainerRef} style={styles.appContainer}>
+        <div className="content-wrapper" style={styles.contentWrapper}>
+          <div className="form-container" style={styles.formContainer}>
+            <div className="auth-header" style={styles.authHeader}>
+              <h2 style={styles.authTitle}>{showOtpPanel ? 'Xác minh OTP' : 'Tạo tài khoản'}</h2>
+              <p style={styles.authSubtitle}>
+                {showOtpPanel ? 'Nhập mã OTP đã gửi đến email của bạn' : 'Tham gia cùng chúng tôi'}
+              </p>
+            </div>
+  
+            {showOtpPanel ? (
+              <form onSubmit={handleVerifyOtp} style={styles.otpForm}>
+                <div className="form-group" style={styles.otpFormGroup}>
+                  <label style={styles.label}>Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    readOnly
+                    style={styles.otpInput}
+                  />
+                </div>
+  
+                <div className="form-group" style={styles.otpFormGroup}>
+                  <label style={styles.label}>Mã OTP</label>
+                  <input
+                    type="text"
+                    placeholder="Nhập mã OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    required
+                    style={styles.otpInput}
+                  />
+                </div>
+  
+                <div style={styles.otpButtonContainer}>
+                  <button
+                    type="button"
+                    onClick={handleCancelOtp}
+                    style={styles.otpCancelButton}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    style={styles.otpSubmitButton}
+                  >
+                    Xác minh
+                  </button>
               </div>
             </form>
           ) : (
@@ -306,7 +295,7 @@ const SignUp = () => {
                     type="password"
                     placeholder="Nhập lại mật khẩu"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)} // Sửa lỗi từ setCustomerName
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     style={styles.input}
                   />
@@ -363,24 +352,24 @@ const styles = {
   },
   contentWrapper: {
     width: '100%',
-    maxWidth: '1080px', // Tăng để chứa form rộng hơn
+    maxWidth: '1080px',
     padding: '1.5rem',
     boxSizing: 'border-box',
     zIndex: 2,
   },
   formContainer: {
-    maxWidth: '720px', // Tăng chiều rộng form
+    maxWidth: '720px',
     margin: '0 auto',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: '12px',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
-    padding: '2.5rem', // Tăng padding cho form rộng
+    padding: '2rem',
     transition: 'transform 0.3s ease, opacity 0.3s ease',
     boxSizing: 'border-box',
   },
   authHeader: {
     textAlign: 'center',
-    marginBottom: '2.5rem',
+    marginBottom: '2rem',
   },
   authTitle: {
     fontSize: '2rem',
@@ -396,23 +385,45 @@ const styles = {
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem', // Tăng gap cho form rộng
+    gap: '1rem',
+    width: '100%',
+  },
+  otpForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    width: '100%',
+    maxWidth: '400px', // Giảm chiều rộng form verify
+    margin: '0 auto', // Căn giữa form
+    padding: '1rem',
   },
   formRow: {
     display: 'flex',
-    gap: '2rem',
+    gap: '1rem',
     width: '100%',
     flexDirection: 'row',
     '@media (max-width: 768px)': {
       flexDirection: 'column',
-      gap: '1.5rem',
+      gap: '0.8rem',
+    },
+  },
+  otpButtonRow: {
+    gap: '0.8rem', // Giảm gap cho hàng nút trong form verify
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+      gap: '0.6rem',
     },
   },
   formGroup: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
-    gap: '0.75rem',
+    gap: '0.3rem',
+  },
+  otpFormGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
   },
   label: {
     fontSize: '0.9rem',
@@ -420,7 +431,7 @@ const styles = {
     color: '#4a2c2a',
   },
   input: {
-    padding: '1rem 1.25rem', // Tăng padding cho input rộng hơn
+    padding: '1rem 1.25rem',
     borderRadius: '10px',
     border: '1px solid #ced4da',
     fontSize: '1rem',
@@ -433,6 +444,26 @@ const styles = {
       boxShadow: '0 0 0 4px rgba(40, 167, 69, 0.15)',
       backgroundColor: '#ffffff',
     },
+  },
+  otpInput: {
+    padding: '0.8rem 1rem',
+    borderRadius: '8px',
+    border: '1px solid #ced4da',
+    fontSize: '1rem',
+    backgroundColor: '#f8f9fa',
+    width: '100%',
+    boxSizing: 'border-box',
+    ':focus': {
+      outline: 'none',
+      borderColor: '#28a745',
+      boxShadow: '0 0 0 2px rgba(40, 167, 69, 0.15)',
+    },
+  },
+  otpButtonContainer: {
+    display: 'flex',
+    gap: '1rem',
+    marginTop: '1rem',
+    justifyContent: 'center',
   },
   select: {
     padding: '1rem 1.25rem',
@@ -450,8 +481,8 @@ const styles = {
     },
   },
   authButton: {
-    padding: '1rem 1.5rem', // Tăng padding cho nút
-    borderRadius: '12px', // Bo góc lớn hơn
+    padding: '1rem 1.5rem',
+    borderRadius: '12px',
     border: 'none',
     backgroundColor: '#28a745',
     color: 'white',
@@ -459,8 +490,9 @@ const styles = {
     fontWeight: '600',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
-    marginTop: '0.75rem',
+    marginTop: '0',
     width: '100%',
+    maxWidth: '100%',
     boxSizing: 'border-box',
     ':hover': {
       backgroundColor: '#218838',
@@ -470,8 +502,52 @@ const styles = {
       transform: 'scale(0.98)',
     },
   },
+  otpCancelButton: {
+    padding: '0.8rem 1.5rem',
+    borderRadius: '8px',
+    border: 'none',
+    backgroundColor: '#6c757d',
+    color: 'white',
+    fontSize: '1rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    flex: 1,
+    maxWidth: '150px',
+    ':hover': {
+      backgroundColor: '#5a6268',
+    },
+  },
+  otpSubmitButton: {
+    padding: '0.8rem 1.5rem',
+    borderRadius: '8px',
+    border: 'none',
+    backgroundColor: '#28a745',
+    color: 'white',
+    fontSize: '1rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    flex: 1,
+    maxWidth: '150px',
+    ':hover': {
+      backgroundColor: '#218838',
+    },
+  },
+  otpButton: {
+    padding: '0.8rem 1.2rem', // Giảm padding để nút nhỏ hơn trong form verify
+    width: '50%', // Hai nút chiếm nửa chiều rộng
+    minWidth: '0', // Ngăn trình duyệt tự điều chỉnh kích thước
+    flexShrink: 1, // Cho phép nút co lại nếu cần
+    display: 'inline-flex', // Đảm bảo căn giữa văn bản
+    justifyContent: 'center', // Căn giữa văn bản ngang
+    alignItems: 'center', // Căn giữa văn bản dọc
+    '@media (max-width: 768px)': {
+      width: '100%', // Full width trên mobile
+    },
+  },
   authFooter: {
-    marginTop: '2.5rem',
+    marginTop: '2rem',
     textAlign: 'center',
   },
   footerText: {
