@@ -140,9 +140,6 @@ const SignUp = () => {
           <div className="form-container" style={styles.formContainer}>
             <div className="auth-header" style={styles.authHeader}>
               <h2 style={styles.authTitle}>{showOtpPanel ? 'Xác minh OTP' : 'Tạo tài khoản'}</h2>
-              <p style={styles.authSubtitle}>
-                {showOtpPanel ? 'Nhập mã OTP đã gửi đến email của bạn' : 'Tham gia cùng chúng tôi'}
-              </p>
             </div>
   
             {showOtpPanel ? (
@@ -372,16 +369,13 @@ const styles = {
     marginBottom: '2rem',
   },
   authTitle: {
+
+    color: '#2e7d32',
+    fontWeight: 'bold',
     fontSize: '2rem',
-    fontWeight: '600',
-    color: '#4a2c2a',
     marginBottom: '0.75rem',
   },
-  authSubtitle: {
-    fontSize: '1.1rem',
-    color: '#4a2c2a',
-    fontWeight: '400',
-  },
+
   form: {
     display: 'flex',
     flexDirection: 'column',

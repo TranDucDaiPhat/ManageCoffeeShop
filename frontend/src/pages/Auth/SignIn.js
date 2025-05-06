@@ -1,131 +1,137 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './SignInPage.css';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
-const SignIn = () => {
-  const [email, setEmail] = useState('');
+function Signin() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isSignIn, setIsSignIn] = useState(true); // Mặc định là SignIn
-  const appContainerRef = useRef(null);
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Add a small timeout to ensure ref is attached
-    const timer = setTimeout(() => {
-      if (appContainerRef.current) {
-        appContainerRef.current.classList.add('signin-active');
-      }
-    }, 50);
-    
-    return () => {
-      if (appContainerRef.current) {
-        appContainerRef.current.classList.remove('signin-active');
-      }
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log({ email, password, rememberMe });
-  };
 
-  const handleSignUpClick = () => {
-    if (appContainerRef.current) {
-      appContainerRef.current.classList.remove('signin-active');
-      appContainerRef.current.classList.add('signup-active');
-      setTimeout(() => navigate('/signup'), 800);
+    try {
+      const response = await fetch('http://localhost:8081/myapp/api/business/authCustomer/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.authenticated) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          navigate('/homepage');
+        } else {
+          setMessage('Đăng nhập thất bại. Vui lòng thử lại.');
+        }
+      } else {
+        const errorText = await response.text();
+        setMessage(errorText || 'Đăng nhập thất bại.');
+      }
+    } catch (error) {
+      setMessage('Không thể kết nối tới máy chủ.');
     }
   };
 
-  const toggleSignInSignUp = () => {
-    setIsSignIn(!isSignIn); // Toggle between SignIn and SignUp
-  };
-
   return (
-    <div className={`app-container ${isSignIn ? 'signin-active' : 'signup-active'}`} ref={appContainerRef}>
-      <nav className="nav-menu">
-        <div className="nav-logo">YourLogo</div>
-        <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-      </nav>
-
-      <div className="content-wrapper">
-        {/* Background Side - LEFT for SignIn */}
-        <div className={`background-side ${isSignIn ? 'left-side' : 'right-side'}`}>
-          <div className="background-overlay"></div>
-          <div className="background-content">
-            <h2>{isSignIn ? 'Welcome Back' : 'Join Us'}</h2>
-            <p>{isSignIn ? 'We\'re glad to see you again' : 'Become part of our community'}</p>
-          </div>
-        </div>
-
-        {/* Form Side */}
-        <div className="form-side">
-          <div className="auth-card">
-            <h1>{isSignIn ? 'Welcome Back' : 'Join Us'}</h1>
-            <p>{isSignIn ? 'Enter your email and password to sign in' : 'Enter your details to sign up'}</p>
-
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  type="password"
-                  placeholder="Your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <label htmlFor="remember">Remember me</label>
-              </div>
-
-              <button type="submit" className="auth-button">{isSignIn ? 'Sign In' : 'Sign Up'}</button>
-            </form>
-
-            <div className="auth-switch">
-              {isSignIn ? 'Don\'t have an account? ' : 'Already have an account? '}
-              <span onClick={toggleSignInSignUp}>{isSignIn ? 'Sign Up' : 'Sign In'}</span>
-            </div>
-
-            <footer className="footer">
-              <div className="footer-divider"></div>
-              <p>© 2025, Made with 👍 by Creative Tim & Simmpple for a better web</p>
-              <div className="footer-links">
-                <a href="#">Creative Tim</a>
-                <a href="#">Simmpple</a>
-                <a href="#">Blog</a>
-                <a href="#">License</a>
-              </div>
-            </footer>
-          </div>
-        </div>
+    <div style={styles.background}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>Đăng nhập</h2>
+        <form onSubmit={handleLogin} style={styles.form}>
+          <input
+            type="text"
+            placeholder="Tên đăng nhập"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <input
+            type="password"
+            placeholder="Mật khẩu"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>Đăng nhập</button>
+        </form>
+        {message && <p style={styles.error}>{message}</p>}
+        <p style={styles.linkText}>
+          Chưa có tài khoản? <Link to="/signup" style={styles.link}>Đăng ký</Link>
+        </p>
       </div>
     </div>
   );
+}
+
+const styles = {
+  background: {
+    minHeight: '100vh',
+    background: 'linear-gradient(to right, #e0f8e9, #f3fff5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'Arial, sans-serif',
+    padding: '20px',
+  },
+  container: {
+    width: '100%',
+    maxWidth: '480px', // tăng lên cho rộng hơn
+    padding: '40px', // tăng padding
+    borderRadius: '16px',
+    backgroundColor: '#ffffff',
+    boxShadow: '0 8px 20px rgba(0, 128, 0, 0.2)',
+    textAlign: 'center',
+  },
+  title: {
+    marginBottom: '25px',
+    color: '#2e7d32',
+    fontSize: '24px',
+    fontWeight: 'bold',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+  },
+  input: {
+    padding: '14px',
+    fontSize: '16px',
+    borderRadius: '10px',
+    border: '1px solid #a5d6a7',
+    backgroundColor: '#f1fdf4',
+  },
+  button: {
+    padding: '14px',
+    fontSize: '16px',
+    backgroundColor: '#66bb6a',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s',
+  },
+  error: {
+    marginTop: '15px',
+    color: 'red',
+    fontSize: '14px',
+  },
+  linkText: {
+    marginTop: '25px',
+    fontSize: '14px',
+    color: '#555',
+  },
+  link: {
+    color: '#388e3c',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  }
 };
 
-export default SignIn;
+
+export default Signin;
