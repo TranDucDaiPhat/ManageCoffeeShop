@@ -20,6 +20,8 @@ import  Layout from "./components/Navbar/Layout"
 // import  Navbar from "./components/Navbar/Navbar"
 import HomePage from "./pages/homePage/HomePage";
 import Chatbox from "./pages/Chatbox/chatbox"
+import CustomerInfo from "./pages/Customer/CustomerInfo"
+
 
 function App() {
   return (
@@ -43,7 +45,7 @@ function App() {
            {/* Các route cần Navbar */}
           <Route element={<Layout />}>
           <Route path="/homepage" element={<HomePage/>} />
-
+          <Route path="/customerInfo" element={<CustomerInfo/>} />
           </Route>
 
           {/* route chung cho Employee và Manager*/}
