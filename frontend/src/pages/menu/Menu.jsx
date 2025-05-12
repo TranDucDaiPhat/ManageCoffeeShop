@@ -5,9 +5,6 @@ import "./Menu.css";
 
 const { Option } = Select;
 
-// Biến tạm lưu token (Bạn có thể thay bằng token thực tế của bạn)
-const TEMP_TOKEN = "YOUR_TEMP_ACCESS_TOKEN_HERE"; // 👉 nhập token tạm vào đây
-
 const Menu = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -20,11 +17,11 @@ const Menu = () => {
     async function fetchData() {
       try {
         setLoading(true);
+        const token = sessionStorage.getItem("accessToken");
         const headers = {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwiZW1wbG95ZWVJZCI6MSwiZXhwIjoxNzQ1NzA1NTg0LCJpYXQiOjE3NDU3MDE5ODR9.muamJku7U06iIl9obL0ieXGpWEnqR1K6EqPmHK_JgLFil6QjHu-kctl6IcrcO2NbEREkvz_4nfar7iWuO5GM9A"}`, // <-- gửi token ở đây
+          Authorization: `Bearer ${token}`,
         };
-
         const [productRes, categoryRes] = await Promise.all([
           fetch("http://localhost:8081/myapp/api/business/products", {
             headers,
