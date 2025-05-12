@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Select, Input, Button, Row, Col, Card, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import "./Menu.css";
+import styles from "./Menu.module.css";
 
 const { Option } = Select;
 
@@ -20,7 +20,7 @@ const Menu = () => {
         const token = sessionStorage.getItem("accessToken");
         const headers = {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          ...(token && { Authorization: `Bearer ${token}` }),
         };
         const [productRes, categoryRes] = await Promise.all([
           fetch("http://localhost:8081/myapp/api/business/products", {

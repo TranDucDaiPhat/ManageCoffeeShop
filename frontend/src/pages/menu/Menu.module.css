@@ -1,4 +1,3 @@
-/* Updated CSS with Green Color Scheme */
 .ant-card{
     border-radius: 8px;
     border: 1px solid #e0e0e0;
@@ -24,7 +23,7 @@
     background-color: #1b5e20;
     border-color: #1b5e20;
 }
-.home-container {
+.homeContainer {
     padding: 15px;
     max-width: 90%;
     margin: 60px auto 0;
@@ -79,7 +78,7 @@
   }
   
   /* Products Section - Green Theme */
-  .products-section {
+  .productsSection {
     margin-bottom: 40px;
     max-width: 95%;
   }
@@ -88,7 +87,7 @@
     margin-bottom: 30px;
   }
   
-  .category-title {
+  .categoryTitle {
     font-size: 20px;
     color: #2e7d32; /* Dark green */
     margin-bottom: 12px;
@@ -215,7 +214,7 @@
   }
   
   @media (max-width: 768px) {
-    .home-container {
+    .homeContainer {
       margin-top: 50px;
       padding: 10px;
     }
@@ -223,7 +222,7 @@
       height: 300px;
       margin-bottom: 25px;
     }
-    .product-card {
+    .productCard {
       flex: 0 0 calc(50% - 10px);
     }
     .product-image {
@@ -240,10 +239,10 @@
       height: 220px;
       margin-bottom: 20px;
     }
-    .category-title {
+    .categoryTTitle {
       font-size: 18px;
     }
-    .product-card {
+    .productCard {
       flex: 0 0 100%;
     }
     .filter-container {
@@ -266,15 +265,15 @@
         outline: none;
         border-color: #6a5acd;
       }
-      .filter-bar {
+      .filterBar {
         margin: 20px 0;
       }
       
-      .products-section {
+      .productsSection {
         padding: 20px;
       }
       
-      .category-title {
+      .categoryTitle {
         text-align: center;
         font-size: 32px;
         font-weight: bold;
