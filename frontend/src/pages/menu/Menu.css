@@ -1,4 +1,29 @@
 /* Updated CSS with Green Color Scheme */
+.ant-card{
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s;
+}
+.ant-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.ant-card-cover img{
+    height: 250px;
+    object-fit: cover;
+}
+.ant-btn-primary{
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+}
+.ant-btn-primary:hover{
+    background-color: #1b5e20;
+    border-color: #1b5e20;
+}
 .home-container {
     padding: 15px;
     max-width: 90%;
