@@ -8,7 +8,8 @@ import {
 import ProductList from "./pages/productList";
 import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
-
+import SignUp from "./pages/Auth/SignUp"
+import SignIn from "./pages/Auth/SignIn";
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
 import { Product_Customer, Cart } from "./pages-customer";
 import { AuthProvider } from "./AuthContext";
@@ -26,6 +27,8 @@ import HomePage from "./pages/homePage/HomePage";
 import Menu from "./pages/menu/Menu";
 import AboutUs from "./pages/About/AboutUs";
 import Chatbox from "./pages/Chatbox/chatbox"
+import CustomerInfo from "./pages/Customer/CustomerInfo"
+
 
 function App() {
   return (
@@ -55,6 +58,7 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/product_customer" element={<Product_Customer />} />
             <Route path="/gio-hang" element={<Cart />} />
+            <Route path="/customerInfo" element={<CustomerInfo/>} />
           </Route>
 
           {/* route chung cho Employee và Manager*/}
@@ -73,9 +77,12 @@ function App() {
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
-          <Route path="/productStatic" element={<ProductStatic />} />
-          <Route path="/updateimg" element={<UploadImage />} />
-          <Route path="/chatbox" element={<Chatbox />} />
+
+          <Route path="/productStatic" element={<ProductStatic/>} />
+          <Route path="/updateimg" element={<UploadImage/>} />
+          <Route path="/chatbox" element={<Chatbox/>} />
+          <Route path="/SignIn" element={<SignIn/>} />
+          <Route path="/SignUp" element={<SignUp/>} />
         </Routes>
       </Router>
     </AuthProvider>
