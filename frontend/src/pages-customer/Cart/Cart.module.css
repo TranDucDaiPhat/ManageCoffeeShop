@@ -1,0 +1,86 @@
+.container {
+    padding: 15px 25px 15px 25px;
+}
+
+.content {
+    width: 49%;
+    min-height: 95vh;
+    height: auto;
+    border: 1px solid lightgray;
+    border-radius: 15px;
+}
+
+form>div {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+input {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #007bff;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.customButton {
+    background-color: var(--my-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 9px;
+    padding: 9px;
+    color: white;
+    cursor: pointer;
+}
+
+.customButton:hover {
+    background-color: #035730;
+}
+
+.wrapperImage {
+    width: 85px;
+    height: 85px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+.titleText {
+    color: var(--my-color);
+}
+
+.btnThanhToan {
+    color: white;
+    background-color: var(--my-color);
+    width: 95%;
+    height: 7vh;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: rgb(157, 157, 157) 1px 2px 1px; 
+}
+
+.btnThanhToan:hover {
+    filter: brightness(1.1); 
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 3px 2px; 
+}

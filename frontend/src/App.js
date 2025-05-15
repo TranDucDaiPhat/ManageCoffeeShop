@@ -10,6 +10,7 @@ import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
 
 import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
+import { Product_Customer, Cart } from "./pages-customer";
 import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -31,7 +32,9 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          {/* Khi vào "/", tự động chuyển đến "/homepage" */}
+          <Route path="/" element={<Navigate to="/homepage" />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* route cho Employee */}
@@ -50,6 +53,8 @@ function App() {
             <Route path="/homepage" element={<HomePage />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/product_customer" element={<Product_Customer />} />
+            <Route path="/gio-hang" element={<Cart />} />
           </Route>
 
           {/* route chung cho Employee và Manager*/}
@@ -68,9 +73,9 @@ function App() {
           <Route path="/AddProduct" element={<AddProduct />} />
           <Route path="/ProductInfo/:id" element={<ProductInfo />} />
           <Route path="/danh-sach-san-pham" element={<ProductList />} />
-          <Route path="/productStatic" element={<ProductStatic/>} />
-          <Route path="/updateimg" element={<UploadImage/>} />
-          <Route path="/chatbox" element={<Chatbox/>} />
+          <Route path="/productStatic" element={<ProductStatic />} />
+          <Route path="/updateimg" element={<UploadImage />} />
+          <Route path="/chatbox" element={<Chatbox />} />
         </Routes>
       </Router>
     </AuthProvider>

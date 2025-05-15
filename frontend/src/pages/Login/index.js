@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../AuthContext";
 import styles from './Login.module.css'
 import Visibility from '@mui/icons-material/Visibility';
@@ -15,6 +16,8 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false); // ✅ Thêm state để hiển thị mật khẩu
 
     const [isLoading, setIsLoading] = useState(false);
+    const location = useLocation();
+    const product = location?.state?.product || null;
 
     const navigate = useNavigate();
     const { role, setAccessToken } = useAuth();
@@ -94,7 +97,16 @@ function Login() {
             sessionStorage.setItem("accessToken", data.token);
             setAccessToken(data.token);
 
-            navigate("/tao-hoa-don");
+            const decoded = jwtDecode(data.token);
+
+            if (decoded.scope == 'ADMIN' || decoded.scope == 'USER') {
+                navigate("/tao-hoa-don");
+            } else if (product) {
+                navigate("/gio-hang",{ state: { product } });
+            } else {
+                navigate("/");
+            }
+            
         } catch (error) {
             console.error("Lỗi khi đăng nhập:", error.message);
             toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
