@@ -8,13 +8,6 @@ const Footer = () => {
         <div className={styles.footerColumn}>
           <h4>ĐỊA CHỈ</h4>
           <p>
-            <strong>Trụ sở chính:</strong> Công ty TNHH Cuties - ĐKKD:
-            0123456789
-          </p>
-          <p>
-            <strong>Nhà máy:</strong> Đường ABC, KCN XYZ, TP. Thân Thiện
-          </p>
-          <p>
             <strong>Địa chỉ:</strong> Số 1 Đường Xanh, Quận Bình An, TP. HCM
           </p>
           <p>
@@ -24,7 +17,7 @@ const Footer = () => {
             <strong>Hotline Công ty:</strong> 1900 1234
           </p>
           <p>
-            <strong>Email:</strong> contact@cuties.vn
+            <strong>Email:</strong> contact@thestudycoffee.vn
           </p>
         </div>
 
@@ -57,7 +50,7 @@ const Footer = () => {
         </div>
       </div>
       <div className={styles.footerBotttom}>
-        <p>© 2025 Cuties. All rights reserved.</p>
+        <p>© 2025 TheStudyCoffee. All rights reserved.</p>
       </div>
     </footer>
   );

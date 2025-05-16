@@ -10,7 +10,7 @@ const AboutUs = () => {
       <Row gutter={[32, 32]} justify="center" align="middle">
         <Col xs={24} md={12}>
           <img
-            src="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
+            src="https://images.unsplash.com/photo-1624583338957-4d155ca886dc?w=600&auto=format"
             alt="About Us"
             className="aboutus-image"
           />
