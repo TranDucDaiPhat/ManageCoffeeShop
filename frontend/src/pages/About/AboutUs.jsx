@@ -10,8 +10,7 @@ const AboutUs = () => {
       <Row gutter={[32, 32]} justify="center" align="middle">
         <Col xs={24} md={12}>
           <img
-            src="https://images.unsplash.com/photo-1624583338957-4d155ca886dc?w=600&auto=format"
-            alt="About Us"
+            src="https://images.unsplash.com/photo-1551026921-aecab8cff449?q=80&w=2127&auto=format"
             className="aboutus-image"
           />
         </Col>
@@ -21,15 +20,15 @@ const AboutUs = () => {
               Về Chúng Tôi
             </Title>
             <Paragraph style={{ fontSize: "16px", lineHeight: 1.7 }}>
-              Chào mừng bạn đến với <b>The Coffee Shop</b> – nơi chúng tôi không
-              chỉ phục vụ sản phẩm, mà còn mang đến những trải nghiệm tuyệt vời
-              nhất cho bạn.
+              Chào mừng bạn đến với <b>The Study Coffee</b> – nơi chúng tôi
+              không chỉ phục vụ sản phẩm, mà còn mang đến những trải nghiệm
+              tuyệt vời nhất cho bạn.
             </Paragraph>
             <Paragraph style={{ fontSize: "16px", lineHeight: 1.7 }}>
-              Với tâm huyết và tình yêu dành cho chất lượng, The Coffee Shop cam
-              kết cung cấp những sản phẩm tốt nhất, an toàn và giá cả hợp lý.
-              Đội ngũ nhân viên của chúng tôi luôn sẵn sàng phục vụ bạn với sự
-              tận tâm và chuyên nghiệp.
+              Với tâm huyết và tình yêu dành cho chất lượng, The Study Coffee
+              cam kết cung cấp những sản phẩm tốt nhất, an toàn và giá cả hợp
+              lý. Đội ngũ nhân viên của chúng tôi luôn sẵn sàng phục vụ bạn với
+              sự tận tâm và chuyên nghiệp.
             </Paragraph>
             <Paragraph style={{ fontSize: "16px", lineHeight: 1.7 }}>
               Cảm ơn bạn đã tin tưởng và đồng hành cùng chúng tôi! ❤️

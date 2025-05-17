@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Tabs, Table, Progress, Tag } from "antd";
 import styles from "./Member.module.css";
+import banner from "./banner.jpg";
 
 const memberInfo = {
   name: "Nguyễn Văn A",
@@ -48,6 +49,8 @@ const historyData = [
 const MemberPage = () => {
   return (
     <div className={styles.container}>
+      <img src={banner} alt="Banner" className={styles.banner} />
+
       <Card className={styles.card} title="Thông tin thành viên">
         <p>
           <strong>Họ và tên:</strong> {memberInfo.name}
