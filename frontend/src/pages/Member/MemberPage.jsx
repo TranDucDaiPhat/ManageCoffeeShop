@@ -3,6 +3,7 @@ import { Card, Tabs, Table, Tag, message } from "antd";
 import axios from "axios";
 import styles from "./Member.module.css";
 import banner from "./banner.jpg";
+import LevelProgress from "./LevelProgress";
 
 const levelBenefits = [
   {
@@ -30,7 +31,7 @@ const MemberPage = () => {
   const [historyData, setHistoryData] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("accessToken");
     console.log("Token:", token);
     if (!token) {
       message.error("Vui lòng đăng nhập");
@@ -90,41 +91,48 @@ const MemberPage = () => {
         <img src={banner} alt="Banner" className={styles.banner} />
         {memberInfo && (
           <Card className={styles.cardOverlay} title="Thông tin thành viên">
-            <p>
-              <strong>Họ và tên:</strong> {memberInfo.customerName}
-            </p>
-            <p>
-              <strong>Số điện thoại:</strong> {memberInfo.customerPhone}
-            </p>
-            <p>
-              <strong>Email:</strong> {memberInfo.email}
-            </p>
-            <p>
-              <strong>Giới tính:</strong> {memberInfo.gender}
-            </p>
-            <p>
-              <strong>Ngày sinh:</strong> {memberInfo.birthDay}
-            </p>
-            <p>
-              <strong>Địa chỉ:</strong> {memberInfo.address}
-            </p>
-            <p>
-              <strong>Cấp độ hiện tại:</strong>{" "}
-              <Tag
-                color={
-                  memberInfo.rank === "DIAMOND"
-                    ? "gold"
-                    : memberInfo.rank === "VIP"
-                    ? "green"
-                    : "default"
-                }
-              >
-                {memberInfo.rank}
-              </Tag>
-            </p>
-            <p>
-              <strong>Điểm hiện tại:</strong> {memberInfo.accumulatedPoint}
-            </p>
+            <div className={styles.cardContent}>
+              <div className={styles.info}>
+                <p>
+                  <strong>Họ và tên:</strong> {memberInfo.customerName}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {memberInfo.customerPhone}
+                </p>
+                <p>
+                  <strong>Email:</strong> {memberInfo.email}
+                </p>
+                <p>
+                  <strong>Giới tính:</strong> {memberInfo.gender}
+                </p>
+                <p>
+                  <strong>Ngày sinh:</strong> {memberInfo.birthDay}
+                </p>
+                <p>
+                  <strong>Địa chỉ:</strong> {memberInfo.address}
+                </p>
+                <p>
+                  <strong>Cấp độ hiện tại:</strong>{" "}
+                  <Tag
+                    color={
+                      memberInfo.rank === "DIAMOND"
+                        ? "gold"
+                        : memberInfo.rank === "VIP"
+                        ? "green"
+                        : "default"
+                    }
+                  >
+                    {memberInfo.rank}
+                  </Tag>
+                </p>
+                <p>
+                  <strong>Điểm hiện tại:</strong> {memberInfo.accumulatedPoint}
+                </p>
+              </div>
+              <div className={styles.progress}>
+                <LevelProgress currentPoint={memberInfo.accumulatedPoint} />
+              </div>
+            </div>
           </Card>
         )}
       </div>

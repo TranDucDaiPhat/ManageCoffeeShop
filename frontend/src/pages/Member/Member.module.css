@@ -26,8 +26,8 @@
 .cardOverlay {
   position: absolute;
   bottom: 20px;
-  left: 400px;
-  width: 360px;
+  left: 280px;
+  width: auto;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   padding: 24px;
@@ -67,4 +67,20 @@
 
 :global(.ant-table-tbody > tr > td) {
   font-size: 14px;
+}
+.cardContent {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.info {
+  flex: 1;
+}
+
+.progress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
