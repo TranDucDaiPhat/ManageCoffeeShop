@@ -7,7 +7,7 @@ import "./Navbar.css";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showTooltip, setShowTooltip] = useState(false);
   const { role, logout, username } = useAuth();
 
@@ -49,14 +49,17 @@ const Navbar = () => {
             <Link to="/promotions">KHUYẾN MÃI</Link>
           </li>
           <li>
-            <Link to="/membership">HỘI VIÊN</Link>
+            <Link to="/member">THÀNH VIÊN</Link>
           </li>
         </ul>
       </nav>
 
       <div className="navbar-right">
-        <div className="delivery-method" style={{display:'flex', alignItems:'center'}}>
-          <div style={{marginRight:5}}>{username}</div>
+        <div
+          className="delivery-method"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <div style={{ marginRight: 5 }}>{username}</div>
           <div
             className={styles.wrapper}
             onMouseEnter={() => setShowTooltip(true)}
@@ -69,14 +72,18 @@ const Navbar = () => {
             {/* Nút đăng nhập, đăng xuất và thông tin cá nhân */}
             {showTooltip && (
               <div className={styles.tooltip}>
-                {isLoggedIn
-                    ? <button className={styles.tooltipButton} onClick={() => navigate('/customerInfo')}>Thông tin cá nhân</button>
-                    : <></>
-                }
+                {isLoggedIn ? (
+                  <button
+                    className={styles.tooltipButton}
+                    onClick={() => navigate("/customerInfo")}
+                  >
+                    Thông tin cá nhân
+                  </button>
+                ) : (
+                  <></>
+                )}
                 <button onClick={handleClick} className={styles.tooltipButton}>
-                  {isLoggedIn
-                    ? `Đăng xuất`
-                    : "Đăng nhập"}
+                  {isLoggedIn ? `Đăng xuất` : "Đăng nhập"}
                 </button>
               </div>
             )}
