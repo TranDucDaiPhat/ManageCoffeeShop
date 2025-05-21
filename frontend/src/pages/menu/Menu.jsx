@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Row, Col, Card, Spin, Carousel } from "antd";
 import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./Menu.module.css";
+import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [visibleCount, setVisibleCount] = useState(10);
@@ -52,6 +55,9 @@ const Menu = () => {
 
   const handleCategoryClick = (value) => {
     setSelectedCategory(value);
+  };
+  const handleClickProduct = (product) => {
+    navigate("/product_customer", { state: { product } });
   };
 
   const filteredProducts = products.filter((product) => {
@@ -143,8 +149,10 @@ const Menu = () => {
                           alt={product.productName}
                           src={product.productImg}
                           className={styles.productImage}
+                          onClick={() => handleClickProduct(product)}
                         />
                       }
+                      onClick={() => handleClickProduct(product)}
                     >
                       <Card.Meta
                         title={product.productName}
@@ -158,6 +166,10 @@ const Menu = () => {
                         icon={<ShoppingCartOutlined />}
                         block
                         className={styles.orderBtn}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngăn sự kiện click lan lên Card
+                          handleClickProduct(product);
+                        }}
                       >
                         Đặt mua
                       </Button>
