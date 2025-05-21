@@ -43,16 +43,30 @@ const EmployeeForm = () => {
       return false;
     }
 
+    // Tên không chứa số hoặc ký tự đặc biệt
+    if (!/^[a-zA-ZÀ-ỹ\s]+$/.test(empName)) {
+      alert("Họ và tên không được chứa số hoặc ký tự đặc biệt!");
+      return false;
+    }
+
+    // Năm sinh gồm 4 số và không lớn hơn năm hiện tại
+    const currentYear = new Date().getFullYear();
     if (!/^\d{4}$/.test(empYearOfBirth)) {
       alert("Năm sinh phải gồm 4 chữ số!");
       return false;
     }
+    if (parseInt(empYearOfBirth) > currentYear) {
+      alert("Năm sinh không được lớn hơn năm hiện tại!");
+      return false;
+    }
 
+    // Số điện thoại phải đủ 10 chữ số
     if (!/^[0-9]{10}$/.test(empPhone)) {
       alert("Số điện thoại không hợp lệ!");
       return false;
     }
 
+    // Mật khẩu ít nhất 6 ký tự
     if (empPassword.length < 6) {
       alert("Mật khẩu phải có ít nhất 6 ký tự!");
       return false;

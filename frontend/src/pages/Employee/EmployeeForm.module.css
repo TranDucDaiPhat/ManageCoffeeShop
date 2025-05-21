@@ -22,7 +22,7 @@
   }
   
   .header {
-    color: #ff4d4f;
+    color: #16a34a;
     font-size: 1.8rem;
     font-weight: bold;
     text-align: center;
@@ -87,6 +87,8 @@
   
   .button {
     background-color: #16a34a;
+    width: 200px;
+    margin-left: 250px;
     color: white;
     padding: 10px 24px;
     border: none;
