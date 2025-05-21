@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Select, Input, Button, Row, Col, Card, Spin } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import "./Menu.css";
-
-const { Option } = Select;
-
-// Biến tạm lưu token (Bạn có thể thay bằng token thực tế của bạn)
-const TEMP_TOKEN = "YOUR_TEMP_ACCESS_TOKEN_HERE"; // 👉 nhập token tạm vào đây
+import { Input, Button, Row, Col, Card, Spin, Carousel } from "antd";
+import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import styles from "./Menu.module.css";
 
 const Menu = () => {
   const [products, setProducts] = useState([]);
@@ -20,9 +15,10 @@ const Menu = () => {
     async function fetchData() {
       try {
         setLoading(true);
+        const token = sessionStorage.getItem("accessToken");
         const headers = {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJzdHVkeWNvZmZlZXNob3AuY29tIiwiZW1wbG95ZWVJZCI6MSwiZXhwIjoxNzQ1NzA1NTg0LCJpYXQiOjE3NDU3MDE5ODR9.muamJku7U06iIl9obL0ieXGpWEnqR1K6EqPmHK_JgLFil6QjHu-kctl6IcrcO2NbEREkvz_4nfar7iWuO5GM9A"}`, // <-- gửi token ở đây
+          ...(token && { Authorization: `Bearer ${token}` }),
         };
 
         const [productRes, categoryRes] = await Promise.all([
@@ -34,9 +30,8 @@ const Menu = () => {
           }),
         ]);
 
-        if (!productRes.ok || !categoryRes.ok) {
-          throw new Error("Không thể lấy dữ liệu");
-        }
+        if (!productRes.ok || !categoryRes.ok)
+          throw new Error("Lỗi khi lấy dữ liệu");
 
         const [productData, categoryData] = await Promise.all([
           productRes.json(),
@@ -55,8 +50,8 @@ const Menu = () => {
     fetchData();
   }, []);
 
-  const loadMoreProducts = () => {
-    setVisibleCount((prev) => prev + 10);
+  const handleCategoryClick = (value) => {
+    setSelectedCategory(value);
   };
 
   const filteredProducts = products.filter((product) => {
@@ -70,77 +65,120 @@ const Menu = () => {
   });
 
   return (
-    <div className="home-container">
-      <section className="products-section">
-        <h2 className="category-title">MENU SẢN PHẨM</h2>
-
-        {/* Bộ lọc và tìm kiếm */}
-        <Row gutter={[16, 16]} justify="center" className="filter-bar">
-          <Col xs={24} sm={12} md={8}>
-            <Select
-              placeholder="Chọn danh mục"
-              value={selectedCategory || undefined}
-              onChange={(value) => setSelectedCategory(value)}
-              style={{ width: "100%" }}
-              allowClear
-            >
-              {categories.map((category) => (
-                <Option key={category.categoryId} value={category.categoryId}>
-                  {category.categoryName}
-                </Option>
+    <div className={styles.container}>
+      <Carousel autoplay className={styles.carousel}>
+        <div>
+          <img
+            src="/image/banner1.jpg"
+            alt="banner1"
+            className={styles.bannerImg}
+          />
+        </div>
+        <div>
+          <img
+            src="image/banner2.jpg"
+            alt="banner2"
+            className={styles.bannerImg}
+          />
+        </div>
+        <div>
+          <img
+            src="/image/banner3.jpg"
+            alt="banner3"
+            className={styles.bannerImg}
+          />
+        </div>
+      </Carousel>
+      <h2 className={styles.title}>MENU SẢN PHẨM</h2>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={6}>
+          <div className={styles.sidebar}>
+            <ul className={styles.sidebarList}>
+              <li
+                className={!selectedCategory ? styles.active : ""}
+                onClick={() => handleCategoryClick("")}
+              >
+                Tất cả
+              </li>
+              {categories.map((cat) => (
+                <li
+                  key={cat.categoryId}
+                  className={
+                    selectedCategory === String(cat.categoryId)
+                      ? styles.active
+                      : ""
+                  }
+                  onClick={() => handleCategoryClick(String(cat.categoryId))}
+                >
+                  {cat.categoryName}
+                </li>
               ))}
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <Input
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              prefix={<SearchOutlined />}
-            />
-          </Col>
-        </Row>
-
-        {/* Loading */}
-        {loading ? (
-          <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <Spin size="large" />
+            </ul>
           </div>
-        ) : (
-          <>
-            {/* Hiển thị sản phẩm */}
-            <Row gutter={[16, 16]} style={{ marginTop: "30px" }}>
-              {filteredProducts.slice(0, visibleCount).map((product) => (
-                <Col key={product.productId} xs={24} sm={12} md={8} lg={6}>
-                  <Card
-                    hoverable
-                    cover={
-                      <img alt={product.productName} src={product.productImg} />
-                    }
-                  >
-                    <Card.Meta
-                      title={product.productName}
-                      description={`Giá: ${product.productPrice.toLocaleString()} VND`}
-                    />
-                    <Button type="primary" block style={{ marginTop: "10px" }}>
-                      Đặt mua
-                    </Button>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
+        </Col>
 
-            {/* Nút Load More */}
-            {visibleCount < filteredProducts.length && (
-              <div style={{ textAlign: "center", marginTop: "20px" }}>
-                <Button type="primary" onClick={loadMoreProducts}>
-                  Xem thêm
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-      </section>
+        {/* Product List */}
+        <Col xs={24} sm={18}>
+          <Input
+            placeholder="Tìm kiếm sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            prefix={<SearchOutlined />}
+            className={styles.searchBox}
+          />
+          {loading ? (
+            <div className={styles.loading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <>
+              <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
+                {filteredProducts.slice(0, visibleCount).map((product) => (
+                  <Col key={product.productId} xs={24} sm={12} md={8} lg={6}>
+                    <Card
+                      hoverable
+                      className={styles.productCard}
+                      cover={
+                        <img
+                          alt={product.productName}
+                          src={product.productImg}
+                          className={styles.productImage}
+                        />
+                      }
+                    >
+                      <Card.Meta
+                        title={product.productName}
+                        description={
+                          <span className={styles.price}>
+                            {product.productPrice.toLocaleString()} đ
+                          </span>
+                        }
+                      />
+                      <Button
+                        icon={<ShoppingCartOutlined />}
+                        block
+                        className={styles.orderBtn}
+                      >
+                        Đặt mua
+                      </Button>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+              {visibleCount < filteredProducts.length && (
+                <div className={styles.loadMore}>
+                  <Button
+                    type="primary"
+                    onClick={() => setVisibleCount((prev) => prev + 10)}
+                  >
+                    Xem thêm
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </Col>
+      </Row>
     </div>
   );
 };

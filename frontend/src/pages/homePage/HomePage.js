@@ -213,10 +213,9 @@ const HomePage = () => {
           ))}
         </div>
       </section>
-      <footer className="phuclong-footer">
+      {/* <footer className="phuclong-footer">
         <div className="footer-container">
 
-          {/* Company Info Column */}
           <div className="footer-column">
             <h3>CÔNG TY</h3>
             <p>Trụ sở chính: Công ty Cổ phần Phúc Long Heritage</p>
@@ -227,7 +226,6 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Quick Links Column */}
           <div className="footer-column">
             <h3>TỐC KHỨC</h3>
             <ul>
@@ -238,7 +236,6 @@ const HomePage = () => {
             </ul>
           </div>
 
-          {/* Support Column */}
           <div className="footer-column">
             <h3>HỖ TRỢ</h3>
             <ul>
@@ -249,17 +246,11 @@ const HomePage = () => {
             </ul>
           </div>
 
-          {/* Contact Column */}
           <div className="footer-column">
             <h3>LIÊN HỆ</h3>
             <div className="contact-info">
               <p>Hotline: <a href="tel:18001234">1800 1234</a></p>
               <p>Email: <a href="mailto:info@phuclong.com">info@phuclong.com</a></p>
-              {/* <div className="social-links">
-              <a href="#"><i className="fab fa-facebook"></i></a>
-              <a href="#"><i className="fab fa-instagram"></i></a>
-              <a href="#"><i className="fab fa-youtube"></i></a>
-            </div> */}
             </div>
           </div>
 
@@ -268,7 +259,7 @@ const HomePage = () => {
         <div className="footer-bottom">
           <p>Design and content are copied from Phuc Long Heritage for study purposes only. All rights belong to Phuc Long.</p>
         </div>
-      </footer>
+      </footer> */}
     </div>
 
   );

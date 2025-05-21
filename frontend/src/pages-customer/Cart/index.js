@@ -21,13 +21,15 @@ function Cart() {
     // lưu tất cả sản phẩm trong giỏ hàng
     const [cart, setCart] = useState([]);
     // lưu những sản phẩm cần thanh toán
-    const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedItemsId, setSelectedItemsId] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [userInfo, setUserInfo] = useState({
         address: user?.address || '',
         userName: user?.customerName || '',
         phone: user?.customerPhone || ''
     });
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [paymentInfo, setPaymentInfo] = useState(null)
 
     useEffect(() => {
         setUserInfo({
@@ -38,13 +40,13 @@ function Cart() {
     }, [user])
 
     // chọn tất cả sản phẩm để thanh toán
-    const allSelected = selectedItems.length === cart.length && cart.length > 0;
+    const allSelected = selectedItemsId.length === cart.length && cart.length > 0;
     const toggleSelectAll = () => {
         if (allSelected) {
-            setSelectedItems([]);
+            setSelectedItemsId([]);
         } else {
             const allIds = cart.map(item => item.cartItemId);
-            setSelectedItems(allIds);
+            setSelectedItemsId(allIds);
         }
     };
 
@@ -56,7 +58,7 @@ function Cart() {
     // cập nhật tổng tiền khi thêm một sản phẩm
     useEffect(() => {
         const selectedProducts = cart.filter(item =>
-            selectedItems.includes(item.cartItemId)
+            selectedItemsId.includes(item.cartItemId)
         );
 
         const total = selectedProducts.reduce((sum, item) => {
@@ -64,7 +66,7 @@ function Cart() {
         }, 0);
 
         setTotalPrice(total);
-    }, [selectedItems, cart]);
+    }, [selectedItemsId, cart]);
 
     // Lấy sản phẩm trong giỏ hàng
     useEffect(() => {
@@ -83,7 +85,7 @@ function Cart() {
     useEffect(() => {
         if (cart.length > 0) {
             const allIds = cart.map(item => item.cartItemId);
-            setSelectedItems(allIds);
+            setSelectedItemsId(allIds);
         }
     }, [cart]);
 
@@ -109,10 +111,10 @@ function Cart() {
 
     const CartItem = ({ c, index }) => {
         const p = c.product
-        const isSelected = selectedItems.includes(c.cartItemId);
+        const isSelected = selectedItemsId.includes(c.cartItemId);
 
         const toggleSelect = () => {
-            setSelectedItems(prev =>
+            setSelectedItemsId(prev =>
                 isSelected
                     ? prev.filter(id => id !== c.cartItemId)
                     : [...prev, c.cartItemId]
@@ -177,26 +179,74 @@ function Cart() {
         );
     }
 
-    const handlePayment = async (totalPrice) => {
+    const Payment = async (totalPrice) => {
+        console.log('selectedItems:', selectedItems)
         try {
-            const res = await fetch('http://localhost:5000/payment', {
+            const productsReq = selectedItems.map(item => ({
+                productId: item.product.productId,
+                size: item.size,
+                unitPrice: item.price,
+                quantity: item.quantity,
+                sweet: item.sweet,
+                ice: item.ice,
+                listTopping: []
+            }))
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+
+            const token = sessionStorage.getItem("accessToken");
+
+            if (!token) {
+                console.log("Không tìm thấy access token!");
+                return;
+            }
+            const dataRequest = {
+                    deliveryTime: currentTime,
+                    deliveryAddress: user.address,
+                    noteOfCus: "",
+                    totalOrd: 5000,
+                    paymentMethod: 'Momo',
+                    customerId: user.customerId,
+                    transactionCode: '',
+                    orderDetails: productsReq
+                }
+                console.log('dataRequest:', dataRequest)
+            const res = await fetch('http://localhost:8081/myapp/api/business/sepay', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ amount: totalPrice.toString() })
+                credentials: "include",
+                body: JSON.stringify(dataRequest)
             });
 
             const data = await res.json();
-            if (data && data.payUrl) {
-                // Điều hướng sang trang thanh toán
-                window.location.href = data.payUrl;
+            if (data && data.qrUrl) {
+                setIsPayment(false)
+                setPaymentInfo(data)
             } else {
                 alert("Không thể tạo thanh toán.");
             }
+
+            console.log(selectedItems)
+            console.log(data)
         } catch (err) {
             console.error("Lỗi khi thanh toán:", err);
             alert("Đã xảy ra lỗi.");
+        }
+    }
+
+    const handlePayment = () => {
+        const listItem = cart.filter(item => selectedItemsId.includes(item.cartItemId))
+
+        if (listItem.length <= 0) {
+            toast.info('Vui lòng chọn sản phẩm để thanh toán')
+        } else {
+            setIsPayment(true)
+            setSelectedItems(listItem)
         }
     }
 
@@ -306,9 +356,9 @@ function Cart() {
 
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 15 }}>
                         <button className={styles.btnThanhToan}
-                            onClick={() => setIsPayment(true)}
+                            onClick={() => handlePayment()}
                         >
-                            <span>{`Tiến Hành Thanh Toán (${selectedItems.length} món)`}</span>
+                            <span>{`Tiến Hành Thanh Toán (${selectedItemsId.length} món)`}</span>
                         </button>
                     </div>
                 </div>
@@ -325,22 +375,30 @@ function Cart() {
                             <p><strong>Người nhận: </strong>{user.customerName}</p>
                             <p><strong>Địa chỉ: </strong>{user.address}</p>
                             <p><strong>Thanh toán: </strong>Ví Momo</p>
-                            <p><strong>{`Tổng số tiền (${selectedItems.length} sản phẩm): `}</strong>{formatCurrency(totalPrice)}</p>
+                            <p><strong>{`Tổng số tiền (${selectedItemsId.length} sản phẩm): `}</strong>{formatCurrency(totalPrice)}</p>
 
                             <h4 style={{ marginTop: 10 }}>Sản phẩm đã chọn:</h4>
-                            {cart.filter(item => selectedItems.includes(item.cartItemId))
-                                .map(item => (
+                            {
+                                selectedItems.map(item => (
                                     <CartItemSelected key={item.cartItemId} c={item} />
                                 ))
                             }
                         </div>
 
                         <div className={styles.popupFooter}>
-                            <button className={styles.payButton} onClick={() => handlePayment(totalPrice)} >Thanh toán</button>
+                            <button className={styles.payButton} onClick={() => Payment(totalPrice)} >Thanh toán</button>
                         </div>
                     </div>
                 </div>
             )}
+
+            {paymentInfo ? 
+             <div className={styles.popup}>
+                    <div className={styles.popupContent} style={{display:'flex', alignItems:'center'}}>
+                        <button className={styles.closeButton} onClick={() => setPaymentInfo(null)}>✖</button>
+                        <img src={paymentInfo.qrUrl} style={{width:275, height: 275}}/>
+                    </div>
+                </div> : <></>}
         </div>
     )
 }

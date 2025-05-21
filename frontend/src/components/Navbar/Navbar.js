@@ -32,17 +32,25 @@ const Navbar = () => {
         />
 
         <h2 className="navbar-title">Bạn muốn mua gì...</h2>
-
       </div>
 
       <nav className="navbar-menu">
         <ul>
-          <li><Link to="/homepage">TRANG CHỦ</Link></li>
-          <li><Link to="/menu">MENU</Link></li>
-          <li><Link to="/packaged-products">SẢN PHẨM ĐỒNG GÓI</Link></li>
-          <li><Link to="/about">VỀ CHÚNG TÔI</Link></li>
-          <li><Link to="/promotions">KHUYẾN MÃI</Link></li>
-          <li><Link to="/membership">HỘI VIÊN</Link></li>
+          <li>
+            <Link to="/homepage">TRANG CHỦ</Link>
+          </li>
+          <li>
+            <Link to="/menu">MENU</Link>
+          </li>
+          <li>
+            <Link to="/about">VỀ CHÚNG TÔI</Link>
+          </li>
+          <li>
+            <Link to="/promotions">KHUYẾN MÃI</Link>
+          </li>
+          <li>
+            <Link to="/membership">HỘI VIÊN</Link>
+          </li>
         </ul>
       </nav>
 

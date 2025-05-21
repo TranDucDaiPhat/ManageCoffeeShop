@@ -29,7 +29,7 @@ function Product_Customer() {
     async function handleAddToCart() {
         product.quantity = productCount;
         if (role == null) {
-            toast.success('Vui lòng đăng nhập để thêm vào giỏ hàng');
+            toast.info('Vui lòng đăng nhập để thêm vào giỏ hàng');
             navigate('/SignIn', { state: { product } });
         } else {
             const items = {

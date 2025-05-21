@@ -9,7 +9,7 @@ function Cart() {
 
     function handleClickCart() {
         if (role == null) {
-            toast.success('Vui lòng đăng nhập để xem giỏ hàng')
+            toast.info('Vui lòng đăng nhập để xem giỏ hàng')
             navigate('/SignIn')
         } else if (role == 'CUSTOMER') {
             navigate('/gio-hang')
