@@ -68,12 +68,16 @@ const MemberPage = () => {
       .then((res) => {
         const list = res.data.map((item, index) => ({
           key: index + 1,
+          id: item.id,
           date: item.date,
+          time: item.time,
           order: `#${item.orderId}`,
           points: item.plusPoint,
+          customerId: item.customerId,
         }));
         setHistoryData(list);
       })
+
       .catch((err) => {
         console.error(err);
         message.error("Không thể tải thông tin thành viên");
