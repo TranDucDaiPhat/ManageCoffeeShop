@@ -30,7 +30,7 @@ const MemberPage = () => {
   const [historyData, setHistoryData] = useState([]);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("accessToken");
+    const token = localStorage.getItem("token");
     console.log("Token:", token);
     if (!token) {
       message.error("Vui lòng đăng nhập");
