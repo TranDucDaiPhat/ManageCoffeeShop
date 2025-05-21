@@ -90,7 +90,10 @@ const MemberPage = () => {
       <div className={styles.bannerWrapper}>
         <img src={banner} alt="Banner" className={styles.banner} />
         {memberInfo && (
-          <Card className={styles.cardOverlay} title="Thông tin thành viên">
+          <Card
+            className={styles.cardOverlay}
+            title={<div className={styles.cardTitle}>Thông tin thành viên</div>}
+          >
             <div className={styles.cardContent}>
               <div className={styles.info}>
                 <p>

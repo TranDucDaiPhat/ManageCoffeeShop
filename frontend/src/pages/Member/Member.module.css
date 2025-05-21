@@ -22,6 +22,13 @@
   object-fit: cover;
   border-radius: 12px;
 }
+.cardTitle {
+  text-align: center;
+  color: #006633;
+  font-size: 20px;
+  font-weight: 600;
+}
+
 
 .cardOverlay {
   position: absolute;
@@ -80,6 +87,7 @@
 
 .progress {
   flex: 1;
+  width: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
