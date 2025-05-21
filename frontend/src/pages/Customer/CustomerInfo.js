@@ -7,7 +7,8 @@ function CustomerInfo() {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      const token = localStorage.getItem('token');
+      console.log('get customer...')
+      const token = sessionStorage.getItem('accessToken');
       if (!token) {
         setErrorMessage('Token không hợp lệ hoặc chưa đăng nhập.');
         setIsLoading(false);

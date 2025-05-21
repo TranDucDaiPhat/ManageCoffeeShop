@@ -1,41 +1,107 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useAuth } from "../../AuthContext";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
+import { findCustomerById, addProductToCart } from '../../API';
+import { Checkbox } from 'antd';
 
 function Signin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { role, setAccessToken, setUser } = useAuth();
+  const location = useLocation();
+  const product = location?.state?.product || null;
+  const [isEmployee, setIsEmployee] = useState(false)
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    if (username.trim() === '' || password.trim() === '') {
+      toast.error("Vui lòng nhập username và password!");
+      return;
+    }
+    setIsLoading(true); // Bắt đầu loading
     try {
-      const response = await fetch('http://localhost:8081/myapp/api/business/authCustomer/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password })
+      const API = isEmployee ? "http://localhost:8081/myapp/api/business/auth/login" : 'http://localhost:8081/myapp/api/business/authCustomer/login'
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username.trim(), password: password }),
+        credentials: "include",
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.authenticated) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('refreshToken', data.refreshToken);
-          navigate('/homepage');
-        } else {
-          setMessage('Đăng nhập thất bại. Vui lòng thử lại.');
-        }
-      } else {
-        const errorText = await response.text();
-        setMessage(errorText || 'Đăng nhập thất bại.');
+      if (res.status === 429) {
+        const errorData = await res.json();
+        toast.error(errorData.token || "Bạn đã vượt quá số lần đăng nhập. Vui lòng thử lại sau.");
+        return;
       }
+
+      if (!res.ok) {
+        throw new Error(`Lỗi đăng nhập: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("token: ", data);
+      sessionStorage.setItem("accessToken", data.token);
+      setAccessToken(data.token);
+
+      const decoded = jwtDecode(data.token);
+
+      if (decoded.scope == 'ADMIN' || decoded.scope == 'USER') {
+        navigate("/tao-hoa-don");
+      } else {
+        // lấy thông tin customer sau khi đăng nhập
+        const cus = await handleFindCustomer(decoded.customerId)
+        if (product) {
+          const items = {
+            "items": [
+              {
+                "productId": product.productId,
+                "size": "M",
+                "quantity": product.quantity,
+                "sweet": "0%",
+                "ice": "0%",
+                "toppings": null
+              }
+            ],
+            "discountCode": null,
+            "paymentMethod": null
+          };
+
+          try {
+            await addProductToCart(decoded.customerId, items);
+            toast.success("Thêm vào giỏ hàng thành công!");
+            navigate('/gio-hang');
+          } catch (err) {
+            toast.error("Thêm vào giỏ hàng thất bại!");
+          }
+        } else {
+          navigate("/");
+        }
+      }
+
     } catch (error) {
-      setMessage('Không thể kết nối tới máy chủ.');
+      console.error("Lỗi khi đăng nhập:", error.message);
+      toast.error("Đăng nhập thất bại! Kiểm tra tài khoản và mật khẩu.");
+    } finally {
+      setIsLoading(false); // Tắt loading
     }
   };
+
+  const handleFindCustomer = async (id) => {
+    const data = await findCustomerById(id)
+    console.log(data)
+    if (data) {
+      setUser(data)
+    } else {
+      console.log("lỗi, không tìm thấy khách hàng");
+    }
+  }
 
   return (
     <div style={styles.background}>
@@ -58,7 +124,24 @@ function Signin() {
             required
             style={styles.input}
           />
-          <button type="submit" style={styles.button}>Đăng nhập</button>
+          <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
+            <input
+              type="checkbox"
+              onChange={() => setIsEmployee(!isEmployee)}
+              style={{width:15,height:15,margin:5}}
+            />
+            <span style={{fontSize:'95%', color:'gray'}}>Đăng nhập dành cho nhân viên</span>
+          </div>
+          <button type="submit" disabled={isLoading} style={styles.button}>
+            {isLoading ? (
+              <span className={styles.loading}>
+                <FaSpinner className={styles.spinner} />
+                &nbsp;Đang đăng nhập...
+              </span>
+            ) : (
+              "Đăng Nhập"
+            )}
+          </button>
         </form>
         {message && <p style={styles.error}>{message}</p>}
         <p style={styles.linkText}>

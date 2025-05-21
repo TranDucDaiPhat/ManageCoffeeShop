@@ -1,3 +1,5 @@
 export {default as Sidebar} from './SideBar'
 export {default as MenuItems} from './MenuItems'
 export {default as OrderList} from './OrderList'
+export {default as Footer} from './Footer'
+export {default as Cart} from './Cart'

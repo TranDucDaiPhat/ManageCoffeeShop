@@ -97,3 +97,34 @@ export const createCustomer = async (customer) => {
         return []
     }
 }
+
+export const findCustomerById = async (id) => {
+    const token = sessionStorage.getItem("accessToken");
+    if (!token) {
+        toast.error("Không tìm thấy access token!");
+        return;
+    }
+    try {
+        const res = await fetch(`${API}/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Response not OK");
+        }
+
+        const data = await res.json();
+        console.log("Customer:", data);
+
+        return data
+    } catch (err) {
+        console.error(err);
+        toast.error("Không tìm thấy khách hàng");
+        return null;
+    }
+}

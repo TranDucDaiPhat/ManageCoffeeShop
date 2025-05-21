@@ -1,0 +1,17 @@
+
+.btnCart {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    padding: 6px;
+    background-color: #00c468;
+    border-radius: 55px;
+    cursor: pointer;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 3px;
+}
+
+.btnCart:hover {
+    background-color: #039350;
+    box-shadow: rgba(0, 0, 0, 0.75) 1px 1px 3px;
+}

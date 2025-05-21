@@ -31,6 +31,30 @@ export const fetchProducts = async () => {
     }
 };
 
+export const fetchProductsForCus = async () => {
+  try {
+      const res = await fetch("http://localhost:8081/myapp/api/business/products", {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json"
+          }
+      });
+
+      if (!res.ok) {
+          throw new Error(`Lỗi khi lấy sản phẩm: ${res.status}`);
+      }
+
+      const products = await res.json();
+      console.log("Get All Products: ", products);
+      return products;
+  } catch (error) {
+      console.error("Lỗi khi gọi API sản phẩm:", error.message);
+      toast.error("Không thể lấy danh sách sản phẩm!");
+      return [];
+  }
+};
+
+
 export async function getMons() {   
     const token = sessionStorage.getItem("accessToken");
     const response = await fetch("http://localhost:8081/myapp/api/business/products", {
