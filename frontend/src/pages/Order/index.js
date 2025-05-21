@@ -32,7 +32,9 @@ function Order() {
     const menuOrderRef = useRef(null);  // Lưu địa chỉ của danh sách hoá đơn (để tự động cuộn xuống khi thêm 1 sản phẩm)
     const prevLengthMenu = useRef(items.length);  // Lưu số lượng sản phẩm trong menu (chỉ cuộn khi số lượng tăng)
     const [searchText, setSearchText] = useState(null);  // input tìm kiếm
-    const { employeeId } = useAuth();
+    const { employeeId, role, orderOnlineIdsRef } = useAuth();
+    const [orderOnline, setOderOnline] = useState([])
+    const orderOnlineRef = useRef(orderOnline);
 
     // Lấy danh sách món từ API
     useEffect(() => {
@@ -49,6 +51,11 @@ function Order() {
         getCategories();
         getProducts();
     }, []);
+
+    useEffect(() => {
+        orderOnlineRef.current = orderOnline;
+    }, [orderOnline]);
+
 
     // Khi cửa sổ thay đổi, tính toán lại cột (tối đa 3, tối thiểu 2)
     useEffect(() => {
@@ -201,6 +208,62 @@ function Order() {
             : currentListItem;
     }, [searchText, currentListItem]);
 
+
+    // kiểm tra có đơn hàng mới không
+    const handleCheckOrderOnline = (data) => {
+        // const existingIds = orderOnlineRef.current.map(order => order.orderOnlID);
+        console.log('orderOnlineIdsRef:', orderOnlineIdsRef);
+
+
+        const newOrders = data.filter(order => !orderOnlineIdsRef.current.includes(order.orderOnlID));
+        console.log('newOrders:', newOrders.length);
+
+        if (newOrders.length > 0) {
+            console.log("Có đơn hàng mới:", newOrders);
+            toast.info(`Có ${newOrders.length} đơn đặt hàng mới`);
+            setOderOnline(data);
+            orderOnlineIdsRef.current = data.map(order => order.orderOnlID)
+        }
+    };
+
+    useEffect(() => {
+        if (!role) return;
+
+        const token = sessionStorage.getItem("accessToken");
+
+        if (!token) {
+            console.log("Không tìm thấy access token!");
+            return;
+        }
+
+        const interval = setInterval(() => {
+
+            fetch(`http://localhost:8081/myapp/api/business/sepay/ordNYD`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
+                },
+                credentials: "include",
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('fetch order online:', data)
+                    handleCheckOrderOnline(data)
+                })
+                .catch(error => {
+                    // console.error("Lỗi kiểm tra thanh toán", error);
+                    console.log('Tìm đơn hàng mới...')
+                });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [role]);
 
     return (
         <div style={{ padding: 12 }}>

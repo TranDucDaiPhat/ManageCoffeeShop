@@ -50,6 +50,50 @@ function Cart() {
         }
     };
 
+    // gọi lại để kiểm tra trạng thái thanh toán
+    useEffect(() => {
+        if (!paymentInfo) return; // Nếu paymentInfo null thì không tạo interval
+
+        const token = sessionStorage.getItem("accessToken");
+
+        if (!token) {
+            console.log("Không tìm thấy access token!");
+            return;
+        }
+
+        const interval = setInterval(() => {
+
+            fetch(`http://localhost:8081/myapp/api/business/sepay/${paymentInfo?.orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`
+                },
+                credentials: "include",
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.paid) {
+                        // setPaymentStatus("success");
+                        clearInterval(interval);
+                        setPaymentInfo(null); // dừng check tiếp
+                        toast.success('Thanh toán thành công!')
+                    }
+                })
+                .catch(error => {
+                    // console.error("Lỗi kiểm tra thanh toán", error);
+                    console.log('Đang thanh toán...')
+                });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [paymentInfo?.orderId, paymentInfo]);
+
     // Đóng popup
     const closePopup = () => {
         setIsPayment(false);
@@ -62,7 +106,7 @@ function Cart() {
         );
 
         const total = selectedProducts.reduce((sum, item) => {
-            return sum + item.product.productPrice * item.quantity;
+            return sum + item.product?.productPrice * item.quantity;
         }, 0);
 
         setTotalPrice(total);
@@ -134,14 +178,14 @@ function Cart() {
 
                     {/* Ảnh sản phẩm */}
                     <div className={styles.wrapperImage}>
-                        <img src={p.productImg} style={{ width: 85 }} />
+                        <img src={p?.productImg} style={{ width: 85 }} />
                     </div>
 
                     {/* Thông tin sản phẩm */}
                     <div style={{ paddingLeft: 15 }}>
-                        <span>{p.productName}</span>
+                        <span>{p?.productName}</span>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <p>{formatCurrency(p.productPrice)}</p>
+                            <p>{formatCurrency(p?.productPrice)}</p>
                             <div style={{ display: 'flex', marginLeft: 15 }}>
                                 <button
                                     className={styles.customButton}
@@ -203,16 +247,16 @@ function Cart() {
                 return;
             }
             const dataRequest = {
-                    deliveryTime: currentTime,
-                    deliveryAddress: user.address,
-                    noteOfCus: "",
-                    totalOrd: 5000,
-                    paymentMethod: 'Momo',
-                    customerId: user.customerId,
-                    transactionCode: '',
-                    orderDetails: productsReq
-                }
-                console.log('dataRequest:', dataRequest)
+                deliveryTime: currentTime,
+                deliveryAddress: user.address,
+                noteOfCus: "",
+                totalOrd: 5000,
+                paymentMethod: 'Momo',
+                customerId: user.customerId,
+                transactionCode: '',
+                orderDetails: productsReq
+            }
+            console.log('dataRequest:', dataRequest)
             const res = await fetch('http://localhost:8081/myapp/api/business/sepay', {
                 method: 'POST',
                 headers: {
@@ -259,14 +303,14 @@ function Cart() {
 
                     {/* Ảnh sản phẩm */}
                     <div className={styles.wrapperImage}>
-                        <img src={p.productImg} style={{ width: 85 }} />
+                        <img src={p?.productImg} style={{ width: 85 }} />
                     </div>
 
                     {/* Thông tin sản phẩm */}
                     <div style={{ paddingLeft: 15 }}>
-                        <span>{p.productName}</span>
+                        <span>{p?.productName}</span>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <p>{formatCurrency(p.productPrice)} </p>
+                            <p>{formatCurrency(p?.productPrice)} </p>
                             <div style={{ display: 'flex', marginLeft: 15 }}>
                                 <h3> x {c.quantity}</h3>
                             </div>
@@ -392,11 +436,28 @@ function Cart() {
                 </div>
             )}
 
-            {paymentInfo ? 
-             <div className={styles.popup}>
-                    <div className={styles.popupContent} style={{display:'flex', alignItems:'center'}}>
+            {paymentInfo ?
+                <div className={styles.popup}>
+                    <div className={styles.popupContent} style={{ display: 'flex', alignItems: 'center' }}>
+                        <h3>Vui lòng quét mã để thanh toán!</h3>
                         <button className={styles.closeButton} onClick={() => setPaymentInfo(null)}>✖</button>
-                        <img src={paymentInfo.qrUrl} style={{width:275, height: 275}}/>
+                        <div style={{width:'100%',display:'flex', marginTop:10}}>
+                            <div className={styles.paymentInfo}>
+                                <strong><p>Thông tin thanh toán</p></strong>
+                                <p style={{color:'gray',marginTop:5}}>Nhà cung cấp</p>
+                                <p>The Coffee Shop</p>
+                                <hr className={styles.divider} />
+                                <p style={{color:'gray',marginTop:5}}>Mã đơn hàng</p>
+                                <p>{paymentInfo.orderId}</p>
+                                <hr className={styles.divider} />
+                                <p style={{color:'gray',marginTop:5}}>Số tiền</p>
+                                <p>{paymentInfo.total}</p>
+                                <hr className={styles.divider} />
+                            </div>
+                            <div style={{width:'55%'}}>
+                                <img src={paymentInfo.qrUrl} style={{ width:'100%', height:'100%' }} />
+                            </div>
+                        </div>
                     </div>
                 </div> : <></>}
         </div>

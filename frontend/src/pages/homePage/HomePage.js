@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import { Cart } from '../../components';
+import Chatbox from '../../pages/Chatbox/chatbox';
+
 
 const HomePage = () => {
+  const [showChat, setShowChat] = useState(false);
+
   const [products, setProducts] = useState([]);
   const [groupedProducts, setGroupedProducts] = useState({});
   const [visibleProducts, setVisibleProducts] = useState({});
@@ -155,9 +159,9 @@ const HomePage = () => {
                     <div className="product-info">
                       <h3>{product.productName}</h3>
                       <p className="price">Giá: {product.productPrice} VND</p>
-                      <button 
-                        className="order-btn" 
-                        onClick={() => {navigate('/product_customer',{ state: { product } })}}
+                      <button
+                        className="order-btn"
+                        onClick={() => { navigate('/product_customer', { state: { product } }) }}
                       >Đặt mua</button>
                     </div>
                   </div>
@@ -260,6 +264,28 @@ const HomePage = () => {
           <p>Design and content are copied from Phuc Long Heritage for study purposes only. All rights belong to Phuc Long.</p>
         </div>
       </footer> */}
+      <button
+        className="btnChat"
+        onClick={() => setShowChat(!showChat)}
+        aria-label="Open Chatbox"
+      >
+        💬
+      </button>
+
+      {showChat && (
+        <div className="chatPanel">
+          <button
+            className="closeBtn"
+            onClick={() => setShowChat(false)}
+            aria-label="Close Chatbox"
+          >
+
+          </button>
+          <div className="chatContent">
+            <Chatbox />
+          </div>
+        </div>
+      )}
     </div>
 
   );

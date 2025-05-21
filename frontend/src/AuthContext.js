@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import { findCustomerById } from './API';
 
@@ -24,6 +24,13 @@ export const AuthProvider = ({ children }) => {
   const [employeeId, setEmployeeId] = useState(null);
   const [username, setUsername] = useState(null);
   const [user, setUser] = useState(null)
+  const [orderOnlineIds, setOrderOnlineIds] = useState([])
+  const orderOnlineIdsRef = useRef(orderOnlineIds);
+
+  // Đồng bộ useRef với state mỗi lần cập nhật
+  useEffect(() => {
+    orderOnlineIdsRef.current = orderOnlineIds;
+  }, [orderOnlineIds]);
 
   // Hàm đăng xuất
   const logout = () => {
@@ -65,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ role, accessToken, setAccessToken, logout, employeeId, username, user, setUser }}
+      value={{ role, accessToken, setAccessToken, logout, employeeId, username, user, setUser, orderOnlineIdsRef }}
     >
       {children}
     </AuthContext.Provider>

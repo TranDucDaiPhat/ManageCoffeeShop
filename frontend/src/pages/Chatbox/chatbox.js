@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./chatbox.css";
 
+
 function Chatbox() {
   const [message, setMessage] = useState(""); // tin nhắn hiện tại
   const [messages, setMessages] = useState([]); // danh sách tin nhắn đã trao đổi

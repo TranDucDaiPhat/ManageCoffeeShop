@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Sidebar.module.css";
 import { useAuth } from "../../AuthContext";
+import { toast } from "react-toastify";
 
 const Sidebar = ({ openSidebar, onOpenSidebar }) => {
   const [openMenuItem, setOpenMenuItem] = useState({}); // Lưu trạng thái mở/đóng submenu
@@ -22,6 +23,7 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
         submenu: [{ title: "Danh Sách Sản Phẩm", path: "/danh-sach-san-pham" }],
       },
       { title: "Khách Hàng", path: "/khach-hang" },
+      { title: "Hoá đơn online", path: "/orderOnline" },
     ];
 
     // Chỉ thêm menu "Nhân Viên" nếu role KHÔNG phải là "Employee"
@@ -87,9 +89,8 @@ const Sidebar = ({ openSidebar, onOpenSidebar }) => {
                 {item.title} ▾
               </div>
               <div
-                className={`${styles.submenu} ${
-                  openMenuItem[index] ? styles.active : ""
-                }`}
+                className={`${styles.submenu} ${openMenuItem[index] ? styles.active : ""
+                  }`}
               >
                 {item.submenu.map((subItem, subIndex) =>
                   subItem.action ? (

@@ -10,7 +10,7 @@ import AddProduct from "./pages/addProduct";
 import ProductInfo from "./pages/productInfo/productInfo";
 import SignUp from "./pages/Auth/SignUp";
 import SignIn from "./pages/Auth/SignIn";
-import { Login, Order, Customer, OrderHistory, Unauthorized } from "./pages";
+import { Login, Order, Customer, OrderHistory, Unauthorized, OrderOnline } from "./pages";
 import { Product_Customer, Cart } from "./pages-customer";
 import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
@@ -67,6 +67,7 @@ function App() {
           {/* route chung cho Employee và Manager*/}
           <Route element={<ProtectedRoute allowedRoles={["USER", "ADMIN"]} />}>
             <Route path="/tao-hoa-don" element={<Order />} />
+            <Route path="/orderOnline" element={<OrderOnline />} />
           </Route>
 
           {/* Nếu không có quyền, chuyển hướng về login */}
