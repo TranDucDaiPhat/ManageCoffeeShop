@@ -1,10 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../../AuthContext";
 import "./Navbar.css";
+import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const navigate = useNavigate()
+  const [showTooltip, setShowTooltip] = useState(false);
+  const { role, logout, username } = useAuth();
+
+  const isLoggedIn = role !== null && role !== "";
+
+  const handleClick = () => {
+    if (isLoggedIn) {
+      logout();
+    } else {
+      navigate("/SignIn");
+    }
+    setShowTooltip(false);
+  };
+
   return (
     <div className="navbar-container">
       <div className="navbar-left">
@@ -30,13 +47,32 @@ const Navbar = () => {
       </nav>
 
       <div className="navbar-right">
-        <div className="delivery-method">
-          <button 
-            style={{border:'none',backgroundColor:'transparent',cursor:'pointer'}}
-            onClick={() => {navigate('/login')}}
+        <div className="delivery-method" style={{display:'flex', alignItems:'center'}}>
+          <div style={{marginRight:5}}>{username}</div>
+          <div
+            className={styles.wrapper}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
           >
-            <img src="/image/32-person-icon.png" width={32} />
-          </button>
+            <button className={styles.iconButton}>
+              <img src="/image/32-person-icon.png" width={32} alt="User Icon" />
+            </button>
+
+            {/* Nút đăng nhập, đăng xuất và thông tin cá nhân */}
+            {showTooltip && (
+              <div className={styles.tooltip}>
+                {isLoggedIn
+                    ? <button className={styles.tooltipButton} onClick={() => navigate('/customerInfo')}>Thông tin cá nhân</button>
+                    : <></>
+                }
+                <button onClick={handleClick} className={styles.tooltipButton}>
+                  {isLoggedIn
+                    ? `Đăng xuất`
+                    : "Đăng nhập"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

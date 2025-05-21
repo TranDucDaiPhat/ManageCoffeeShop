@@ -1,0 +1,36 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.iconButton {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  right: 0;
+  margin-top: -5px;
+  width: 140px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.tooltipButton {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tooltipButton:hover {
+  background-color: #f0f0f0;
+}

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { findCustomerById } from './API';
 
 const AuthContext = createContext();
 
@@ -9,7 +10,6 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // console.log(decoded)
         return decoded.scope || null;
       } catch (e) {
         return null;
@@ -22,6 +22,8 @@ export const AuthProvider = ({ children }) => {
     () => sessionStorage.getItem("accessToken") || null
   );
   const [employeeId, setEmployeeId] = useState(null);
+  const [username, setUsername] = useState(null);
+  const [user, setUser] = useState(null)
 
   // Hàm đăng xuất
   const logout = () => {
@@ -39,7 +41,16 @@ export const AuthProvider = ({ children }) => {
       const decoded = jwtDecode(accessToken);
       console.log(decoded);
       setRole(decoded.scope || null);
-      setEmployeeId(decoded.employeeId);
+      const id = decoded.employeeId || decoded.customerId;
+      if (id) {
+        setEmployeeId(id);
+        sessionStorage.setItem("employeeId", id);
+      }
+      setUsername(decoded.sub)
+      if (role == 'CUSTOMER') {
+        const data = await findCustomerById(id)
+        setUser(data)
+      }
     } catch (error) {
       console.warn("Không thể giải mã token:", error);
       logout();
@@ -54,7 +65,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ role, accessToken, setAccessToken, logout, employeeId }}
+      value={{ role, accessToken, setAccessToken, logout, employeeId, username, user, setUser }}
     >
       {children}
     </AuthContext.Provider>
