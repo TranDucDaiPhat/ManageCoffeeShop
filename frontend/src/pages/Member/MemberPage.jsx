@@ -7,20 +7,20 @@ import banner from "./banner.jpg";
 const levelBenefits = [
   {
     key: "1",
-    level: "Bạc",
-    condition: "0 - 1.999 điểm",
+    level: "MEMBER",
+    condition: "0 - 19 điểm",
     benefits: "Ưu đãi sinh nhật, tích điểm hoàn tiền 5%",
   },
   {
     key: "2",
-    level: "Vàng",
-    condition: "2.000 - 4.999 điểm",
+    level: "VIP",
+    condition: "20 - 29 điểm",
     benefits: "Tích điểm hoàn tiền 7%, ưu đãi theo tháng",
   },
   {
     key: "3",
-    level: "Bạch Kim",
-    condition: "Từ 5.000 điểm",
+    level: "DIAMOND",
+    condition: "Từ 30 điểm",
     benefits: "Tích điểm hoàn tiền 10%, ưu đãi VIP đặc biệt",
   },
 ];
@@ -52,7 +52,7 @@ const MemberPage = () => {
           birthDay: data.birthDay,
           email: data.email,
           address: data.address,
-          rank: data.rank || "Bạc",
+          rank: data.rank,
           accumulatedPoint: data.accumulatedPoint || 0,
           customerId: data.customerId,
         });
@@ -110,7 +110,17 @@ const MemberPage = () => {
             </p>
             <p>
               <strong>Cấp độ hiện tại:</strong>{" "}
-              <Tag color="silver">{memberInfo.rank}</Tag>
+              <Tag
+                color={
+                  memberInfo.rank === "DIAMOND"
+                    ? "gold"
+                    : memberInfo.rank === "VIP"
+                    ? "green"
+                    : "default"
+                }
+              >
+                {memberInfo.rank}
+              </Tag>
             </p>
             <p>
               <strong>Điểm hiện tại:</strong> {memberInfo.accumulatedPoint}
